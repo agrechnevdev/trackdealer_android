@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/vertical_margin"
     android:paddingTop="@dimen/vertical_margin"
-    android:background="@drawable/selector_background_blue"
+    android:background="@drawable/gradient_item_chart"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -17,13 +17,8 @@
 
         <ImageView
             android:id="@+id/item_chart_image_play"
-            android:layout_width="@dimen/dp60"
-            android:layout_height="@dimen/dp60"
-            android:layout_centerVertical="true"
-            android:alpha="0.3"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_play"/>
-
+            android:layout_width="56dp"
+            android:layout_height="56dp"/>
         <TextView
             android:id="@+id/item_chart_duration"
             android:layout_width="wrap_content"
@@ -37,8 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp4"
+            android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"
             android:layout_toLeftOf="@id/item_chart_duration"
+            android:layout_toRightOf="@id/item_chart_image_play"
             android:text="Название"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/text_size_medium" />
@@ -48,8 +45,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_chart_title"
+            android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"
             android:layout_toLeftOf="@id/item_chart_duration"
+            android:layout_toRightOf="@id/item_chart_image_play"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="Артист"

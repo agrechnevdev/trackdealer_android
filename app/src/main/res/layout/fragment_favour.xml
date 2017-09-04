@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/chose_song_heart"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+    <TextView
+        android:id="@+id/chose_song_text_your_chose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/your_chose"
+        android:layout_marginTop="@dimen/horizontal_margin"
         android:layout_marginLeft="@dimen/horizontal_margin"
-        android:layout_marginTop="@dimen/vertical_margin"
-        app:srcCompat="@drawable/ic_grade" />
+        android:textColor="@color/textColorPrimary" />
 
     <RelativeLayout
         android:id="@+id/chose_song_fav_song"
@@ -21,7 +22,13 @@
         android:layout_marginLeft="@dimen/horizontal_margin"
         android:layout_marginRight="@dimen/horizontal_margin"
         android:layout_marginTop="@dimen/horizontal_margin"
-        android:layout_toRightOf="@id/chose_song_heart">
+        android:layout_below="@id/chose_song_text_your_chose">
+
+        <ImageView
+            android:id="@+id/chose_song_heart"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_grade" />
 
         <TextView
             android:id="@+id/chose_song_duration"
@@ -42,6 +49,8 @@
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/text_size_medium"
             android:layout_toLeftOf="@id/chose_song_duration"
+            android:layout_toRightOf="@id/chose_song_heart"
+            android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"/>
 
         <TextView
@@ -55,6 +64,8 @@
             android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/text_size_main"
             android:layout_toLeftOf="@id/chose_song_duration"
+            android:layout_toRightOf="@id/chose_song_heart"
+            android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"/>
 
 

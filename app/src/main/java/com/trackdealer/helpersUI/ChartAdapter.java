@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.models.TrackInfo;
@@ -38,7 +39,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.item_chart_image_play)
-        ImageView playAnimation;
+        ImageView artistImage;
         @Bind(R.id.item_chart_lay_main)
         RelativeLayout relLayMain;
         @Bind(R.id.item_chart_title)
@@ -85,12 +86,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         holder.duration.setText(trackInfo.getDuration());
         holder.textDown.setText(trackInfo.getDislikes().toString());
         holder.textUp.setText(trackInfo.getLikes().toString());
-
-        if(position %2 == 0){
-            holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
-        } else {
-            holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightOrange));
-        }
+        Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
     }
 
     @Override

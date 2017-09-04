@@ -13,8 +13,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="?android:attr/windowBackground"
-        app:itemIconTint="@color/textColorPrimary"
-        app:itemTextColor="@color/textColorPrimary"
+        app:itemIconTint="@color/colorPrimaryDark"
+        app:itemTextColor="@color/colorPrimaryDark"
         app:menu="@menu/base_menu" />
 
     <include

@@ -3,15 +3,16 @@
     xmlns:com.deezer.sdk.tools="http://schemas.android.com/com.deezer.sdk.tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorBlue"
+    android:background="@drawable/gradient_player"
     android:orientation="vertical"
+    android:enabled="false"
     com.deezer.sdk.tools:ignore="ContentDescription">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dip"
         android:layout_marginBottom="1dip"
-        android:background="#ffffffff" />
+        android:background="@color/colorDivider" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -33,8 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:ellipsize="marquee"
-            android:shadowColor="#ffffffff"
-            android:textColor="@color/colorOrange"
+            android:shadowColor="@color/colorBlue"
+            android:textColor="@color/colorAccent"
             android:text="@string/empty"
             android:maxLines="1"
             android:layout_toLeftOf="@+id/button_pause"
@@ -47,8 +48,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:ellipsize="marquee"
-            android:textColor="@color/colorOrange"
-            android:shadowColor="#ffffffff"
+            android:textColor="@color/colorAccent"
+            android:shadowColor="@color/colorBlue"
             android:maxLines="1"
             android:text="@string/empty"
             android:layout_below="@id/text_artist"
@@ -153,7 +154,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0"
             android:paddingLeft="5dip"
-            android:shadowColor="#ff000000"
+            android:textColor="@color/colorAccent"
             android:text="@string/default_duration"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="14sp"
@@ -178,7 +179,7 @@
             android:layout_weight="0"
             android:gravity="right"
             android:paddingRight="5dip"
-            android:shadowColor="#ff000000"
+            android:textColor="@color/colorAccent"
             android:text="@string/default_duration"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="14sp"

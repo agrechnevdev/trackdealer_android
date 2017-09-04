@@ -14,17 +14,15 @@ import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
 import com.deezer.sdk.network.request.event.DeezerError;
 import com.deezer.sdk.network.request.event.JsonRequestListener;
-import com.deezer.sdk.player.TrackPlayer;
 import com.deezer.sdk.player.event.PlayerState;
 import com.deezer.sdk.player.event.PlayerWrapperListener;
-import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
-import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
+import com.trackdealer.utils.Prefs;
 
 import javax.inject.Inject;
 
@@ -34,14 +32,16 @@ import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
+
 /**
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class MainActivity extends PlayerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, PlayerWrapperListener, IChoseTrack {
+public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, PlayerWrapperListener, IChoseTrack {
 
-    private final String TAG = "MainActivity";
-    private TrackPlayer mTrackPlayer;
+    private final String TAG = "MainActivity ";
 
     @Inject
     Retrofit retrofit;
@@ -72,11 +72,18 @@ public class MainActivity extends PlayerActivity implements BottomNavigationView
         BottomNavigationHelper.removeShiftMode(botNavView);
 
         setupPlayerUI();
-        createPlayer();
+
+        recreatePlayer();
+        trackPlayer.addPlayerListener(this);
+
         chartFragment = new ChartFragment();
         favourFragment = new FavourFragment();
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
+        if(Prefs.getTrackInfo(this, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE) != null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, favourFragment).commit();
+        }
     }
 
     @Override
@@ -95,16 +102,17 @@ public class MainActivity extends PlayerActivity implements BottomNavigationView
     @Override
     public void choseTrackForPlay(TrackInfo trackInfo) {
         if (playingTrack != null && playingTrack.getId() == trackInfo.getTrackId()) {
-            if (mTrackPlayer.getPlayerState() == PlayerState.PLAYING)
-                mTrackPlayer.pause();
-            else if (mTrackPlayer.getPlayerState() == PlayerState.PAUSED)
-                mTrackPlayer.play();
-            else if (mTrackPlayer.getPlayerState() == PlayerState.STOPPED)
-                mTrackPlayer.playTrack(playingTrack.getId());
+            if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
+                trackPlayer.pause();
+            else if (trackPlayer.getPlayerState() == PlayerState.PAUSED)
+                trackPlayer.play();
+            else if (trackPlayer.getPlayerState() == PlayerState.STOPPED)
+                trackPlayer.playTrack(playingTrack.getId());
         } else {
-            if (mTrackPlayer.getPlayerState() == PlayerState.PLAYING)
-                mTrackPlayer.stop();
+            if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
+                trackPlayer.stop();
             displayTrackInfo(trackInfo);
+            setButtonEnabled(mButtonPlayerPause, false);
             setPlayerVisible(true);
             loadSong(trackInfo);
         }
@@ -117,8 +125,9 @@ public class MainActivity extends PlayerActivity implements BottomNavigationView
                     @Override
                     public void onResult(final Object result, final Object requestId) {
                         playingTrack = (Track) result;
-                        Timber.d(TAG + mTrackPlayer.getPlayerState().name());
-                        mTrackPlayer.playTrack(playingTrack.getId());
+                        Timber.d(TAG + trackPlayer.getPlayerState().name());
+                        trackPlayer.playTrack(playingTrack.getId());
+                        setButtonEnabled(mButtonPlayerPause, true);
                     }
 
                     @Override
@@ -157,18 +166,6 @@ public class MainActivity extends PlayerActivity implements BottomNavigationView
                 return false;
         }
         return false;
-    }
-
-
-    private void createPlayer() {
-        try {
-            doDestroyPlayer();
-            mTrackPlayer = new TrackPlayer(getApplication(), mDeezerConnect, new WifiAndMobileNetworkStateChecker());
-            mTrackPlayer.addPlayerListener(this);
-            setAttachedPlayer(mTrackPlayer);
-        } catch (TooManyPlayersExceptions | DeezerError e) {
-            handleError(e);
-        }
     }
 
     private void setupPlayerUI() {

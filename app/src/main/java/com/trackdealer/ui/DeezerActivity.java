@@ -1,13 +1,24 @@
 package com.trackdealer.ui;
 
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.deezer.sdk.player.PlayerWrapper;
+import com.deezer.sdk.model.Permissions;
+import com.deezer.sdk.network.connect.DeezerConnect;
+import com.deezer.sdk.network.connect.SessionStore;
+import com.deezer.sdk.network.connect.event.DialogListener;
+import com.deezer.sdk.network.request.event.DeezerError;
 import com.deezer.sdk.player.PlayerWrapper.RepeatMode;
+import com.deezer.sdk.player.TrackPlayer;
 import com.deezer.sdk.player.event.BufferState;
 import com.deezer.sdk.player.event.OnBufferErrorListener;
 import com.deezer.sdk.player.event.OnBufferProgressListener;
@@ -18,18 +29,20 @@ import com.deezer.sdk.player.event.OnPlayerStateChangeListener;
 import com.deezer.sdk.player.event.PlayerState;
 import com.deezer.sdk.player.exception.NotAllowedToPlayThatSongException;
 import com.deezer.sdk.player.exception.StreamLimitationException;
+import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
+import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
 import com.trackdealer.R;
-import com.trackdealer.base.BaseActivity;
 import com.trackdealer.models.TrackInfo;
+import com.trackdealer.utils.StaticUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
-public class PlayerActivity extends BaseActivity {
+public class DeezerActivity extends AppCompatActivity {
 
-    private final String TAG = "PlayerActivity";
+    private final String TAG = "DeezerActivity";
 
     private PlayerHandler mPlayerHandler = new PlayerHandler();
     private OnClickHandler mOnClickHandler = new OnClickHandler();
@@ -65,14 +78,28 @@ public class PlayerActivity extends BaseActivity {
     @Bind(R.id.text_track)
     TextView mTextTrack;
 
-    private PlayerWrapper mPlayer;
+
+    protected DeezerConnect mDeezerConnect = null;
+    protected TrackPlayer trackPlayer;
+    public static final String APP_ID = "250582";
+    protected static final String[] PERMISSIONS = new String[]{
+            Permissions.BASIC_ACCESS, Permissions.OFFLINE_ACCESS
+    };
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        establishDeezerConnect();
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.app_name);
+        }
+    }
 
     @Override
     public void setContentView(final int layoutResID) {
         super.setContentView(layoutResID);
-
         ButterKnife.bind(this);
-
         mButtonPlayerPause.setOnClickListener(mOnClickHandler);
         mButtonPlayerStop.setOnClickListener(mOnClickHandler);
         mButtonPlayerSkipForward.setOnClickListener(mOnClickHandler);
@@ -95,32 +122,116 @@ public class PlayerActivity extends BaseActivity {
         doDestroyPlayer();
     }
 
+    protected void establishDeezerConnect(){
+        Timber.d(TAG + " establishDeezerConnect() ");
+        mDeezerConnect = new DeezerConnect(this, APP_ID);
+        new SessionStore().restore(mDeezerConnect, this);
+    }
+
+    private void disconnectFromDeezer() {
+        if (mDeezerConnect != null) {
+            mDeezerConnect.logout(this);
+        }
+        new SessionStore().clear(this);
+    }
+
+    protected void connectToDeezer(){
+        SessionStore sessionStore = new SessionStore();
+        if (sessionStore.restore(mDeezerConnect, this)) {
+            Toast.makeText(this, "Уже залогинен в Deezer", Toast.LENGTH_LONG).show();
+        } else {
+            mDeezerConnect.authorize(this, PERMISSIONS, mDeezerDialogListener);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.d(TAG + " onResume() ");
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    }
+
+    /**
+     * Handle errors by displaying a toast and logging.
+     *
+     * @param exception the exception that occured while contacting Deezer services.
+     */
+    protected void handleError(final Exception exception) {
+        String message = exception.getMessage();
+        if (TextUtils.isEmpty(message)) {
+            message = exception.getClass().getName();
+        }
+
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(Color.RED);
+        toast.show();
+
+        Log.e("BaseActivityDee", "Exception occured " + exception.getClass().getName(), exception);
+    }
+
+    /**
+     * A listener for the Deezer Login Dialog
+     */
+    private DialogListener mDeezerDialogListener = new DialogListener() {
+
+        @Override
+        public void onComplete(final Bundle values) {
+            // store the current authentication info
+            SessionStore sessionStore = new SessionStore();
+            sessionStore.save(mDeezerConnect, getApplicationContext());
+            Toast.makeText(getApplicationContext(), "Вы залогинились в Deezer!", Toast.LENGTH_LONG).show();
+            recreatePlayer();
+        }
+
+        @Override
+        public void onException(final Exception exception) {
+            Toast.makeText(getApplicationContext(), R.string.deezer_error_during_login,
+                    Toast.LENGTH_LONG).show();
+        }
+
+
+        @Override
+        public void onCancel() {
+            Toast.makeText(getApplicationContext(), R.string.login_cancelled, Toast.LENGTH_LONG).show();
+        }
+    };
+
     /**
      * Will destroy player. Subclasses can override this hook.
      */
     protected void doDestroyPlayer() {
 
-        if (mPlayer == null) {
+        if (trackPlayer == null) {
             // No player, ignore
             return;
         }
 
-        if (mPlayer.getPlayerState() == PlayerState.RELEASED) {
+        if (trackPlayer.getPlayerState() == PlayerState.RELEASED) {
             // already released, ignore
             return;
         }
 
         // first, stop the player if it is not 
-        if (mPlayer.getPlayerState() != PlayerState.STOPPED) {
-            mPlayer.stop();
+        if (trackPlayer.getPlayerState() != PlayerState.STOPPED) {
+            trackPlayer.stop();
         }
 
         // then release it 
-        mPlayer.release();
+        trackPlayer.release();
     }
 
-    protected void setAttachedPlayer(final PlayerWrapper player) {
-        mPlayer = player;
+    protected TrackPlayer recreatePlayer() {
+        try {
+            doDestroyPlayer();
+            trackPlayer = new TrackPlayer(getApplication(), mDeezerConnect, new WifiAndMobileNetworkStateChecker());
+            setAttachedPlayer(trackPlayer);
+        } catch (TooManyPlayersExceptions | DeezerError e) {
+            handleError(e);
+        }
+        return trackPlayer;
+    }
+
+    protected void setAttachedPlayer(final TrackPlayer player) {
         player.addOnBufferErrorListener(mPlayerHandler);
         player.addOnBufferStateChangeListener(mPlayerHandler);
         player.addOnBufferProgressListener(mPlayerHandler);
@@ -129,7 +240,7 @@ public class PlayerActivity extends BaseActivity {
         player.addOnPlayerStateChangeListener(mPlayerHandler);
         player.addOnPlayerProgressListener(mPlayerHandler);
 
-        if (mPlayer.isAllowedToSeek()) {
+        if (trackPlayer.isAllowedToSeek()) {
             mSeekBar.setEnabled(true);
         }
     }
@@ -178,7 +289,7 @@ public class PlayerActivity extends BaseActivity {
     public void showPlayerProgress(final long timePosition) {
         if (!mIsUserSeeking) {
             mSeekBar.setProgress((int) timePosition / 1000);
-            String text = formatTime(timePosition);
+            String text = StaticUtils.formatTime(timePosition);
             mTextTime.setText(text);
         }
 
@@ -246,11 +357,11 @@ public class PlayerActivity extends BaseActivity {
      */
     public void showBufferProgress(final int position) {
         synchronized (this) {
-            if (mPlayer != null) {
+            if (trackPlayer != null) {
                 if (position > 0) {
-                    showTrackDuration(mPlayer.getTrackDuration());
+                    showTrackDuration(trackPlayer.getTrackDuration());
                 }
-                long progress = (position * mPlayer.getTrackDuration()) / 100;
+                long progress = (position * trackPlayer.getTrackDuration()) / 100;
                 mSeekBar.setSecondaryProgress((int) progress / 1000);
             }
         }
@@ -260,50 +371,13 @@ public class PlayerActivity extends BaseActivity {
      * @param trackLength
      */
     public void showTrackDuration(final long trackLength) {
-        String text = formatTime(trackLength);
+        String text = StaticUtils.formatTime(trackLength);
         mTextLength.setText(text);
         mSeekBar.setMax((int) trackLength / 1000);
     }
 
 
-    /**
-     * Formats a time.
-     *
-     * @param time the time (in seconds)
-     * @return the formatted time.
-     */
-    private static String formatTime(long time) {
-        time /= 1000;
-        long seconds = time % 60;
-        time /= 60;
-        long minutes = time % 60;
-        time /= 60;
-        long hours = time;
-        StringBuilder builder = new StringBuilder(8);
-        doubleDigit(builder, seconds);
-        builder.insert(0, ':');
-        if (hours == 0) {
-            builder.insert(0, minutes);
-        } else {
-            doubleDigit(builder, minutes);
-            builder.insert(0, ':');
-            builder.insert(0, hours);
-        }
-        return builder.toString();
-    }
 
-    /**
-     * Ensure double decimal representation of numbers.
-     *
-     * @param builder a builder where a number is gonna be inserted at beginning.
-     * @param value   the number value. If below 10 then a leading 0 is inserted.
-     */
-    private static void doubleDigit(final StringBuilder builder, final long value) {
-        builder.insert(0, value);
-        if (value < 10) {
-            builder.insert(0, '0');
-        }
-    }
 
     //////////////////////////////////////////////////////////////////////////////////////
     // Click handler 
@@ -314,13 +388,13 @@ public class PlayerActivity extends BaseActivity {
         @Override
         public void onClick(final View v) {
             if (v == mButtonPlayerPause) {
-                if (mPlayer.getPlayerState() == PlayerState.PLAYING) {
-                    mPlayer.pause();
+                if (trackPlayer.getPlayerState() == PlayerState.PLAYING) {
+                    trackPlayer.pause();
                 } else {
-                    mPlayer.play();
+                    trackPlayer.play();
                 }
             } else if (v == mButtonPlayerStop) {
-                mPlayer.stop();
+                trackPlayer.stop();
                 //setPlayerVisible(false);
             } else if (v == mButtonPlayerSkipForward) {
                 onSkipToNextTrack();
@@ -328,13 +402,13 @@ public class PlayerActivity extends BaseActivity {
                 onSkipToPreviousTrack();
             } else if (v == mButtonPlayerSeekBackward) {
                 try {
-                    mPlayer.seek(mPlayer.getPosition() - (10 * 1000));
+                    trackPlayer.seek(trackPlayer.getPosition() - (10 * 1000));
                 } catch (Exception e) {
                     handleError(e);
                 }
             } else if (v == mButtonPlayerSeekForward) {
                 try {
-                    mPlayer.seek(mPlayer.getPosition() + (10 * 1000));
+                    trackPlayer.seek(trackPlayer.getPosition() + (10 * 1000));
                 } catch (Exception e) {
                     handleError(e);
                 }
@@ -353,7 +427,7 @@ public class PlayerActivity extends BaseActivity {
     }
 
     protected void switchRepeatMode() {
-        RepeatMode current = mPlayer.getRepeatMode();
+        RepeatMode current = trackPlayer.getRepeatMode();
         RepeatMode next;
         String toast;
 
@@ -373,7 +447,7 @@ public class PlayerActivity extends BaseActivity {
                 break;
         }
 
-        mPlayer.setRepeatMode(next);
+        trackPlayer.setRepeatMode(next);
         Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
     }
 
@@ -424,7 +498,7 @@ public class PlayerActivity extends BaseActivity {
                 public void run() {
                     handleError(ex);
                     if (ex instanceof NotAllowedToPlayThatSongException) {
-                        mPlayer.skipToNextTrack();
+                        trackPlayer.skipToNextTrack();
                     } else if (ex instanceof StreamLimitationException) {
                         // Do nothing , 
                     } else {
@@ -467,5 +541,9 @@ public class PlayerActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    public DeezerConnect getmDeezerConnect() {
+        return mDeezerConnect;
     }
 }

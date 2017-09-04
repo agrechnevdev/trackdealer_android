@@ -8,18 +8,14 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.trackdealer.interfaces.IClickTrack;
 import com.trackdealer.R;
+import com.trackdealer.interfaces.IClickTrack;
 import com.trackdealer.models.TrackInfo;
-import com.trackdealer.utils.Prefs;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
 
 /**
  * Created by grechnev-av on 29.08.2017.
@@ -30,7 +26,6 @@ public class SearchTracksAdapter extends RecyclerView.Adapter<SearchTracksAdapte
     private ArrayList<TrackInfo> trackInfos;
     private Context context;
     private RecyclerView recyclerView;
-    private TrackInfo chosenTrackInfo;
     IClickTrack iClickTrack;
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -58,7 +53,6 @@ public class SearchTracksAdapter extends RecyclerView.Adapter<SearchTracksAdapte
         this.trackInfos = trackInfos;
         this.context = context;
         this.iClickTrack = iClickTrack;
-        this.chosenTrackInfo = Prefs.getTrackInfo(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE);
     }
 
     @Override

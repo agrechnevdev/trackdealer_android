@@ -12,15 +12,17 @@ public class TrackInfo {
     private String title;
     private String artist;
     private Integer duration;
+    private String coverImage;
 
     private Integer likes;
     private Integer dislikes;
 
-    public TrackInfo(Integer trackId, String title, String artist, Integer duration) {
+    public TrackInfo(Integer trackId, String title, String artist, Integer duration, String coverImage) {
         this.trackId = trackId;
         this.title = title;
         this.artist = artist;
         this.duration = duration;
+        this.coverImage = coverImage;
         likes = new Random().nextInt(10000);
         dislikes = new Random().nextInt(10000);
     }
@@ -80,5 +82,13 @@ public class TrackInfo {
 
     public void setDislikes(Integer dislikes) {
         this.dislikes = dislikes;
+    }
+
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
     }
 }

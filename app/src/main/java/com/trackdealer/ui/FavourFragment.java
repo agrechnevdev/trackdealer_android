@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,11 @@ import com.deezer.sdk.network.request.event.JsonRequestListener;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
-import com.trackdealer.base.BaseActivity;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.helpersUI.SearchTracksAdapter;
 import com.trackdealer.interfaces.IClickTrack;
 import com.trackdealer.models.TrackInfo;
+import com.trackdealer.net.FakeRestApi;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
@@ -43,7 +44,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
@@ -54,6 +57,8 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_LIST;
  */
 
 public class FavourFragment extends Fragment implements IClickTrack {
+
+    private final String TAG = "FavourFragment ";
 
     @Inject
     Retrofit retrofit;
@@ -83,7 +88,6 @@ public class FavourFragment extends Fragment implements IClickTrack {
 
     ArrayList<TrackInfo> trackList = new ArrayList<>();
 
-    ArrayList<Track> deezerTracks = new ArrayList<>();
     SearchTracksAdapter mTracksAdapter;
     DeezerConnect mDeezerConnect = null;
 
@@ -97,8 +101,7 @@ public class FavourFragment extends Fragment implements IClickTrack {
 
         compositeDisposable = new CompositeDisposable();
 
-        hideProgressBar();
-        setFavouriteSong(Prefs.getTrackInfo(getActivity().getApplicationContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE));
+        loadFavouriteSongStart();
 
         initSubscription();
 
@@ -109,13 +112,30 @@ public class FavourFragment extends Fragment implements IClickTrack {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mDeezerConnect = ((BaseActivity) context).getmDeezerConnect();
+        mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         compositeDisposable.dispose();
+    }
+
+    public void loadFavouriteSongStart() {
+        showProgressBar();
+        compositeDisposable.add(FakeRestApi.getFavouriteTrack(getActivity())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                        this::loadFavouriteSongSuccess,
+                        ex -> Timber.d(TAG + ex.getMessage()),
+                        this::hideProgressBar
+                ));
+    }
+
+    public void loadFavouriteSongSuccess(TrackInfo trackInfo) {
+        hideProgressBar();
+        setFavouriteSong(trackInfo);
     }
 
     public void setFavouriteSong(TrackInfo trackInfo) {
@@ -131,7 +151,7 @@ public class FavourFragment extends Fragment implements IClickTrack {
                 RxTextView.textChanges(textSearch)
                         .skip(1)
                         .debounce(500, TimeUnit.MILLISECONDS)
-                        .filter(text -> text != null && !text.toString().equals(""))
+                        .filter(text -> text != null && !TextUtils.isEmpty(text.toString()))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(text -> startSearch(text.toString()))
         );
@@ -150,9 +170,7 @@ public class FavourFragment extends Fragment implements IClickTrack {
                     @SuppressWarnings("unchecked")
                     @Override
                     public void onResult(final Object result, final Object requestId) {
-                        deezerTracks.clear();
-                        deezerTracks.addAll((List<Track>) result);
-                        trackList = StaticUtils.fromListTracks(deezerTracks);
+                        trackList = StaticUtils.fromListTracks((List<Track>) result);
 
                         showTrackList();
                         hideProgressBar();

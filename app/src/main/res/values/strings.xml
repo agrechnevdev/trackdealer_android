@@ -20,6 +20,7 @@
     <string name="chose_fav_song">Выбрать</string>
     <string name="log">Войти/Выйти</string>
 
+    <string name="your_chose">Твой выбор на этой неделе:</string>
     <string name="chose_song">Выберите любимую песню</string>
     <string name="chose_song_title">Подтверждение выбора</string>
     <string name="chose_song_message">Вы точно хотите выбрать эту песню любимой?</string>
