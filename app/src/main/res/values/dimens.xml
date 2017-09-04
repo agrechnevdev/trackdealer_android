@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+    <dimen name="button_main_width">320dp</dimen>
+    <dimen name="button_main_height">60dp</dimen>
+
+    <dimen name="button_reg_width">150dp</dimen>
+    <dimen name="button_reg_height">40dp</dimen>
+    <dimen name="button_reg_margin_bot">50dp</dimen>
+
+    <dimen name="dp1">1dp</dimen>
+    <dimen name="dp4">4dp</dimen>
+    <dimen name="dp10">10dp</dimen>
+    <dimen name="dp16">16dp</dimen>
+    <dimen name="dp25">25dp</dimen>
+    <dimen name="dp40">40dp</dimen>
+    <dimen name="dp60">60dp</dimen>
+
+    <dimen name="horizontal_margin">16dp</dimen>
+    <dimen name="vertical_margin">16dp</dimen>
+
+    <dimen name="horizontal_margin_x2">32dp</dimen>
+    <dimen name="vertical_margin_x2">32dp</dimen>
+
+    <dimen name="round_corner_20dp">20dp</dimen>
+
+    <dimen name="design_bottom_navigation_text_size" tools:override="true">12sp</dimen>
+    <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
+
+    <dimen name="logo_width">425dp</dimen>
+    <dimen name="logo_height">151dp</dimen>
+    <dimen name="logo_margin_top">100dp</dimen>
+
+    <dimen name="error_margin_bot">12dp</dimen>
+    <dimen name="height_1dp">1dp</dimen>
+
+    <dimen name="text_size_big">32sp</dimen>
+    <dimen name="text_size_large">24sp</dimen>
+    <dimen name="text_size_medium">20sp</dimen>
+    <dimen name="text_size_main">16sp</dimen>
+    <dimen name="text_size_small_10">10sp</dimen>
+    <dimen name="text_size_small_12">12sp</dimen>
+    <dimen name="text_size_small_14">14sp</dimen>
+
+    <dimen name="text_digit_width">40dp</dimen>
+
+    <dimen name="nav_header_height">160dp</dimen>
+
+    <dimen name="button_small_width">140dp</dimen>
+    <dimen name="button_small_height">40dp</dimen>
+
+
+    <dimen name="margin_types_cards">10dp</dimen>
+    <dimen name="svg_image_standart">24dp</dimen>
+</resources>

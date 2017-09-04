@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">TrackDealer</string>
+    <!-- Messages -->
+    <string name="error_length_4">Длина должна быть больше 4 символов</string>
+    <string name="error_valid_regex">Можно вводить только цифры и латинские буквы</string>
+    <string name="error_server_internal">Внутренняя ошибка сервера</string>
+    <string name="error_request_failure">Упс, что-то пошло не так</string>
+
+    <string name="challenge_accepted">Задание принят!</string>
+    <string name="challenge_added">Новое задание добавлено!</string>
+
+    <!-- Text -->
+
+    <string name="singin">Войти</string>
+    <string name="register">Регистрация</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+
+    <string name="list">Список</string>
+    <string name="chose_fav_song">Выбрать</string>
+    <string name="log">Войти/Выйти</string>
+
+    <string name="chose_song">Выберите любимую песню</string>
+    <string name="chose_song_title">Подтверждение выбора</string>
+    <string name="chose_song_message">Вы точно хотите выбрать эту песню любимой?</string>
+
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+
+    <string name="empty"></string>
+    <string name="default_duration">0:00</string>
+    <string name="logout">Logout</string>
+    <string name="visualizer_wf">Waveform</string>
+    <string name="visualizer_fft">FFT</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="unloggedRadios">Radios (without connection)</string>
+    <string name="no_results">No results found</string>
+    <string name="deezer_error_during_login">Deezer error during login</string>
+    <string name="deezer_too_many_skips">You have skipped too many tracks in this radio. Skip will be disabled for a while</string>
+    <string name="invalid_credentials">Invalid credentials</string>
+    <string name="login_cancelled">Login cancelled</string>
+    <string name="ui_custom_track_list">This activity plays a custom list of tracks</string>
+    <string name="ui_user_flow">This activity plays a custom list of tracks</string>
+    <string name="bass">Bass Freqs.</string>
+    <string name="treble">Treble Freqs.</string>
+</resources>

@@ -1,0 +1,130 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarStyle">@style/DarkTextActionBar</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="actionBarTheme">@style/ActionBarTheme</item>
+    </style>
+
+    <style name="DarkTextActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
+        <item name="titleTextStyle">@style/DarkTitleTextStyle</item>
+    </style>
+
+    <style name="DarkTitleTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+
+    <style name="ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/textColorPrimary</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="ButtonColoredAccent" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textColor">@drawable/selector_main_button_text_color</item>
+
+        <!--<item name="android:background">@drawable/main_button_selector</item>-->
+        <!--<item name="android:insetBottom">10dp</item>-->
+        <!--<item name="android:insetRight">10dp</item>-->
+        <!--<item name="android:insetLeft">10dp</item>-->
+        <!--<item name="android:insetTop">10dp</item>-->
+
+        <!--<item name="android:textAppearance">@style/TextAppearance.AppCompat.Widget.Button.Colored</item>-->
+    </style>
+
+
+    <style name="ButtonUncolored" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:color">@color/colorPrimaryDark</item>
+    </style>
+
+
+    <style name="ButtonColoredAccentBorderless" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textColor">@color/colorAccent800</item>
+    </style>
+
+    <!--<style name="ButtonRoundCorner" parent="ButtonColoredAccent">-->
+    <!--<item name="android:bottomLeftRadius">@dimen/round_corner_20dp</item>-->
+    <!--<item name="android:bottomRightRadius">@dimen/round_corner_20dp</item>-->
+    <!--<item name="android:topLeftRadius">@dimen/round_corner_20dp</item>-->
+    <!--<item name="android:topRightRadius">@dimen/round_corner_20dp</item>-->
+    <!--</style>-->
+
+
+    <style name="TextInputLayoutAccent" parent="Widget.Design.TextInputLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <!-- цвет подсказки, когда над текстом -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:layout_marginLeft">@dimen/horizontal_margin</item>
+        <item name="android:layout_marginRight">@dimen/horizontal_margin</item>
+        <!-- цвет подсказки, когда вместо текста -->
+        <item name="android:textColorHint">@color/colorAccent</item>
+    </style>
+
+    <style name="TextInputLayoutError" parent="TextInputLayoutAccent">
+        <item name="errorTextAppearance">@style/Error_Appearance</item>
+    </style>
+
+    <style name="TextInputLayoutCommon" parent="TextInputLayoutAccent">
+        <item name="errorTextAppearance">@style/CommonAppearance</item>
+    </style>
+
+    <style name="Error_Appearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorErrorInput</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="CommonAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="EditTextFocusableFalse" parent="EditTextStyle">
+        <item name="android:focusable">false</item>
+        <item name="android:focusableInTouchMode">false</item>
+    </style>
+
+    <style name="EditTextStyle">
+        <item name="android:theme">@style/EditTextAccent</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+
+    <style name="EditTextAccent">
+        <!-- цвет линии, когда без фокуса -->
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <!-- цвет линии, когда в фокусе -->
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="CheckBoxRight">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
+    </style>
+
+    <style name="SmallProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">@dimen/horizontal_margin</item>
+        <item name="android:layout_marginTop">@dimen/vertical_margin_x2</item>
+        <item name="android:indeterminate">true</item>
+        <item name="android:visibility">gone</item>
+    </style>
+</resources>

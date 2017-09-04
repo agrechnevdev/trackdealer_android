@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_chart_lay_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/item_chart_artist"
+        android:layout_marginTop="@dimen/vertical_margin">
+
+        <ImageView
+            android:id="@+id/item_chart_image_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_thumb_down" />
+
+        <TextView
+            android:id="@+id/item_chart_text_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp4"
+            android:layout_toRightOf="@id/item_chart_image_down"
+            android:text="1000" />
+
+        <ImageView
+            android:id="@+id/item_chart_image_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp10"
+            android:layout_toRightOf="@id/item_chart_text_down"
+            app:srcCompat="@drawable/ic_thumb_up" />
+
+        <TextView
+            android:id="@+id/item_chart_text_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp4"
+            android:layout_toRightOf="@id/item_chart_image_up"
+            android:text="1000" />
+
+    </RelativeLayout>
+</RelativeLayout>

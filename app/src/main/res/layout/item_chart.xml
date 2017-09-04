@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_chart_lay_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/vertical_margin"
+    android:paddingTop="@dimen/vertical_margin"
+    android:background="@drawable/selector_background_blue"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin">
+
+        <ImageView
+            android:id="@+id/item_chart_image_play"
+            android:layout_width="@dimen/dp60"
+            android:layout_height="@dimen/dp60"
+            android:layout_centerVertical="true"
+            android:alpha="0.3"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_play"/>
+
+        <TextView
+            android:id="@+id/item_chart_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="3:00"
+            android:textColor="@color/textColorPrimary" />
+
+        <TextView
+            android:id="@+id/item_chart_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp4"
+            android:layout_marginRight="@dimen/dp10"
+            android:layout_toLeftOf="@id/item_chart_duration"
+            android:text="Название"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/text_size_medium" />
+
+        <TextView
+            android:id="@+id/item_chart_artist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_chart_title"
+            android:layout_marginRight="@dimen/dp10"
+            android:layout_toLeftOf="@id/item_chart_duration"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Артист"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="@dimen/text_size_main" />
+
+        <include
+            layout="@layout/layout_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_chart_artist" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
