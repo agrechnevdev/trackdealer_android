@@ -32,15 +32,18 @@ import com.deezer.sdk.player.exception.StreamLimitationException;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
 import com.trackdealer.R;
+import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.StaticUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
-public class DeezerActivity extends AppCompatActivity {
+public class DeezerActivity extends AppCompatActivity implements IConnectDeezer {
 
     private final String TAG = "DeezerActivity";
 
@@ -94,6 +97,19 @@ public class DeezerActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.app_name);
         }
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -122,23 +138,23 @@ public class DeezerActivity extends AppCompatActivity {
         doDestroyPlayer();
     }
 
-    protected void establishDeezerConnect(){
+    protected void establishDeezerConnect() {
         Timber.d(TAG + " establishDeezerConnect() ");
         mDeezerConnect = new DeezerConnect(this, APP_ID);
         new SessionStore().restore(mDeezerConnect, this);
     }
 
-    private void disconnectFromDeezer() {
+    public void disconnectFromDeezer() {
         if (mDeezerConnect != null) {
             mDeezerConnect.logout(this);
         }
         new SessionStore().clear(this);
     }
 
-    protected void connectToDeezer(){
+    public void connectToDeezer() {
         SessionStore sessionStore = new SessionStore();
         if (sessionStore.restore(mDeezerConnect, this)) {
-            Toast.makeText(this, "Уже залогинен в Deezer", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Уже залогинен вDeezer ", Toast.LENGTH_LONG).show();
         } else {
             mDeezerConnect.authorize(this, PERMISSIONS, mDeezerDialogListener);
         }
@@ -181,6 +197,8 @@ public class DeezerActivity extends AppCompatActivity {
             sessionStore.save(mDeezerConnect, getApplicationContext());
             Toast.makeText(getApplicationContext(), "Вы залогинились в Deezer!", Toast.LENGTH_LONG).show();
             recreatePlayer();
+
+            EventBus.getDefault().post(mDeezerConnect);
         }
 
         @Override
@@ -375,8 +393,6 @@ public class DeezerActivity extends AppCompatActivity {
         mTextLength.setText(text);
         mSeekBar.setMax((int) trackLength / 1000);
     }
-
-
 
 
     //////////////////////////////////////////////////////////////////////////////////////

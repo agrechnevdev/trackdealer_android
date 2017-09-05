@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<View xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/divider"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/height_1dp"
+    android:layout_marginLeft="@dimen/dp16"
+    android:layout_marginRight="@dimen/dp16"
+    android:background="@color/colorDivider" />
+
+    <!--Thickness: 1dp--><!--Opacity: 12% black or 12% white--><!--https://material.google.com/components/dividers.html--><!--android:background="@color/material_grey_200"-->

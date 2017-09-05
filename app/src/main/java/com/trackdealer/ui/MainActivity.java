@@ -4,11 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.deezer.sdk.model.PlayableEntity;
 import com.deezer.sdk.model.Track;
-import com.deezer.sdk.network.connect.SessionStore;
+import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.AsyncDeezerTask;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
@@ -20,9 +19,13 @@ import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
 import com.trackdealer.interfaces.IChoseTrack;
+import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.Prefs;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -53,6 +56,9 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     CompositeDisposable compositeDisposable;
     ChartFragment chartFragment;
     FavourFragment favourFragment;
+    ProfileFragment profileFragment;
+
+    IConnected iConnected;
 
     Track playingTrack;
 
@@ -78,6 +84,8 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
         chartFragment = new ChartFragment();
         favourFragment = new FavourFragment();
+        profileFragment = new ProfileFragment();
+        iConnected = profileFragment;
 
         if(Prefs.getTrackInfo(this, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE) != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
@@ -85,6 +93,11 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
             getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, favourFragment).commit();
         }
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(DeezerConnect event) {
+        iConnected.connectSuccess(event);
+    };
 
     @Override
     protected void onResume() {
@@ -144,6 +157,8 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         task.execute(request);
     }
 
+
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -157,12 +172,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
                 return false;
 
             case R.id.base_menu_logout:
-                SessionStore sessionStore = new SessionStore();
-                if (sessionStore.restore(mDeezerConnect, this)) {
-                    Toast.makeText(this, "Уже залогинен в Deezer", Toast.LENGTH_LONG).show();
-                } else {
-                    connectToDeezer();
-                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, profileFragment).commit();
                 return false;
         }
         return false;
