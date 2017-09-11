@@ -30,18 +30,14 @@ public class SearchTracksAdapter extends RecyclerView.Adapter<SearchTracksAdapte
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.item_chart_lay_main)
+        @Bind(R.id.item_song_lay_main)
         RelativeLayout relLayMain;
-        @Bind(R.id.item_chart_title)
+        @Bind(R.id.item_song_title)
         TextView title;
-        @Bind(R.id.item_chart_artist)
+        @Bind(R.id.item_song_artist)
         TextView artist;
-        @Bind(R.id.item_chart_duration)
+        @Bind(R.id.item_song_duration)
         TextView duration;
-        @Bind(R.id.item_chart_text_down)
-        TextView textDown;
-        @Bind(R.id.item_chart_text_up)
-        TextView textUp;
 
         ViewHolder(View v) {
             super(v);
@@ -59,7 +55,7 @@ public class SearchTracksAdapter extends RecyclerView.Adapter<SearchTracksAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent,
                                          int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_chart, parent, false);
+                .inflate(R.layout.item_song, parent, false);
         ViewHolder vh = new ViewHolder(v);
         vh.relLayMain.setOnClickListener(view -> iClickTrack.onClickTrack(trackInfos.get(vh.getAdapterPosition())));
         return vh;
@@ -71,8 +67,6 @@ public class SearchTracksAdapter extends RecyclerView.Adapter<SearchTracksAdapte
         holder.title.setText(trackInfo.getTitle());
         holder.artist.setText(trackInfo.getArtist());
         holder.duration.setText(trackInfo.getDuration());
-        holder.textDown.setText(trackInfo.getDislikes().toString());
-        holder.textUp.setText(trackInfo.getLikes().toString());
     }
 
     @Override

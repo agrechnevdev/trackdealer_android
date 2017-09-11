@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deezer.sdk.model.Permissions;
+import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.connect.SessionStore;
 import com.deezer.sdk.network.connect.event.DialogListener;
@@ -38,6 +39,8 @@ import com.trackdealer.utils.StaticUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -45,7 +48,7 @@ import timber.log.Timber;
 
 public class DeezerActivity extends AppCompatActivity implements IConnectDeezer {
 
-    private final String TAG = "DeezerActivity";
+    private final String TAG = "DeezerActivity ";
 
     private PlayerHandler mPlayerHandler = new PlayerHandler();
     private OnClickHandler mOnClickHandler = new OnClickHandler();
@@ -69,7 +72,6 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
     @Bind(R.id.seek_progress)
     SeekBar mSeekBar;
 
-    private boolean mIsUserSeeking = false;
 
     @Bind(R.id.text_time)
     TextView mTextTime;
@@ -80,7 +82,10 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
     TextView mTextArtist;
     @Bind(R.id.text_track)
     TextView mTextTrack;
-
+//    @Bind(R.id.text_position)
+//    TextView mTextPos;
+    protected Track playingTrack;
+    protected List<TrackInfo> trackList;
 
     protected DeezerConnect mDeezerConnect = null;
     protected TrackPlayer trackPlayer;
@@ -97,7 +102,6 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.app_name);
         }
-
     }
 
     @Override
@@ -107,9 +111,33 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.d(TAG + " onResume() ");
+//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Timber.d(TAG + " onPause() ");
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Timber.d(TAG + " onDestroy() ");
+        doDestroyPlayer();
+    }
+
+    public void setTrackList(List<TrackInfo> trackList){
+        this.trackList = trackList;
     }
 
     @Override
@@ -123,19 +151,6 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
         mButtonPlayerSeekForward.setOnClickListener(mOnClickHandler);
         mButtonPlayerSeekBackward.setOnClickListener(mOnClickHandler);
         mButtonPlayerRepeat.setOnClickListener(mOnClickHandler);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Timber.d(TAG + " onPause() ");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Timber.d(TAG + " onDestroy() ");
-        doDestroyPlayer();
     }
 
     protected void establishDeezerConnect() {
@@ -158,13 +173,6 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
         } else {
             mDeezerConnect.authorize(this, PERMISSIONS, mDeezerDialogListener);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Timber.d(TAG + " onResume() ");
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
     }
 
     /**
@@ -223,17 +231,14 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
             // No player, ignore
             return;
         }
-
         if (trackPlayer.getPlayerState() == PlayerState.RELEASED) {
             // already released, ignore
             return;
         }
-
         // first, stop the player if it is not 
         if (trackPlayer.getPlayerState() != PlayerState.STOPPED) {
             trackPlayer.stop();
         }
-
         // then release it 
         trackPlayer.release();
     }
@@ -253,17 +258,15 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
         player.addOnBufferErrorListener(mPlayerHandler);
         player.addOnBufferStateChangeListener(mPlayerHandler);
         player.addOnBufferProgressListener(mPlayerHandler);
-
         player.addOnPlayerErrorListener(mPlayerHandler);
         player.addOnPlayerStateChangeListener(mPlayerHandler);
         player.addOnPlayerProgressListener(mPlayerHandler);
-
         if (trackPlayer.isAllowedToSeek()) {
             mSeekBar.setEnabled(true);
         }
     }
 
-    protected void displayTrackInfo(final TrackInfo trackInfo) {
+    protected void displayTrackInfo(final TrackInfo trackInfo, Integer pos) {
         // artist name
         if ((trackInfo.getArtist() == null) || (trackInfo.getArtist() == null)) {
             mTextArtist.setVisibility(View.GONE);
@@ -279,6 +282,13 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
             mTextTrack.setVisibility(View.VISIBLE);
             mTextTrack.setText(trackInfo.getTitle());
         }
+
+//        if(pos == null){
+//            mTextPos.setVisibility(View.GONE);
+//        } else {
+//            mTextPos.setVisibility(View.VISIBLE);
+//            mTextPos.setText(Integer.toString(pos));
+//        }
     }
 
     /**
@@ -305,12 +315,9 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
      * Displays the current progression of the playback
      */
     public void showPlayerProgress(final long timePosition) {
-        if (!mIsUserSeeking) {
-            mSeekBar.setProgress((int) timePosition / 1000);
-            String text = StaticUtils.formatTime(timePosition);
-            mTextTime.setText(text);
-        }
-
+        mSeekBar.setProgress((int) timePosition / 1000);
+        String text = StaticUtils.formatTime(timePosition);
+        mTextTime.setText(text);
         mSeekBar.setEnabled(false);
     }
 
@@ -486,76 +493,50 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
 
         @Override
         public void onBufferError(final Exception ex, final double percent) {
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    handleError(ex);
-                }
-            });
+            Timber.d(TAG + "onBufferError");
+            runOnUiThread(() -> handleError(ex));
         }
 
         @Override
         public void onBufferStateChange(final BufferState state, final double percent) {
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    showBufferProgress((int) Math.round(percent));
-                }
-            });
+            Timber.d(TAG + "onBufferStateChange " + state.name());
+            runOnUiThread(() -> showBufferProgress((int) Math.round(percent)));
         }
 
         @Override
         public void onPlayerError(final Exception ex, final long timePosition) {
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    handleError(ex);
-                    if (ex instanceof NotAllowedToPlayThatSongException) {
-                        trackPlayer.skipToNextTrack();
-                    } else if (ex instanceof StreamLimitationException) {
-                        // Do nothing , 
-                    } else {
-                        finish();
-                    }
+            Timber.d(TAG + "onPlayerError");
+            runOnUiThread(() -> {
+                handleError(ex);
+                if (ex instanceof NotAllowedToPlayThatSongException) {
+                    trackPlayer.skipToNextTrack();
+                } else if (ex instanceof StreamLimitationException) {
+                    // Do nothing ,
+                } else {
+                    finish();
                 }
             });
         }
 
         @Override
         public void onPlayerStateChange(final PlayerState state, final long timePosition) {
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    showPlayerState(state);
-                    showPlayerProgress(timePosition);
-                }
+            Timber.d(TAG + "onPlayerStateChange " + state.name());
+            runOnUiThread(() -> {
+                showPlayerState(state);
+                showPlayerProgress(timePosition);
             });
         }
 
         @Override
         public void onBufferProgress(final double percent) {
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    showBufferProgress((int) Math.round(percent));
-                }
-            });
+            Timber.d(TAG + "onBufferProgress " + percent);
+            runOnUiThread(() -> showBufferProgress((int) Math.round(percent)));
         }
 
         @Override
         public void onPlayerProgress(final long timePosition) {
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    showPlayerProgress(timePosition);
-                }
-            });
+            Timber.d(TAG + "onPlayerProgress " + timePosition);
+            runOnUiThread(() -> showPlayerProgress(timePosition));
         }
     }
 

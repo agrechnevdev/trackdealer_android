@@ -14,6 +14,7 @@ import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.ChartAdapter;
 import com.trackdealer.interfaces.IChoseTrack;
+import com.trackdealer.interfaces.IProvideTrackList;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.FakeRestApi;
 import com.trackdealer.net.Restapi;
@@ -52,6 +53,7 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     ChartAdapter mTracksAdapter;
 
     IChoseTrack iChoseTrack;
+    IProvideTrackList iProvideTrackList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         recyclerView.setLayoutManager(llm);
         mTracksAdapter = new ChartAdapter(trackList, getActivity().getApplicationContext(), iChoseTrack);
         recyclerView.setAdapter(mTracksAdapter);
+//        recyclerView.addItemDecoration(new SpacesItemDecorator(20));
 
         swipeLay.setOnRefreshListener(this);
         swipeLay.setColorSchemeResources(R.color.colorAccent);
@@ -97,6 +100,7 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void loadTrackListSuccess(ArrayList<TrackInfo> list) {
         swipeLay.setRefreshing(false);
         trackList.addAll(list);
+        iProvideTrackList.provideTrackList(list);
         if (mTracksAdapter != null)
             mTracksAdapter.notifyDataSetChanged();
     }
@@ -105,6 +109,7 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onAttach(Context context) {
         super.onAttach(context);
         iChoseTrack = (IChoseTrack) context;
+        iProvideTrackList = (IProvideTrackList) context;
     }
 
     @Override

@@ -18,14 +18,16 @@ import com.deezer.sdk.player.event.PlayerWrapperListener;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
+import com.trackdealer.interfaces.IProvideTrackList;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
-import com.trackdealer.utils.Prefs;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -35,14 +37,11 @@ import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
-
 /**
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, PlayerWrapperListener, IChoseTrack {
+public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, PlayerWrapperListener, IChoseTrack, IProvideTrackList {
 
     private final String TAG = "MainActivity ";
 
@@ -59,8 +58,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     ProfileFragment profileFragment;
 
     IConnected iConnected;
-
-    Track playingTrack;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -87,17 +84,18 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         profileFragment = new ProfileFragment();
         iConnected = profileFragment;
 
-        if(Prefs.getTrackInfo(this, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE) != null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
-        } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, favourFragment).commit();
-        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
+//        if(Prefs.getString(this, SHARED_FILENAME_TRACK, SHARED_KEY_FIRST_TIME).equals("")) {
+//          startActivity(new Intent(this, TutorialActivity.class));
+//        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(DeezerConnect event) {
         iConnected.connectSuccess(event);
-    };
+    }
+
+    ;
 
     @Override
     protected void onResume() {
@@ -112,8 +110,9 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         compositeDisposable.dispose();
     }
 
+
     @Override
-    public void choseTrackForPlay(TrackInfo trackInfo) {
+    public void choseTrackForPlay(TrackInfo trackInfo, Integer pos) {
         if (playingTrack != null && playingTrack.getId() == trackInfo.getTrackId()) {
             if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
                 trackPlayer.pause();
@@ -124,56 +123,72 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         } else {
             if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
                 trackPlayer.stop();
-            displayTrackInfo(trackInfo);
+            displayTrackInfo(trackInfo, pos);
             setButtonEnabled(mButtonPlayerPause, false);
             setPlayerVisible(true);
             loadSong(trackInfo);
         }
     }
 
+    @Override
+    public void provideTrackList(List<TrackInfo> trackInfoList) {
+        trackList = trackInfoList;
+    }
+
+    public void playNextTrack() {
+        for (int i = 0; i < trackList.size(); i++) {
+            if (trackList.get(i).getTrackId() == playingTrack.getId()) {
+                if (i + 1 < trackList.size()) {
+                    choseTrackForPlay(trackList.get(i + 1), i + 1);
+                    break;
+                } else {
+                    setButtonEnabled(mButtonPlayerPause, false);
+                    break;
+                }
+            }
+        }
+    }
+
     public void loadSong(TrackInfo trackInfo) {
         DeezerRequest request = DeezerRequestFactory.requestTrack(trackInfo.getTrackId());
         AsyncDeezerTask task = new AsyncDeezerTask(mDeezerConnect, new JsonRequestListener() {
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    public void onResult(final Object result, final Object requestId) {
-                        playingTrack = (Track) result;
-                        Timber.d(TAG + trackPlayer.getPlayerState().name());
-                        trackPlayer.playTrack(playingTrack.getId());
-                        setButtonEnabled(mButtonPlayerPause, true);
-                    }
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onResult(final Object result, final Object requestId) {
+                playingTrack = (Track) result;
+                Timber.d(TAG + trackPlayer.getPlayerState().name());
+                trackPlayer.playTrack(playingTrack.getId());
+                setButtonEnabled(mButtonPlayerPause, true);
+            }
 
-                    @Override
-                    public void onUnparsedResult(final String response, final Object requestId) {
-                        handleError(new DeezerError("Unparsed reponse"));
-                    }
+            @Override
+            public void onUnparsedResult(final String response, final Object requestId) {
+                handleError(new DeezerError("Unparsed reponse"));
+            }
 
-                    @Override
-                    public void onException(final Exception exception,
-                                            final Object requestId) {
-                        handleError(exception);
-                    }
-                });
+            @Override
+            public void onException(final Exception exception,
+                                    final Object requestId) {
+                handleError(exception);
+            }
+        });
         task.execute(request);
     }
-
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-
             case R.id.base_menu_list:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
                 return true;
 
             case R.id.base_menu_chose_song:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, favourFragment).commit();
-                return false;
+                return true;
 
             case R.id.base_menu_logout:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, profileFragment).commit();
-                return false;
+                return true;
         }
         return false;
     }
@@ -196,7 +211,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Override
     public void onTrackEnded(PlayableEntity playableEntity) {
-
+        playNextTrack();
     }
 
     @Override

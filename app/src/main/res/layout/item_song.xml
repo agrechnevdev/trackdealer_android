@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_song_lay_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selectable_item_background"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/horizontal_margin"
+    android:paddingRight="@dimen/horizontal_margin"
+    android:paddingTop="@dimen/vertical_margin">
+
+    <RelativeLayout
+        android:id="@+id/item_song_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/vertical_margin">
+
+        <ImageView
+            android:id="@+id/item_song_image_play"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/subbuffer" />
+
+        <TextView
+            android:id="@+id/item_song_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="3:00"
+            android:textColor="@color/textColorPrimary" />
+
+        <TextView
+            android:id="@+id/item_song_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp4"
+            android:layout_marginLeft="@dimen/dp10"
+            android:layout_marginRight="@dimen/dp10"
+            android:layout_toLeftOf="@id/item_song_duration"
+            android:layout_toRightOf="@id/item_song_image_play"
+            android:text="Название"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/text_size_main" />
+
+        <TextView
+            android:id="@+id/item_song_artist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_song_title"
+            android:layout_marginLeft="@dimen/dp10"
+            android:layout_marginRight="@dimen/dp10"
+            android:layout_toLeftOf="@id/item_song_duration"
+            android:layout_toRightOf="@id/item_song_image_play"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="Артист"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="@dimen/text_size_small_12" />
+    </RelativeLayout>
+
+    <include
+        layout="@layout/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_1dp"
+        android:layout_below="@id/item_song_content"/>
+
+</RelativeLayout>

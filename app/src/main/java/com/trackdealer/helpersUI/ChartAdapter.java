@@ -38,6 +38,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+//        @Bind(R.id.item_chart_text_position)
+//        TextView textPosition;
         @Bind(R.id.item_chart_image_play)
         ImageView artistImage;
         @Bind(R.id.item_chart_lay_main)
@@ -73,7 +75,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
                 .inflate(R.layout.item_chart, parent, false);
         ViewHolder vh = new ViewHolder(v);
         vh.relLayMain.setOnClickListener(view -> {
-            iLoadTrack.choseTrackForPlay(trackInfos.get(vh.getAdapterPosition()));
+            iLoadTrack.choseTrackForPlay(trackInfos.get(vh.getAdapterPosition()), vh.getAdapterPosition()+1);
         });
         return vh;
     }
@@ -86,6 +88,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         holder.duration.setText(trackInfo.getDuration());
         holder.textDown.setText(trackInfo.getDislikes().toString());
         holder.textUp.setText(trackInfo.getLikes().toString());
+//        holder.textPosition.setText(Integer.toString(position+1));
         Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
     }
 

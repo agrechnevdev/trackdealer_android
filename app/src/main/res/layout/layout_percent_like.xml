@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/percent_like_lay_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/percent_like_lay_dislike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/vertical_margin_x2">
+
+        <ImageView
+            android:id="@+id/percent_like_image_dislike"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:srcCompat="@drawable/ic_thumb_down" />
+
+        <TextView
+            android:id="@+id/percent_like_text_dislike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/percent_like_image_dislike"
+            android:text="1000"
+            android:textSize="@dimen/text_size_main"
+            android:textColor="@color/colorAccent" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/percent_like_lay_like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/vertical_margin_x2">
+
+        <TextView
+            android:id="@+id/percent_like_text_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1000"
+            android:textSize="@dimen/text_size_main"
+            android:textColor="@color/colorOrange" />
+
+        <ImageView
+            android:id="@+id/percent_like_image_like"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/percent_like_text_like"
+            app:srcCompat="@drawable/ic_thumb_up" />
+
+    </RelativeLayout>
+
+    <SeekBar
+        android:id="@+id/percent_like_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginRight="@dimen/dp10"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_toRightOf="@id/percent_like_lay_dislike"
+        android:layout_toLeftOf="@id/percent_like_lay_like"
+        android:layout_centerVertical="true"
+        android:progressDrawable="@drawable/selector_seekbar_like"
+        android:thumb="@drawable/thumb"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        />
+
+</RelativeLayout>

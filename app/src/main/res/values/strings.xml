@@ -16,19 +16,22 @@
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
 
-    <string name="list">Список</string>
-    <string name="chose_fav_song">Выбрать</string>
-    <string name="log">Войти/Выйти</string>
+    <string name="chart">Плейлист</string>
+    <string name="chose_fav_song">Твой выбор</string>
+    <string name="profile">Профиль</string>
 
     <string name="your_chose">Твой выбор на этой неделе:</string>
+    <string name="fav_song_empty_message">Ты еще не выбрал любимую песню? Кликай сюда!</string>
     <string name="chose_song">Выберите любимую песню</string>
     <string name="chose_song_title">Подтверждение выбора</string>
-    <string name="chose_song_message">Вы точно хотите выбрать эту песню любимой?</string>
+    <string name="chose_song_message">Вы точно хотите выбрать эту песню любимой?\n\nПредыдущая песня будет удалена из чарта, и информация по ней будет утеряна</string>
+
+    <string name="rechose_song_message">Хотите выбрать другую песню?</string>
+
     <string name="deezer_account_login">Подключить аккаунт Deezer</string>
     <string name="deezer_account_info">Подключение к Deezer c премиум аккаунтом позволит Вам прослушивать треки полностью и добавлять их в свой плейлист</string>
     <string name="deezer_already_login">Вы уже подключили аккаунт Deezer!</string>
     <string name="deezer_already_login_account_info">Вам доступны для прослушивания полные треки и функции плейлиста</string>
-
 
     <string name="yes">Да</string>
     <string name="no">Нет</string>

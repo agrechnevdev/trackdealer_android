@@ -13,16 +13,15 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="?android:attr/windowBackground"
-        app:itemIconTint="@color/colorPrimaryDark"
-        app:itemTextColor="@color/colorPrimaryDark"
+        app:itemIconTint="@color/selector_item_menu_chose"
+        app:itemTextColor="@color/selector_item_menu_chose"
         app:menu="@menu/base_menu" />
 
     <include
         android:id="@+id/player"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         layout="@layout/player" />
 
 

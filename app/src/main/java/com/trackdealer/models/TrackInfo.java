@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class TrackInfo {
 
-    private Integer trackId;
+    private long trackId;
     private String title;
     private String artist;
     private Integer duration;
@@ -17,7 +17,7 @@ public class TrackInfo {
     private Integer likes;
     private Integer dislikes;
 
-    public TrackInfo(Integer trackId, String title, String artist, Integer duration, String coverImage) {
+    public TrackInfo(long trackId, String title, String artist, Integer duration, String coverImage) {
         this.trackId = trackId;
         this.title = title;
         this.artist = artist;
@@ -27,11 +27,11 @@ public class TrackInfo {
         dislikes = new Random().nextInt(10000);
     }
 
-    public Integer getTrackId() {
+    public long getTrackId() {
         return trackId;
     }
 
-    public void setTrackId(Integer trackId) {
+    public void setTrackId(long trackId) {
         this.trackId = trackId;
     }
 
