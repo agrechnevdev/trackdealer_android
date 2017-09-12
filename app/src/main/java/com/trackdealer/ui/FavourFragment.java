@@ -54,8 +54,10 @@ import retrofit2.Retrofit;
 import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_LIST;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 /**
  * Created by grechnev-av on 31.08.2017.
@@ -250,6 +252,7 @@ public class FavourFragment extends Fragment implements IClickTrack {
                     R.string.yes, (dialog, id) -> {
                 hideKeyboard();
                 setFavouriteSong(trackInfo);
+                trackInfo.setUser(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER));
                 Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
                 ArrayList<TrackInfo> list = Prefs.getTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
                 list.add(trackInfo);

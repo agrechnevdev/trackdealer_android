@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
@@ -27,9 +30,14 @@ public class FakeRestApi {
 
     public static Observable<TrackInfo> getFavouriteTrack(Context context) {
         TrackInfo trackInfo = Prefs.getTrackInfo(context.getApplicationContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE);
-        if(trackInfo != null)
+        if (trackInfo != null)
             return Observable.just(trackInfo);
         else
             return Completable.complete().toObservable();
+    }
+
+    public static Observable<Response<ResponseBody>> login(Context context) {
+        return Observable.just(Response.success(ResponseBody.create(MediaType.parse("application/json"), "")));
+//        return Observable.just(Response.error(500, ResponseBody.create(MediaType.parse("application/json"), "Здарова это ошибка")));
     }
 }

@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_lay_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.trackdealer.ui.LoginActivity">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/login_back_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/login_background"
+        android:visibility="gone"
+        android:alpha="0.2"/>
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="@dimen/dp60"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="80dp"
         android:paddingLeft="@dimen/vertical_margin"
         android:paddingRight="@dimen/vertical_margin">
 
@@ -29,7 +37,6 @@
                 android:id="@+id/login_text_login"
                 style="@style/EditTextStyle"
                 android:maxLines="1"
-                android:textAlignment="center"
                 android:hint="@string/login" />
         </android.support.design.widget.TextInputLayout>
 
@@ -40,7 +47,6 @@
                 style="@style/EditTextStyle"
                 android:maxLines="1"
                 android:inputType="textPassword"
-                android:textAlignment="center"
                 android:hint="@string/password" />
         </android.support.design.widget.TextInputLayout>
 
@@ -65,4 +71,13 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/login_deezer_big"
+        android:layout_width="100dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/dp10"
+        android:src="@drawable/deezer_big"/>
+
+</RelativeLayout>

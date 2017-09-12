@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -17,7 +16,11 @@ import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.connect.SessionStore;
 import com.deezer.sdk.network.connect.event.DialogListener;
+import com.deezer.sdk.network.request.AsyncDeezerTask;
+import com.deezer.sdk.network.request.DeezerRequest;
+import com.deezer.sdk.network.request.DeezerRequestFactory;
 import com.deezer.sdk.network.request.event.DeezerError;
+import com.deezer.sdk.network.request.event.JsonRequestListener;
 import com.deezer.sdk.player.PlayerWrapper.RepeatMode;
 import com.deezer.sdk.player.TrackPlayer;
 import com.deezer.sdk.player.event.BufferState;
@@ -33,6 +36,7 @@ import com.deezer.sdk.player.exception.StreamLimitationException;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
 import com.trackdealer.R;
+import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.StaticUtils;
@@ -46,7 +50,7 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 
-public class DeezerActivity extends AppCompatActivity implements IConnectDeezer {
+public class DeezerActivity extends AppCompatActivity implements IConnectDeezer, IChoseTrack {
 
     private final String TAG = "DeezerActivity ";
 
@@ -136,9 +140,67 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
         doDestroyPlayer();
     }
 
-    public void setTrackList(List<TrackInfo> trackList){
-        this.trackList = trackList;
+    protected void playNextTrack() {
+        for (int i = 0; i < trackList.size(); i++) {
+            if (trackList.get(i).getTrackId() == playingTrack.getId()) {
+                if (i + 1 < trackList.size()) {
+                    choseTrackForPlay(trackList.get(i + 1), i + 1);
+                    break;
+                } else {
+                    choseTrackForPlay(trackList.get(0), 0);
+                    break;
+                }
+            }
+        }
     }
+
+    @Override
+    public void choseTrackForPlay(TrackInfo trackInfo, Integer pos) {
+        if (playingTrack != null && playingTrack.getId() == trackInfo.getTrackId()) {
+            if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
+                trackPlayer.pause();
+            else if (trackPlayer.getPlayerState() == PlayerState.PAUSED)
+                trackPlayer.play();
+            else if (trackPlayer.getPlayerState() == PlayerState.STOPPED)
+                trackPlayer.playTrack(playingTrack.getId());
+        } else {
+            if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
+                trackPlayer.stop();
+            displayTrackInfo(trackInfo, pos);
+            setButtonEnabled(mButtonPlayerPause, false);
+            setButtonEnabled(mButtonPlayerSkipForward, false);
+            setPlayerVisible(true);
+            loadSong(trackInfo);
+        }
+    }
+
+    public void loadSong(TrackInfo trackInfo) {
+        DeezerRequest request = DeezerRequestFactory.requestTrack(trackInfo.getTrackId());
+        AsyncDeezerTask task = new AsyncDeezerTask(mDeezerConnect, new JsonRequestListener() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public void onResult(final Object result, final Object requestId) {
+                playingTrack = (Track) result;
+                Timber.d(TAG + trackPlayer.getPlayerState().name());
+                trackPlayer.playTrack(playingTrack.getId());
+                setButtonEnabled(mButtonPlayerPause, true);
+                setButtonEnabled(mButtonPlayerSkipForward, true);
+            }
+
+            @Override
+            public void onUnparsedResult(final String response, final Object requestId) {
+                handleError(new DeezerError("Unparsed reponse"));
+            }
+
+            @Override
+            public void onException(final Exception exception,
+                                    final Object requestId) {
+                handleError(exception);
+            }
+        });
+        task.execute(request);
+    }
+
 
     @Override
     public void setContentView(final int layoutResID) {
@@ -190,7 +252,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
         ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(Color.RED);
         toast.show();
 
-        Log.e("BaseActivityDee", "Exception occured " + exception.getClass().getName(), exception);
+        Timber.d(TAG + " Exception occured " + message);
     }
 
     /**
@@ -442,7 +504,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
     }
 
     protected void onSkipToNextTrack() {
-
+        playNextTrack();
     }
 
     protected void onSkipToPreviousTrack() {
@@ -529,13 +591,13 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer 
 
         @Override
         public void onBufferProgress(final double percent) {
-            Timber.d(TAG + "onBufferProgress " + percent);
+//            Timber.d(TAG + "onBufferProgress " + percent);
             runOnUiThread(() -> showBufferProgress((int) Math.round(percent)));
         }
 
         @Override
         public void onPlayerProgress(final long timePosition) {
-            Timber.d(TAG + "onPlayerProgress " + timePosition);
+//            Timber.d(TAG + "onPlayerProgress " + timePosition);
             runOnUiThread(() -> showPlayerProgress(timePosition));
         }
     }

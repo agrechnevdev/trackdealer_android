@@ -17,6 +17,8 @@ public class TrackInfo {
     private Integer likes;
     private Integer dislikes;
 
+    private User user;
+
     public TrackInfo(long trackId, String title, String artist, Integer duration, String coverImage) {
         this.trackId = trackId;
         this.title = title;
@@ -90,5 +92,13 @@ public class TrackInfo {
 
     public void setCoverImage(String coverImage) {
         this.coverImage = coverImage;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

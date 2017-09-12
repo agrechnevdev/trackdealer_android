@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/selectable_item_background"
-    android:paddingTop="@dimen/vertical_margin"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="@dimen/vertical_margin">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,17 +20,34 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginRight="@dimen/dp4"
-            android:visibility="gone"
             android:text="1"
+            android:textColor="@color/textColorPrimary"
             android:textSize="@dimen/text_size_large"
-            android:textColor="@color/textColorPrimary" />
+            android:visibility="gone" />
 
-        <ImageView
-            android:id="@+id/item_chart_image_play"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/subbuffer"
-            android:layout_toRightOf="@id/item_chart_text_position"/>
+        <RelativeLayout
+            android:id="@+id/item_chart_lay_image_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/item_chart_text_position">
+
+            <ImageView
+                android:id="@+id/item_chart_image_play"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/subbuffer" />
+
+            <com.taishi.library.Indicator
+                android:id="@+id/item_chart_play_indicator"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="10dp"
+                app:bar_num="3"
+                app:bar_color="#fff"
+                app:step_num="10"
+                android:visibility="gone"
+                app:duration="3000"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/item_chart_duration"
@@ -48,7 +65,7 @@
             android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"
             android:layout_toLeftOf="@id/item_chart_duration"
-            android:layout_toRightOf="@id/item_chart_image_play"
+            android:layout_toRightOf="@id/item_chart_lay_image_play"
             android:text="Название"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/text_size_main" />
@@ -61,7 +78,7 @@
             android:layout_marginLeft="@dimen/dp10"
             android:layout_marginRight="@dimen/dp10"
             android:layout_toLeftOf="@id/item_chart_duration"
-            android:layout_toRightOf="@id/item_chart_image_play"
+            android:layout_toRightOf="@id/item_chart_lay_image_play"
             android:ellipsize="end"
             android:maxLines="2"
             android:text="Артист"
@@ -75,11 +92,23 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/item_chart_artist" />
 
-        <include layout="@layout/divider"
+        <TextView
+            android:id="@+id/item_chart_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/item_chart_lay_image_play"
+            android:layout_marginLeft="@dimen/vertical_margin"
+            android:layout_marginTop="@dimen/dp4"
+            android:text="coool"
+            android:textColor="@color/textColorPrimary"
+            android:textSize="@dimen/text_size_small_14" />
+
+        <include
+            layout="@layout/divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_1dp"
-            android:layout_marginTop="@dimen/dp4"
-            android:layout_below="@id/layout_like"/>
+            android:layout_below="@id/layout_like"
+            android:layout_marginTop="@dimen/dp4" />
 
     </RelativeLayout>
 

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.deezer.sdk.model.Track;
 import com.trackdealer.models.TrackInfo;
+import com.trackdealer.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +30,28 @@ public class StaticUtils {
     public static void putDefaultTracks(Context context) {
         if (Prefs.getTrackList(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST) == null) {
             ArrayList<TrackInfo> tracks = new ArrayList<>();
-            tracks.add(new TrackInfo(15911969, "Staring At It", "SafetySuit", 257, "http://api.deezer.com/album/1472647/image"));
-            tracks.add(new TrackInfo(15911968, "Let Go", "SafetySuit", 200, "http://api.deezer.com/album/1472647/image"));
-            tracks.add(new TrackInfo(356306401, "Perfect Color", "SafetySuit", 234, "http://api.deezer.com/album/40882681/image"));
-            tracks.add(new TrackInfo(136059064, "Numbers or Faith", "SafetySuit", 271, "http://api.deezer.com/album/14543916/image"));
+
+            User user1 = new User(1, "coolbatch");
+            User user2 = new User(2, "vasilii petrovich");
+            User user3 = new User(3, "YA NE VALERA!!!");
+            User user4 = new User(4, "ZDAROVA");
+
+            TrackInfo trackInfo1 = new TrackInfo(15911969, "Staring At It", "SafetySuit", 257, "http://api.deezer.com/album/1472647/image");
+            trackInfo1.setUser(user1);
+            tracks.add(trackInfo1);
+
+            TrackInfo trackInfo2 = new TrackInfo(15911968, "Let Go", "SafetySuit", 200, "http://api.deezer.com/album/1472647/image");
+            trackInfo2.setUser(user2);
+            tracks.add(trackInfo2);
+
+            TrackInfo trackInfo3 = new TrackInfo(356306401, "Perfect Color", "SafetySuit", 234, "http://api.deezer.com/album/40882681/image");
+            trackInfo3.setUser(user3);
+            tracks.add(trackInfo3);
+
+            TrackInfo trackInfo4 = new TrackInfo(136059064, "Numbers or Faith", "SafetySuit", 271, "http://api.deezer.com/album/14543916/image");
+            trackInfo4.setUser(user4);
+            tracks.add(trackInfo4);
+
             Prefs.putTrackList(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, tracks);
         }
     }

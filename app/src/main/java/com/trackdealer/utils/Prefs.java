@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.trackdealer.models.TrackInfo;
+import com.trackdealer.models.User;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -89,6 +90,18 @@ public class Prefs {
         return new Gson().fromJson(data, type);
     }
 
+    public static void putUser(Context context, String prefName, String key, User user) {
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().putString(key, json).apply();
+    }
+
+    public static User getUser(Context context, String prefName, String key) {
+        String data = context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).getString(key, "");
+        Type type = new TypeToken<User>() {
+        }.getType();
+        return new Gson().fromJson(data, type);
+    }
 
 
     /**
@@ -113,5 +126,13 @@ public class Prefs {
 
     public static void putString(Context context, String prefName, String key, String putString) {
         context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().putString(key, putString).apply();
+    }
+
+    public static Integer getInt(Context context, String prefName, String key) {
+        return context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).getInt(key, 0);
+    }
+
+    public static void putInt(Context context, String prefName, String key, Integer putString) {
+        context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().putInt(key, putString).apply();
     }
 }

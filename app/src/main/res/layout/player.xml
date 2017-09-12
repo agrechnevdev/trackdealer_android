@@ -14,32 +14,42 @@
         android:layout_height="4dp"
         android:layout_gravity="center_vertical"
         android:max="100"
-        android:progressDrawable="@drawable/seek_bar_color"
-        android:thumb="@drawable/thumb"
+        android:paddingEnd="0dp"
         android:paddingStart="0dp"
-        android:paddingEnd="0dp"/>
+        android:progressDrawable="@drawable/seek_bar_color"
+        android:thumb="@drawable/thumb" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <!--<TextView-->
-            <!--android:id="@+id/text_position"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_marginRight="@dimen/dp4"-->
-            <!--android:text="1"-->
-            <!--android:visibility="gone"-->
-            <!--android:textColor="@color/textColorPrimary"-->
-            <!--android:textSize="@dimen/text_size_large" />-->
+        <!--android:id="@+id/text_position"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_marginRight="@dimen/dp4"-->
+        <!--android:text="1"-->
+        <!--android:visibility="gone"-->
+        <!--android:textColor="@color/textColorPrimary"-->
+        <!--android:textSize="@dimen/text_size_large" />-->
+
+        <ImageButton
+            android:id="@+id/button_skip_forward"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:layout_marginRight="@dimen/horizontal_margin"
+            android:src="@drawable/ic_skip_next" />
 
         <ImageButton
             android:id="@+id/button_pause"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/button_skip_forward"
             android:layout_marginRight="@dimen/horizontal_margin"
             android:layout_centerVertical="true"
             android:background="@android:color/transparent"
@@ -48,11 +58,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="@dimen/horizontal_margin"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/horizontal_margin"
             android:layout_toLeftOf="@+id/button_pause"
-            >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_artist"
@@ -117,12 +126,6 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_action_stop" />
 
-        <!--<ImageButton-->
-        <!--android:id="@+id/button_pause"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@android:color/transparent"-->
-        <!--android:src="@drawable/ic_action_play" />-->
 
         <ImageButton
             android:id="@+id/button_seek_forward"
@@ -131,12 +134,6 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_action_fast_forward" />
 
-        <ImageButton
-            android:id="@+id/button_skip_forward"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_action_next" />
 
         <View
             android:layout_width="0dp"

@@ -8,8 +8,6 @@ import android.widget.TextView;
 
 import com.trackdealer.R;
 
-import org.json.JSONObject;
-
 import java.io.IOException;
 
 import retrofit2.Response;
@@ -29,6 +27,7 @@ public class ErrorHandler {
     public static String DEFAULT_ERROR_MESSAGE_SHORT = "В настоящий момент операция невозможна.";
     public static String DEFAULT_ERROR_MESSAGE = "В настоящий момент операция невозможна.\n\nПожалуйста, повторите попытку позднее.\n\nПриносим извинения за неудобства.";
     public static String DEFAULT_NETWORK_ERROR_MESSAGE = "В настоящий момент операция невозможна.\n\nПожалуйста, проверьте соединение с Интернетом или повторите попытку позднее.\n\nПриносим извинения за неудобства.";
+    public static String DEFAULT_SERVER_ERROR_MESSAGE = "Возникла ошибка на сервере";
 
     public static final int DURATION = 5000;
     /**
@@ -110,8 +109,7 @@ public class ErrorHandler {
 
             default:
                 try {
-                    JSONObject post = new JSONObject(response.errorBody().string());
-                    String errorMesage = post.getString("errorMessage");
+                    String errorMesage = response.errorBody().string();
                     element = element + " " + errorMesage;
                     if (!TextUtils.isEmpty(errorMesage))
                         return element;

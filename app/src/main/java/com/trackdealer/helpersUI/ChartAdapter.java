@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.taishi.library.Indicator;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.models.TrackInfo;
@@ -40,8 +41,12 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
 
 //        @Bind(R.id.item_chart_text_position)
 //        TextView textPosition;
+        @Bind(R.id.item_chart_user)
+        TextView textUsername;
         @Bind(R.id.item_chart_image_play)
         ImageView artistImage;
+        @Bind(R.id.item_chart_play_indicator)
+        Indicator indicator;
         @Bind(R.id.item_chart_lay_main)
         RelativeLayout relLayMain;
         @Bind(R.id.item_chart_title)
@@ -77,6 +82,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         vh.relLayMain.setOnClickListener(view -> {
             iLoadTrack.choseTrackForPlay(trackInfos.get(vh.getAdapterPosition()), vh.getAdapterPosition()+1);
         });
+
         return vh;
     }
 
@@ -88,8 +94,21 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         holder.duration.setText(trackInfo.getDuration());
         holder.textDown.setText(trackInfo.getDislikes().toString());
         holder.textUp.setText(trackInfo.getLikes().toString());
+        holder.textUsername.setText(trackInfo.getUser().getUsername());
 //        holder.textPosition.setText(Integer.toString(position+1));
         Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
+
+//        holder.relLayMain.setOnClickListener(view -> {
+//            if(posPlay != null) {
+//                ViewHolder vh = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(posPlay);
+//                vh.indicator.setVisibility(View.GONE);
+//                vh.artistImage.setAlpha(1f);
+//            }
+//            posPlay = position;
+//            iLoadTrack.choseTrackForPlay(trackInfos.get(posPlay), posPlay+1);
+//            holder.indicator.setVisibility(View.VISIBLE);
+//            holder.artistImage.setAlpha(0.3f);
+//        });
     }
 
     @Override
