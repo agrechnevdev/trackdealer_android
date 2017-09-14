@@ -12,6 +12,7 @@ import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
 import com.trackdealer.interfaces.IConnected;
+import com.trackdealer.interfaces.INextSongSetImage;
 import com.trackdealer.interfaces.IProvideTrackList;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
@@ -50,6 +51,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     ProfileFragment profileFragment;
 
     IConnected iConnected;
+    INextSongSetImage iNextSongSetImage;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -75,7 +77,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         favourFragment = new FavourFragment();
         profileFragment = new ProfileFragment();
         iConnected = profileFragment;
-
+        iNextSongSetImage = chartFragment;
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
 //        if(Prefs.getString(this, SHARED_FILENAME_TRACK, SHARED_KEY_FIRST_TIME).equals("")) {
 //          startActivity(new Intent(this, TutorialActivity.class));
@@ -87,7 +89,10 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         iConnected.connectSuccess(event);
     }
 
-    ;
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(Integer posPlay) {
+        chartFragment.changePos(posPlay);
+    }
 
     @Override
     protected void onResume() {

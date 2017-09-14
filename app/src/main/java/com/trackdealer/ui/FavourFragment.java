@@ -232,6 +232,7 @@ public class FavourFragment extends Fragment implements IClickTrack {
     @OnClick(R.id.chose_song_song_empty)
     public void clickChoseSong() {
         relLaySearch.setVisibility(View.VISIBLE);
+        textSearch.requestFocus();
         textSearch.setFocusableInTouchMode(true);
     }
 

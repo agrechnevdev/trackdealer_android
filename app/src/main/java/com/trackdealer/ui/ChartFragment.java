@@ -14,6 +14,7 @@ import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.ChartAdapter;
 import com.trackdealer.interfaces.IChoseTrack;
+import com.trackdealer.interfaces.INextSongSetImage;
 import com.trackdealer.interfaces.IProvideTrackList;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.FakeRestApi;
@@ -35,7 +36,7 @@ import timber.log.Timber;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, INextSongSetImage {
 
     private final String TAG = "MainCardsFragment ";
     CompositeDisposable compositeDisposable;
@@ -79,6 +80,10 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return view;
     }
 
+    public void changePos(int pos) {
+        mTracksAdapter.changePos(pos);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -101,8 +106,10 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         swipeLay.setRefreshing(false);
         trackList.addAll(list);
         iProvideTrackList.provideTrackList(list);
-        if (mTracksAdapter != null)
+        if (mTracksAdapter != null) {
             mTracksAdapter.notifyDataSetChanged();
+//            mTracksAdapter.showIndicator();
+        }
     }
 
     @Override

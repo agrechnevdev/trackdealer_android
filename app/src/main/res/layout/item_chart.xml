@@ -39,11 +39,12 @@
 
             <com.taishi.library.Indicator
                 android:id="@+id/item_chart_play_indicator"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerInParent="true"
                 android:padding="10dp"
                 app:bar_num="3"
-                app:bar_color="#fff"
+                app:bar_color="@color/colorAccent"
                 app:step_num="10"
                 android:visibility="gone"
                 app:duration="3000"/>

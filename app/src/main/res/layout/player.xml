@@ -64,7 +64,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/text_artist"
+                android:id="@+id/text_track"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -74,13 +74,12 @@
                 android:text="Song Name"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/colorAccent"
-                android:textStyle="bold|italic" />
+                android:textStyle="italic" />
 
             <TextView
-                android:id="@+id/text_track"
+                android:id="@+id/text_artist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/text_artist"
                 android:layout_gravity="center_vertical"
                 android:ellipsize="marquee"
                 android:maxLines="1"
@@ -88,7 +87,9 @@
                 android:text="Artist"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@color/colorAccent"
-                android:textStyle="italic" />
+                android:textStyle="bold|italic" />
+
+
         </LinearLayout>
     </RelativeLayout>
 

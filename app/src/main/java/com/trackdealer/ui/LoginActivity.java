@@ -2,13 +2,11 @@ package com.trackdealer.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.models.User;
@@ -25,7 +23,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -85,14 +82,14 @@ public class LoginActivity extends BaseActivity {
     public void initSubscribtion() {
         subscription = new CompositeDisposable();
 
-        subscription.add(Observable.combineLatest(
-                RxTextView.textChanges(textLogin).observeOn(AndroidSchedulers.mainThread()),
-                RxTextView.textChanges(textPassword).observeOn(AndroidSchedulers.mainThread()),
-               (login, pass) -> !TextUtils.isEmpty(login) && !TextUtils.isEmpty(pass))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(this::buttonEnabledState)
-        );
+//        subscription.add(Observable.combineLatest(
+//                RxTextView.textChanges(textLogin).observeOn(AndroidSchedulers.mainThread()),
+//                RxTextView.textChanges(textPassword).observeOn(AndroidSchedulers.mainThread()),
+//               (login, pass) -> !TextUtils.isEmpty(login) && !TextUtils.isEmpty(pass))
+//                        .observeOn(AndroidSchedulers.mainThread())
+//                        .subscribeOn(Schedulers.io())
+//                        .subscribe(this::buttonEnabledState)
+//        );
     }
 
     public void buttonEnabledState(boolean enabled){

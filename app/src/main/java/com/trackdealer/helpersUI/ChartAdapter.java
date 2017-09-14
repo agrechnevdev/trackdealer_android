@@ -79,11 +79,35 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_chart, parent, false);
         ViewHolder vh = new ViewHolder(v);
-        vh.relLayMain.setOnClickListener(view -> {
-            iLoadTrack.choseTrackForPlay(trackInfos.get(vh.getAdapterPosition()), vh.getAdapterPosition()+1);
-        });
+//        vh.relLayMain.setOnClickListener(view -> {
+//            iLoadTrack.choseTrackForPlay(trackInfos.get(vh.getAdapterPosition()), vh.getAdapterPosition()+1);
+//        });
 
         return vh;
+    }
+
+    public void changePos(int pos) {
+        // убираем старый индикатор
+        hideOldIndicator();
+        //переставляем позицию
+        posPlay = pos;
+        // показываем новый индикатор
+        showIndicator();
+
+    }
+
+    public void showIndicator(){
+        ViewHolder holder = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(posPlay);
+        holder.indicator.setVisibility(View.VISIBLE);
+        holder.artistImage.setAlpha(0.3f);
+    }
+
+    private void hideOldIndicator(){
+        if(posPlay != null) {
+            ViewHolder vh = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(posPlay);
+            vh.indicator.setVisibility(View.GONE);
+            vh.artistImage.setAlpha(1f);
+        }
     }
 
     @Override
@@ -98,17 +122,13 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
 //        holder.textPosition.setText(Integer.toString(position+1));
         Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
 
-//        holder.relLayMain.setOnClickListener(view -> {
-//            if(posPlay != null) {
-//                ViewHolder vh = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(posPlay);
-//                vh.indicator.setVisibility(View.GONE);
-//                vh.artistImage.setAlpha(1f);
-//            }
-//            posPlay = position;
-//            iLoadTrack.choseTrackForPlay(trackInfos.get(posPlay), posPlay+1);
-//            holder.indicator.setVisibility(View.VISIBLE);
-//            holder.artistImage.setAlpha(0.3f);
-//        });
+        holder.relLayMain.setOnClickListener(view -> {
+//            changePos(position);
+            posPlay = holder.getAdapterPosition();
+            iLoadTrack.choseTrackForPlay(trackInfos.get(posPlay), posPlay+1);
+        });
+
+
     }
 
     @Override

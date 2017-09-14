@@ -13,8 +13,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:background="?android:attr/windowBackground"
-        app:itemIconTint="@color/selector_item_menu_chose"
-        app:itemTextColor="@color/selector_item_menu_chose"
+        app:itemIconTint="@drawable/selector_item_menu_chose"
+        app:itemTextColor="@drawable/selector_item_menu_chose"
         app:menu="@menu/base_menu" />
 
     <include
