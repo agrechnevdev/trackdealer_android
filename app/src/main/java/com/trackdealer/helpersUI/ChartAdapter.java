@@ -26,12 +26,14 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
 
 public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> {
 
+    private final String TAG = "ChartAdapter ";
     private ArrayList<TrackInfo> trackInfos;
     private Context context;
     private RecyclerView recyclerView;
@@ -85,8 +87,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent,
-                                         int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Timber.d(TAG + " onCreateViewHolder ");
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_chart, parent, false);
         ViewHolder vh = new ViewHolder(v);
@@ -107,42 +109,13 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
 
     public void changePositionIndicator(PositionPlay positionPlay) {
         this.positionPlay = positionPlay;
-        // убираем старый индикатор
-        hideOldIndicator(positionPlay);
-        // показываем новый индикатор
-        showIndicator(positionPlay);
-
-    }
-
-    public void showIndicator(PositionPlay positionPlay) {
-        if (positionPlay.newPos != -1) {
-//            View view = llm.findViewByPosition(positionPlay.newPos);
-//            view.findViewById(R.id.item_chart_play_indicator).setVisibility(View.VISIBLE);
-//            view.findViewById(R.id.item_chart_image_play).setAlpha(0.3f);
-            ViewHolder holder = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(positionPlay.newPos);
-            holder.indicator.setVisibility(View.VISIBLE);
-            holder.artistImage.setAlpha(0.3f);
-        }
-    }
-
-    private void hideOldIndicator(PositionPlay positionPlay) {
-        if (positionPlay.oldPos != -1) {
-//            View view = llm.findViewByPosition(positionPlay.oldPos);
-//            view.findViewById(R.id.item_chart_play_indicator).setVisibility(View.GONE);
-//            view.findViewById(R.id.item_chart_image_play).setAlpha(1f);
-            ViewHolder vh = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(positionPlay.oldPos);
-            vh.indicator.setVisibility(View.GONE);
-            vh.artistImage.setAlpha(1f);
-        }
-    }
-
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
+        notifyItemChanged(positionPlay.oldPos);
+        notifyItemChanged(positionPlay.newPos);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        Timber.d(TAG + " onBindViewHolder " + position);
         TrackInfo trackInfo = trackInfos.get(position);
         holder.title.setText(trackInfo.getTitle());
         holder.artist.setText(trackInfo.getArtist());
@@ -155,7 +128,16 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         holder.relLayMain.setOnClickListener(view -> {
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
+        holder.indicator.setVisibility(View.GONE);
+        holder.artistImage.setAlpha(1f);
 
+        if(positionPlay != null){
+            if(positionPlay.newPos != -1 && positionPlay.newPos == position) {
+                Timber.d(TAG + " position VISIBLE " + position);
+                holder.indicator.setVisibility(View.VISIBLE);
+                holder.artistImage.setAlpha(0.3f);
+            }
+        }
 
     }
 
