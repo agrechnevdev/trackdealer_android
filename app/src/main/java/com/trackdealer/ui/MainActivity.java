@@ -14,6 +14,7 @@ import com.trackdealer.helpersUI.BottomNavigationHelper;
 import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.interfaces.INextSongSetImage;
 import com.trackdealer.interfaces.IProvideTrackList;
+import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 
@@ -90,7 +91,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(Integer posPlay) {
+    public void onMessageEvent(PositionPlay posPlay) {
         chartFragment.changePos(posPlay);
     }
 
@@ -110,6 +111,8 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     @Override
     public void provideTrackList(List<TrackInfo> trackInfoList) {
         trackList = trackInfoList;
+        positionPlay = new PositionPlay(-1, getPositionPlay());
+        chartFragment.changePos(positionPlay);
     }
 
     @Override

@@ -5,6 +5,7 @@ package com.trackdealer.helpersUI;
  */
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.squareup.picasso.Picasso;
 import com.taishi.library.Indicator;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IChoseTrack;
+import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.Prefs;
 
@@ -34,13 +36,16 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     private Context context;
     private RecyclerView recyclerView;
     private TrackInfo chosenTrackInfo;
-    IChoseTrack iLoadTrack;
-    Integer posPlay;
+    IChoseTrack iChoseTrack;
+    LinearLayoutManager llm;
+    PositionPlay positionPlay;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-//        @Bind(R.id.item_chart_text_position)
-//        TextView textPosition;
+        @Bind(R.id.layout_like_lay_like)
+        RelativeLayout relLayLike;
+        @Bind(R.id.layout_like_lay_dislike)
+        RelativeLayout relLayDislike;
         @Bind(R.id.item_chart_user)
         TextView textUsername;
         @Bind(R.id.item_chart_image_play)
@@ -55,10 +60,14 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         TextView artist;
         @Bind(R.id.item_chart_duration)
         TextView duration;
-        @Bind(R.id.item_chart_text_down)
-        TextView textDown;
-        @Bind(R.id.item_chart_text_up)
-        TextView textUp;
+        @Bind(R.id.layout_like_image_dislike)
+        ImageView imageDislike;
+        @Bind(R.id.layout_like_image_like)
+        ImageView imageLike;
+        @Bind(R.id.layout_like_text_dislike)
+        TextView textDislike;
+        @Bind(R.id.layout_like_text_like)
+        TextView textLike;
 
         ViewHolder(View v) {
             super(v);
@@ -66,11 +75,13 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         }
     }
 
-    public ChartAdapter(ArrayList<TrackInfo> trackInfos, Context context, IChoseTrack iLoadTrack) {
+    public ChartAdapter(ArrayList<TrackInfo> trackInfos, Context context, IChoseTrack iLoadTrack, LinearLayoutManager llm) {
         this.trackInfos = trackInfos;
         this.context = context;
-        this.iLoadTrack = iLoadTrack;
+        this.iChoseTrack = iLoadTrack;
+        this.llm = llm;
         this.chosenTrackInfo = Prefs.getTrackInfo(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE);
+
     }
 
     @Override
@@ -79,35 +90,55 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_chart, parent, false);
         ViewHolder vh = new ViewHolder(v);
-//        vh.relLayMain.setOnClickListener(view -> {
-//            iLoadTrack.choseTrackForPlay(trackInfos.get(vh.getAdapterPosition()), vh.getAdapterPosition()+1);
-//        });
+
+        vh.relLayLike.setOnClickListener(view -> {
+            vh.imageLike.setColorFilter(context.getResources().getColor(R.color.colorOrange));
+            vh.textLike.setTextColor(context.getResources().getColor(R.color.colorOrange));
+            vh.relLayDislike.setClickable(false);
+        });
+        vh.relLayDislike.setOnClickListener(view -> {
+            vh.imageDislike.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+            vh.textDislike.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            vh.relLayLike.setClickable(false);
+        });
 
         return vh;
     }
 
-    public void changePos(int pos) {
+    public void changePositionIndicator(PositionPlay positionPlay) {
+        this.positionPlay = positionPlay;
         // убираем старый индикатор
-        hideOldIndicator();
-        //переставляем позицию
-        posPlay = pos;
+        hideOldIndicator(positionPlay);
         // показываем новый индикатор
-        showIndicator();
+        showIndicator(positionPlay);
 
     }
 
-    public void showIndicator(){
-        ViewHolder holder = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(posPlay);
-        holder.indicator.setVisibility(View.VISIBLE);
-        holder.artistImage.setAlpha(0.3f);
+    public void showIndicator(PositionPlay positionPlay) {
+        if (positionPlay.newPos != -1) {
+//            View view = llm.findViewByPosition(positionPlay.newPos);
+//            view.findViewById(R.id.item_chart_play_indicator).setVisibility(View.VISIBLE);
+//            view.findViewById(R.id.item_chart_image_play).setAlpha(0.3f);
+            ViewHolder holder = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(positionPlay.newPos);
+            holder.indicator.setVisibility(View.VISIBLE);
+            holder.artistImage.setAlpha(0.3f);
+        }
     }
 
-    private void hideOldIndicator(){
-        if(posPlay != null) {
-            ViewHolder vh = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(posPlay);
+    private void hideOldIndicator(PositionPlay positionPlay) {
+        if (positionPlay.oldPos != -1) {
+//            View view = llm.findViewByPosition(positionPlay.oldPos);
+//            view.findViewById(R.id.item_chart_play_indicator).setVisibility(View.GONE);
+//            view.findViewById(R.id.item_chart_image_play).setAlpha(1f);
+            ViewHolder vh = (ChartAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(positionPlay.oldPos);
             vh.indicator.setVisibility(View.GONE);
             vh.artistImage.setAlpha(1f);
         }
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
     }
 
     @Override
@@ -115,17 +146,14 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         TrackInfo trackInfo = trackInfos.get(position);
         holder.title.setText(trackInfo.getTitle());
         holder.artist.setText(trackInfo.getArtist());
-        holder.duration.setText(trackInfo.getDuration());
-        holder.textDown.setText(trackInfo.getDislikes().toString());
-        holder.textUp.setText(trackInfo.getLikes().toString());
-        holder.textUsername.setText(trackInfo.getUser().getUsername());
+        holder.duration.setText(" " + trackInfo.getDuration());
+        holder.textDislike.setText(trackInfo.getDislikes().toString());
+        holder.textLike.setText(trackInfo.getLikes().toString());
+        holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUser().getUsername());
 //        holder.textPosition.setText(Integer.toString(position+1));
         Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
-
         holder.relLayMain.setOnClickListener(view -> {
-//            changePos(position);
-            posPlay = holder.getAdapterPosition();
-            iLoadTrack.choseTrackForPlay(trackInfos.get(posPlay), posPlay+1);
+            iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
 
@@ -135,6 +163,11 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
         super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    public void updateAdapter(ArrayList<TrackInfo> newList) {
+        trackInfos = newList;
+        notifyDataSetChanged();
     }
 
     @Override

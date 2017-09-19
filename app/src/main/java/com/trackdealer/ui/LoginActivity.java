@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.trackdealer.BaseApp;
@@ -45,8 +44,7 @@ public class LoginActivity extends BaseActivity {
     RelativeLayout layMain;
 
     CompositeDisposable subscription;
-    @Bind(R.id.login_back_imageview)
-    ImageView imageView;
+
 
     @Bind(R.id.login_text_password)
     EditText textPassword;

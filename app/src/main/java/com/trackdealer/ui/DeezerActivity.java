@@ -37,6 +37,7 @@ import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IConnectDeezer;
+import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -86,6 +87,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     TextView mTextTrack;
     //    @Bind(R.id.text_position)
 //    TextView mTextPos;
+    protected PositionPlay positionPlay;
     protected Track playingTrack;
     protected List<TrackInfo> trackList;
 
@@ -143,7 +145,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             if (trackList.get(i).getTrackId() == playingTrack.getId()) {
                 if (i + 1 < trackList.size()) {
                     choseTrackForPlay(trackList.get(i + 1), i + 1);
-                    return i+1;
+                    return i + 1;
                 } else {
                     choseTrackForPlay(trackList.get(0), 0);
                     return 0;
@@ -151,6 +153,17 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             }
         }
         return 0;
+    }
+
+    protected Integer getPositionPlay() {
+        Integer positionPlay = -1;
+        for (int i = 0; i < trackList.size(); i++) {
+            if (playingTrack != null && playingTrack.getId() == trackList.get(i).getTrackId()) {
+                positionPlay = i;
+                break;
+            }
+        }
+        return positionPlay;
     }
 
     @Override
@@ -166,6 +179,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
                 trackPlayer.stop();
             displayTrackInfo(trackInfo, pos);
+
             setButtonEnabled(mButtonPlayerPause, false);
             setButtonEnabled(mButtonPlayerSkipForward, false);
             setPlayerVisible(true);
@@ -179,13 +193,19 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             @SuppressWarnings("unchecked")
             @Override
             public void onResult(final Object result, final Object requestId) {
+
+                Integer oldPos = getPositionPlay();
+
                 playingTrack = (Track) result;
-                Timber.d(TAG + trackPlayer.getPlayerState().name());
                 trackPlayer.playTrack(playingTrack.getId());
-                showBufferProgress(0);
-                showPlayerProgress(0);
+
+                Integer newPos = getPositionPlay();
+                positionPlay = new PositionPlay(oldPos, newPos);
+                EventBus.getDefault().post(positionPlay);
+
                 setButtonEnabled(mButtonPlayerPause, true);
                 setButtonEnabled(mButtonPlayerSkipForward, true);
+
             }
 
             @Override
@@ -201,6 +221,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         });
         task.execute(request);
     }
+
     protected TrackPlayer recreatePlayer() {
         try {
             doDestroyPlayer();
@@ -225,6 +246,9 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     }
 
     protected void displayTrackInfo(final TrackInfo trackInfo, Integer pos) {
+        //Зануляем прогресс воспроизведения
+        showBufferProgress(0);
+        showPlayerProgress(0);
         // artist name
         if ((trackInfo.getArtist() == null) || (trackInfo.getArtist() == null)) {
             mTextArtist.setVisibility(View.GONE);
@@ -361,8 +385,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     }
 
     protected void onSkipToNextTrack() {
-        Integer pos = playNextTrack();
-//        EventBus.getDefault().post(pos);
+        playNextTrack();
+
     }
 
     private class PlayerHandler

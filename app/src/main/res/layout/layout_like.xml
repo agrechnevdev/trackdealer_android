@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/item_chart_lay_main"
+    android:id="@+id/layout_like_lay_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -12,44 +12,57 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="@dimen/vertical_margin_small">
 
-        <ImageView
-            android:id="@+id/item_chart_image_down"
-            android:layout_width="@dimen/dp16"
-            android:layout_height="@dimen/dp16"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_thumb_down" />
-
-        <TextView
-            android:id="@+id/item_chart_text_down"
+        <RelativeLayout
+            android:id="@+id/layout_like_lay_dislike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textColor="@color/colorAccent"
-            android:layout_marginLeft="@dimen/dp4"
-            android:layout_toRightOf="@id/item_chart_image_down"
-            android:textSize="@dimen/text_size_small_12"
-            android:text="1000" />
+            android:clickable="true">
 
-        <ImageView
-            android:id="@+id/item_chart_image_up"
-            android:layout_width="@dimen/dp16"
-            android:layout_height="@dimen/dp16"
-            android:layout_marginLeft="@dimen/dp10"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/item_chart_text_down"
-            app:srcCompat="@drawable/ic_thumb_up" />
+            <ImageView
+                android:id="@+id/layout_like_image_dislike"
+                android:layout_width="@dimen/dp25"
+                android:layout_height="@dimen/dp25"
+                android:layout_centerVertical="true"
+                app:srcCompat="@drawable/ic_dislike" />
 
-        <TextView
-            android:id="@+id/item_chart_text_up"
+            <TextView
+                android:id="@+id/layout_like_text_dislike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp4"
+                android:layout_toRightOf="@id/layout_like_image_dislike"
+                android:text="1000"
+                android:textColor="@color/colorGrey"
+                android:textSize="@dimen/text_size_main" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_like_lay_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textColor="@color/colorOrange"
-            android:textSize="@dimen/text_size_small_12"
-            android:layout_marginLeft="@dimen/dp4"
-            android:layout_marginRight="@dimen/dp10"
-            android:layout_toRightOf="@id/item_chart_image_up"
-            android:text="1000" />
+            android:layout_toRightOf="@id/layout_like_lay_dislike"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/layout_like_image_like"
+                android:layout_width="@dimen/dp25"
+                android:layout_height="@dimen/dp25"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp10"
+                app:srcCompat="@drawable/ic_like" />
+
+            <TextView
+                android:id="@+id/layout_like_text_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp4"
+                android:layout_toRightOf="@id/layout_like_image_like"
+                android:text="1000"
+                android:textColor="@color/colorGrey"
+                android:textSize="@dimen/text_size_main" />
+        </RelativeLayout>
 
     </RelativeLayout>
 </RelativeLayout>

@@ -16,6 +16,7 @@ import com.trackdealer.helpersUI.ChartAdapter;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.INextSongSetImage;
 import com.trackdealer.interfaces.IProvideTrackList;
+import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.FakeRestApi;
 import com.trackdealer.net.Restapi;
@@ -70,7 +71,7 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(llm);
-        mTracksAdapter = new ChartAdapter(trackList, getActivity().getApplicationContext(), iChoseTrack);
+        mTracksAdapter = new ChartAdapter(trackList, getActivity().getApplicationContext(), iChoseTrack, llm);
         recyclerView.setAdapter(mTracksAdapter);
 //        recyclerView.addItemDecoration(new SpacesItemDecorator(20));
 
@@ -80,8 +81,8 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return view;
     }
 
-    public void changePos(int pos) {
-        mTracksAdapter.changePos(pos);
+    public void changePos(PositionPlay positionPlay) {
+        mTracksAdapter.changePositionIndicator(positionPlay);
     }
 
     @Override
@@ -107,8 +108,7 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         trackList.addAll(list);
         iProvideTrackList.provideTrackList(list);
         if (mTracksAdapter != null) {
-            mTracksAdapter.notifyDataSetChanged();
-//            mTracksAdapter.showIndicator();
+            mTracksAdapter.updateAdapter(list);
         }
     }
 

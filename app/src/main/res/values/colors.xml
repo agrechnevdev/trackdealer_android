@@ -19,6 +19,7 @@
     <color name="colorBackground">#FAFAFA</color>
 
     <color name="colorBackgroundChosen">#d7d7d7</color>
+    <color name="colorGrey">#d3d3d3</color>
 
     <color name="textColorSecondary">#89000000</color>
     <color name="textColorDisabled">#76000000</color>

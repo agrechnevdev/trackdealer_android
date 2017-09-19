@@ -20,6 +20,8 @@
     <string name="chose_fav_song">Твой выбор</string>
     <string name="profile">Профиль</string>
 
+    <string name="chosed_by">Выбрал</string>
+
     <string name="your_chose">Твой выбор на этой неделе:</string>
     <string name="fav_song_empty_message">Ты еще не выбрал любимую песню? Кликай сюда!</string>
     <string name="chose_song">Выберите любимую песню</string>
@@ -31,10 +33,13 @@
     <string name="deezer_account_login">Подключить аккаунт Deezer</string>
     <string name="deezer_account_info">Подключение к Deezer c премиум аккаунтом позволит Вам прослушивать треки полностью и добавлять их в свой плейлист</string>
     <string name="deezer_already_login">Вы уже подключили аккаунт Deezer!</string>
-    <string name="deezer_already_login_account_info">Вам доступны для прослушивания полные треки и функции плейлиста</string>
+    <string name="deezer_premium_account">Вам доступны для прослушивания полные треки и функции плейлиста</string>
+    <string name="deezer_freemium_account">Но Вам недоступны для прослушивания полные треки и функции плейлиста (требуется статус PREMIUM)</string>
 
     <string name="yes">Да</string>
     <string name="no">Нет</string>
+
+
 
     <string name="empty"></string>
     <string name="default_duration">0:00</string>

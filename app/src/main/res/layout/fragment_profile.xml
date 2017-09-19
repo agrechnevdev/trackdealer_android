@@ -29,9 +29,9 @@
                 android:id="@+id/profile_user_logo"
                 android:layout_width="@dimen/dp40"
                 android:layout_height="@dimen/dp40"
-                app:srcCompat="@drawable/empty_cover"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true" />
+                app:srcCompat="@drawable/empty_cover" />
 
             <TextView
                 android:id="@+id/profile_text_username"
@@ -151,12 +151,9 @@
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/text_size_small_14" />
 
-                <TextView
-                    android:id="@+id/profile_text_deezer_logout_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/deezer_already_login_account_info"
-                    android:textSize="@dimen/text_size_small_10" />
+
+
+
             </LinearLayout>
 
 
@@ -200,6 +197,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/empty"
+                    android:textSize="@dimen/text_size_small_10" />
+
+                <TextView
+                    android:id="@+id/profile_text_status_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/deezer_premium_account"
                     android:textSize="@dimen/text_size_small_10" />
 
             </LinearLayout>
