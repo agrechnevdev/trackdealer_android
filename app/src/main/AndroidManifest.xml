@@ -25,7 +25,7 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.StartImageActivity"
+        <activity android:name=".ui.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,15 +33,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+        <!--<activity android:name=".ui.LoginActivity"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" >-->
+        <!--</activity>-->
 
         <activity
             android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+            android:name=".ui.LogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 

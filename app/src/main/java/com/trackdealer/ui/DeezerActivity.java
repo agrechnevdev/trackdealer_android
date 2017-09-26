@@ -41,15 +41,23 @@ import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
+import com.trackdealer.utils.Prefs;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
+
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_LOG_ERROR;
 
 
 public class DeezerActivity extends AppCompatActivity implements IConnectDeezer, IChoseTrack {
@@ -217,7 +225,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
             @Override
             public void onUnparsedResult(final String response, final Object requestId) {
-                handleError(new DeezerError("Unparsed reponse"));
+                handleError(new DeezerError("Не удалось обработать ответ от сервера"));
             }
 
             @Override
@@ -425,9 +433,17 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             message = "Ошибка! Слишком много плееров создано.";
         } else if (exception instanceof DeezerPlayerException) {
             message = "Ошибка плеера";
+        } else if (exception instanceof DeezerError) {
+            if (((DeezerError) exception).getErrorType() != null)
+                message = "Ошибка: " + ((DeezerError) exception).toString();
         } else {
             message = exception.getClass().getName();
         }
+
+        HashMap<String, String> logMap = Prefs.getHashMap(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        logMap.put(sdf.format(calendar.getTime()), message);
 
         Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
         ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(Color.RED);

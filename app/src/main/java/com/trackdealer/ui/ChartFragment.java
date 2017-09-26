@@ -68,6 +68,11 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         compositeDisposable = new CompositeDisposable();
         loadTrackListStart();
+//        trackList = (ArrayList<TrackInfo>) iProvideTrackList.getTrackList();
+//        if (trackList == null) {
+//            trackList = new ArrayList<>();
+//            loadTrackListStart();
+//        }
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(llm);
@@ -83,6 +88,15 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     public void changePos(PositionPlay positionPlay) {
         mTracksAdapter.changePositionIndicator(positionPlay);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mTracksAdapter != null) {
+            mTracksAdapter.notifyDataSetChanged();
+        }
+
     }
 
     @Override
@@ -112,11 +126,13 @@ public class ChartFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
     }
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         iChoseTrack = (IChoseTrack) context;
         iProvideTrackList = (IProvideTrackList) context;
+
     }
 
     @Override

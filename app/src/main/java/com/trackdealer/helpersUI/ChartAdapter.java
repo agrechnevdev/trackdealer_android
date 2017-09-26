@@ -92,18 +92,6 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_chart, parent, false);
         ViewHolder vh = new ViewHolder(v);
-
-        vh.relLayLike.setOnClickListener(view -> {
-            vh.imageLike.setColorFilter(context.getResources().getColor(R.color.colorOrange));
-            vh.textLike.setTextColor(context.getResources().getColor(R.color.colorOrange));
-            vh.relLayDislike.setClickable(false);
-        });
-        vh.relLayDislike.setOnClickListener(view -> {
-            vh.imageDislike.setColorFilter(context.getResources().getColor(R.color.colorAccent));
-            vh.textDislike.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            vh.relLayLike.setClickable(false);
-        });
-
         return vh;
     }
 
@@ -138,6 +126,17 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
                 holder.artistImage.setAlpha(0.3f);
             }
         }
+
+        holder.relLayLike.setOnClickListener(view -> {
+            holder.imageLike.setColorFilter(context.getResources().getColor(R.color.colorOrange));
+            holder.textLike.setTextColor(context.getResources().getColor(R.color.colorOrange));
+            holder.relLayDislike.setClickable(false);
+        });
+        holder.relLayDislike.setOnClickListener(view -> {
+            holder.imageDislike.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+            holder.textDislike.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.relLayLike.setClickable(false);
+        });
 
     }
 

@@ -106,6 +106,11 @@ public class LoginActivity extends BaseActivity {
         login();
     }
 
+    @OnClick(R.id.login_show_log)
+    public void clickShowLog(){
+        startActivity(new Intent(this, LogActivity.class));
+    }
+
     void login() {
         if (ConnectionsManager.isOnline(this)) {
             subscription.add(FakeRestApi.login(this)

@@ -116,6 +116,11 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     }
 
     @Override
+    public List<TrackInfo> getTrackList() {
+        return trackList;
+    }
+
+    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.base_menu_list:
