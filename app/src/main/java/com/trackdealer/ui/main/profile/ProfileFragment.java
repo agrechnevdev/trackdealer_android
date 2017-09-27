@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.squareup.picasso.Picasso;
 import com.trackdealer.R;
+import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.ui.main.DeezerActivity;
@@ -134,8 +135,14 @@ public class ProfileFragment extends Fragment implements IConnected {
 
     @OnClick(R.id.profile_deezer_but_logout)
     public void clickLogout() {
-        iConnectDeezer.disconnectFromDeezer();
-        initFields();
+        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
+                R.string.deezer_exit, R.string.deezer_account_logout,
+                R.string.yes, (dialog, id) -> {
+            iConnectDeezer.disconnectFromDeezer();
+            initFields();
+        }, R.string.no, null);
+        builder.create().show();
+
     }
 
     @Override

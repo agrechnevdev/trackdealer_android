@@ -11,11 +11,10 @@ import com.deezer.sdk.player.event.PlayerWrapperListener;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
+import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IConnected;
-import com.trackdealer.interfaces.INextSongSetImage;
-import com.trackdealer.interfaces.IProvideTrackList;
+import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.models.PositionPlay;
-import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.chart.ChartFragment;
 import com.trackdealer.ui.main.favour.FavourFragment;
@@ -23,8 +22,6 @@ import com.trackdealer.ui.main.profile.ProfileFragment;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,7 +35,7 @@ import timber.log.Timber;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, PlayerWrapperListener, IProvideTrackList {
+public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, PlayerWrapperListener, ITrackListState {
 
     private final String TAG = "MainActivity ";
 
@@ -55,7 +52,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     ProfileFragment profileFragment;
 
     IConnected iConnected;
-    INextSongSetImage iNextSongSetImage;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -81,7 +77,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         favourFragment = new FavourFragment();
         profileFragment = new ProfileFragment();
         iConnected = profileFragment;
-        iNextSongSetImage = chartFragment;
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
 //        if(Prefs.getString(this, SHARED_FILENAME_TRACK, SHARED_KEY_FIRST_TIME).equals("")) {
 //          startActivity(new Intent(this, TutorialActivity.class));
@@ -95,7 +90,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PositionPlay posPlay) {
-        chartFragment.changePos(posPlay);
+        chartFragment.changePositionIndicator();
     }
 
     @Override
@@ -112,16 +107,12 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     }
 
     @Override
-    public void provideTrackList(List<TrackInfo> trackInfoList) {
-        trackList = trackInfoList;
-        positionPlay = new PositionPlay(-1, getPositionPlay());
-        chartFragment.changePos(positionPlay);
+    public void changePosIndicator() {
+        SPlay.init().positionPlay = new PositionPlay(-1, getPositionPlay());
+        chartFragment.changePositionIndicator();
     }
 
-    @Override
-    public List<TrackInfo> getTrackList() {
-        return trackList;
-    }
+
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

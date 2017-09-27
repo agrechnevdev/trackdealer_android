@@ -9,22 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/fragment_chart_but_filter"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="@dimen/dp10"
-            android:clickable="true"
-            app:srcCompat="@drawable/ic_filter_list"
-            android:layout_alignParentRight="true"
-            android:visibility="gone"/>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_chart_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/fragment_chart_but_filter"
-            android:layout_above="@id/player"/>
+            android:layout_above="@id/player" />
 
     </RelativeLayout>
 

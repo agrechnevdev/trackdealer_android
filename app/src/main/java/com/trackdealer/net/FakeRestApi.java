@@ -50,6 +50,7 @@ public class FakeRestApi {
                     trackInfo.setLikes(trackInfo.getLikes() + 1);
                 else
                     trackInfo.setDislikes(trackInfo.getDislikes() + 1);
+                trackInfo.setUserLike(like);
                 Prefs.putTrackList(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, list);
                 break;
             }

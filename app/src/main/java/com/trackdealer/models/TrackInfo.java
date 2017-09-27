@@ -17,6 +17,8 @@ public class TrackInfo {
     private Integer likes;
     private Integer dislikes;
 
+    private Boolean userLike;
+
     private User user;
 
     public TrackInfo(long trackId, String title, String artist, Integer duration, String coverImage) {
@@ -27,6 +29,20 @@ public class TrackInfo {
         this.coverImage = coverImage;
         likes = new Random().nextInt(10000);
         dislikes = new Random().nextInt(10000);
+//        int rnd = new Random().nextInt(4);
+//        switch (rnd){
+//            case 0 :
+//                userLike = true;
+//                break;
+//            case 1 :
+//                userLike = false;
+//                break;
+//            case 2 :
+//            case 3 :
+//                userLike = null;
+//                break;
+//        }
+
     }
 
     public long getTrackId() {
@@ -100,5 +116,13 @@ public class TrackInfo {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Boolean getUserLike() {
+        return userLike;
+    }
+
+    public void setUserLike(Boolean userLike) {
+        this.userLike = userLike;
     }
 }

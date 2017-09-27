@@ -18,11 +18,11 @@ import com.squareup.picasso.Picasso;
 import com.taishi.library.Indicator;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IChoseTrack;
+import com.trackdealer.interfaces.ITrackOperation;
 import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.Prefs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -39,7 +39,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     private Context context;
     private RecyclerView recyclerView;
     private TrackInfo chosenTrackInfo;
-    IChoseTrack iTrackOperation;
+    IChoseTrack iChoseTrack;
+    ITrackOperation iTrackOperation;
     LinearLayoutManager llm;
     PositionPlay positionPlay;
 
@@ -78,9 +79,10 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         }
     }
 
-    public ChartAdapter(ArrayList<TrackInfo> trackInfos, Context context, IChoseTrack iTrackOperation, LinearLayoutManager llm) {
+    public ChartAdapter(List<TrackInfo> trackInfos, Context context, IChoseTrack iChoseTrack, ITrackOperation iTrackOperation, LinearLayoutManager llm) {
         this.trackInfos = trackInfos;
         this.context = context;
+        this.iChoseTrack = iChoseTrack;
         this.iTrackOperation = iTrackOperation;
         this.llm = llm;
         this.chosenTrackInfo = Prefs.getTrackInfo(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE);
@@ -96,8 +98,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         return vh;
     }
 
-    public void changePositionIndicator(PositionPlay positionPlay) {
-        this.positionPlay = positionPlay;
+    public void changePositionIndicator() {
+        this.positionPlay = SPlay.init().positionPlay;
         notifyItemChanged(positionPlay.oldPos);
         notifyItemChanged(positionPlay.newPos);
     }
@@ -115,34 +117,41 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
 //        holder.textPosition.setText(Integer.toString(position+1));
         Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
         holder.relLayMain.setOnClickListener(view -> {
-            iTrackOperation.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
+            iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
-        holder.indicator.setVisibility(View.GONE);
-        holder.artistImage.setAlpha(1f);
 
-        if(positionPlay != null){
-            if(positionPlay.newPos != -1 && positionPlay.newPos == position) {
+        if (positionPlay != null) {
+            if (positionPlay.newPos != -1 && positionPlay.newPos == position) {
                 Timber.d(TAG + " position VISIBLE " + position);
                 holder.indicator.setVisibility(View.VISIBLE);
                 holder.artistImage.setAlpha(0.3f);
+            } else {
+                holder.indicator.setVisibility(View.GONE);
+                holder.artistImage.setAlpha(1f);
             }
         }
 
-        holder.relLayLike.setOnClickListener(view -> {
-            holder.imageLike.setColorFilter(context.getResources().getColor(R.color.colorOrange));
-            holder.textLike.setTextColor(context.getResources().getColor(R.color.colorOrange));
-            holder.textLike.setText(trackInfo.getLikes() + 1);
-            holder.relLayLike.setClickable(false);
-            holder.relLayDislike.setClickable(false);
-        });
-        holder.relLayDislike.setOnClickListener(view -> {
-            holder.imageDislike.setColorFilter(context.getResources().getColor(R.color.colorAccent));
-            holder.textDislike.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            holder.textDislike.setText(trackInfo.getLikes() + 1);
-            holder.relLayLike.setClickable(false);
-            holder.relLayDislike.setClickable(false);
-        });
-
+        fillNothing(holder);
+        if(trackInfo.getUserLike() == null){
+            holder.relLayLike.setOnClickListener(view -> {
+                Integer newLike = trackInfo.getLikes() + 1;
+                holder.textLike.setText(newLike.toString());
+                trackInfo.setUserLike(true);
+                fillLikes(holder);
+                iTrackOperation.trackLike(trackInfo.getTrackId(), true);
+            });
+            holder.relLayDislike.setOnClickListener(view -> {
+                Integer newLike = trackInfo.getDislikes() + 1;
+                holder.textDislike.setText(newLike.toString());
+                trackInfo.setUserLike(false);
+                fillDisLikes(holder);
+                iTrackOperation.trackLike(trackInfo.getTrackId(), false);
+            });
+        } else if(trackInfo.getUserLike()){
+            fillLikes(holder);
+        } else {
+            fillDisLikes(holder);
+        }
     }
 
     @Override
@@ -159,6 +168,35 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return trackInfos.size();
+    }
+
+    private void fillLikes(ViewHolder holder){
+        int colorOrange = context.getResources().getColor(R.color.colorOrange);
+        holder.imageLike.setColorFilter(colorOrange);
+        holder.textLike.setTextColor(colorOrange);
+        clickableLikes(holder, false);
+    }
+
+    private void fillDisLikes(ViewHolder holder){
+        int colorAccent = context.getResources().getColor(R.color.colorAccent);
+        holder.imageDislike.setColorFilter(colorAccent);
+        holder.textDislike.setTextColor(colorAccent);
+        clickableLikes(holder, false);
+    }
+
+    private void fillNothing(ViewHolder holder){
+        int color = context.getResources().getColor(R.color.colorGrey);
+        holder.imageLike.setColorFilter(color);
+        holder.textLike.setTextColor(color);
+        clickableLikes(holder, true);
+        holder.imageDislike.setColorFilter(color);
+        holder.textDislike.setTextColor(color);
+        clickableLikes(holder, true);
+    }
+
+    private void clickableLikes(ViewHolder holder, boolean clickable){
+        holder.relLayLike.setClickable(clickable);
+        holder.relLayDislike.setClickable(clickable);
     }
 
 }

@@ -37,6 +37,7 @@ import com.deezer.sdk.player.exception.StreamTokenAlreadyDecodedException;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.deezer.sdk.player.networkcheck.WifiAndMobileNetworkStateChecker;
 import com.trackdealer.R;
+import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.models.PositionPlay;
@@ -97,9 +98,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     TextView mTextTrack;
     //    @Bind(R.id.text_position)
 //    TextView mTextPos;
-    protected PositionPlay positionPlay;
-    protected Track playingTrack;
-    protected List<TrackInfo> trackList;
+
 
     protected DeezerConnect mDeezerConnect = null;
     protected TrackPlayer trackPlayer;
@@ -151,6 +150,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     }
 
     protected int playNextTrack() {
+        List<TrackInfo> trackList = SPlay.init().trackList;
+        Track playingTrack = SPlay.init().playingTrack;
         for (int i = 0; i < trackList.size(); i++) {
             if (trackList.get(i).getTrackId() == playingTrack.getId()) {
                 if (i + 1 < trackList.size()) {
@@ -166,6 +167,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     }
 
     protected Integer getPositionPlay() {
+        List<TrackInfo> trackList = SPlay.init().trackList;
+        Track playingTrack = SPlay.init().playingTrack;
         Integer positionPlay = -1;
         for (int i = 0; i < trackList.size(); i++) {
             if (playingTrack != null && playingTrack.getId() == trackList.get(i).getTrackId()) {
@@ -178,6 +181,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
     @Override
     public void choseTrackForPlay(TrackInfo trackInfo, Integer pos) {
+        Track playingTrack = SPlay.init().playingTrack;
         PlayerState playerState = trackPlayer.getPlayerState();
         if (playingTrack != null && playingTrack.getId() == trackInfo.getTrackId()) {
             if (playerState == PlayerState.PLAYING)
@@ -204,19 +208,19 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
                 Integer oldPos = getPositionPlay();
 
-                playingTrack = (Track) result;
+                SPlay.init().playingTrack = (Track) result;
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        trackPlayer.playTrack(playingTrack.getId());
+                        trackPlayer.playTrack(SPlay.init().playingTrack.getId());
                     }
                 }).start();
 
 
                 Integer newPos = getPositionPlay();
-                positionPlay = new PositionPlay(oldPos, newPos);
-                EventBus.getDefault().post(positionPlay);
+                SPlay.init().positionPlay = new PositionPlay(oldPos, newPos);
+                EventBus.getDefault().post(SPlay.init().positionPlay);
 
                 setButtonEnabled(mButtonPlayerPause, true);
                 setButtonEnabled(mButtonPlayerSkipForward, true);
@@ -440,10 +444,13 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             message = exception.getClass().getName();
         }
 
-        HashMap<String, String> logMap = Prefs.getHashMap(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR);
+        HashMap<String, String> logMap = Prefs.getHashMap(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR);
+        if (logMap == null)
+            logMap = new HashMap<>();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
         logMap.put(sdf.format(calendar.getTime()), message);
+        Prefs.putHashMap(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR, logMap);
 
         Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
         ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(Color.RED);

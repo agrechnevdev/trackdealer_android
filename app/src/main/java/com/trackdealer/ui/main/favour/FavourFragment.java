@@ -285,7 +285,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     }
 
     private void showTrackList() {
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
         mTracksAdapter = new SearchTracksAdapter(trackList, getActivity(), this);
         recyclerView.setAdapter(mTracksAdapter);

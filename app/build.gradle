@@ -73,5 +73,6 @@ dependencies {
 
     compile 'org.greenrobot:eventbus:3.0.0'
 
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
     compile 'com.taishi-y:musicindicator:0.1.0'
 }

@@ -13,15 +13,13 @@ import android.view.ViewGroup;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.ChartAdapter;
+import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IChoseTrack;
-import com.trackdealer.interfaces.INextSongSetImage;
-import com.trackdealer.interfaces.IProvideTrackList;
+import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.interfaces.ITrackOperation;
-import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,7 +33,7 @@ import timber.log.Timber;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLayout.OnRefreshListener, INextSongSetImage, ITrackOperation {
+public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLayout.OnRefreshListener, ITrackOperation {
 
     private final String TAG = "MainCardsFragment ";
 
@@ -50,11 +48,10 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Bind(R.id.fragment_chart_recycler_view)
     RecyclerView recyclerView;
 
-    ArrayList<TrackInfo> trackList = new ArrayList<>();
     ChartAdapter mTracksAdapter;
 
     IChoseTrack iChoseTrack;
-    IProvideTrackList iProvideTrackList;
+    ITrackListState iProvideTrackList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,16 +64,14 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
         chartPresenter = new ChartPresenter(restapi, getActivity().getApplicationContext());
         chartPresenter.attachView(this);
-        loadTrackListStart();
-//        trackList = (ArrayList<TrackInfo>) iProvideTrackList.getTrackList();
-//        if (trackList == null) {
-//            trackList = new ArrayList<>();
-//            loadTrackListStart();
-//        }
+
+        if(SPlay.init().trackList == null || SPlay.init().trackList.isEmpty()){
+            loadTrackListStart();
+        }
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(llm);
-        mTracksAdapter = new ChartAdapter(trackList, getActivity().getApplicationContext(), iChoseTrack, llm);
+        mTracksAdapter = new ChartAdapter(SPlay.init().trackList, getActivity().getApplicationContext(), iChoseTrack, this, llm);
         recyclerView.setAdapter(mTracksAdapter);
 //        recyclerView.addItemDecoration(new SpacesItemDecorator(20));
 
@@ -89,12 +84,8 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Override
     public void onResume() {
         super.onResume();
-//        if(trackList != null)
-//            iProvideTrackList.provideTrackList(trackList);
-        if (mTracksAdapter != null) {
-            mTracksAdapter.notifyDataSetChanged();
-        }
-
+        if(SPlay.init().trackList != null)
+            iProvideTrackList.changePosIndicator();
     }
 
     @Override
@@ -103,9 +94,8 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         chartPresenter.detachView();
     }
 
-    @Override
-    public void changePos(PositionPlay positionPlay) {
-        mTracksAdapter.changePositionIndicator(positionPlay);
+    public void changePositionIndicator() {
+        mTracksAdapter.changePositionIndicator();
     }
 
     @Override
@@ -125,15 +115,14 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     public void loadTrackListStart() {
         swipeLay.setRefreshing(true);
-        trackList.clear();
         chartPresenter.loadTrackList();
     }
 
     @Override
     public void loadTrackListSuccess(List<TrackInfo> list) {
         swipeLay.setRefreshing(false);
-        trackList.addAll(list);
-        iProvideTrackList.provideTrackList(list);
+        SPlay.init().trackList = list;
+        iProvideTrackList.changePosIndicator();
         if (mTracksAdapter != null) {
             mTracksAdapter.updateAdapter(list);
         }
@@ -144,11 +133,19 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     }
 
+//    @OnClick(R.id.fragment_chart_but_random)
+//    public void clickRandomTrack(){
+//        int pos = new Random().nextInt(SPlay.init().trackList.size());
+//        iChoseTrack.choseTrackForPlay(SPlay.init().trackList.get(pos), pos);
+//    }
+
+
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         iChoseTrack = (IChoseTrack) context;
-        iProvideTrackList = (IProvideTrackList) context;
+        iProvideTrackList = (ITrackListState) context;
 
     }
 

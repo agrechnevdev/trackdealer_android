@@ -35,6 +35,8 @@
     <string name="deezer_already_login">Вы уже подключили аккаунт Deezer!</string>
     <string name="deezer_premium_account">Вам доступны для прослушивания полные треки и функции плейлиста</string>
     <string name="deezer_freemium_account">Но Вам недоступны для прослушивания полные треки и функции плейлиста (требуется статус PREMIUM)</string>
+    <string name="deezer_exit">Выход</string>
+    <string name="deezer_account_logout">Вы действительно хотите отключить аккаунт Deezer?</string>
 
     <string name="yes">Да</string>
     <string name="no">Нет</string>
