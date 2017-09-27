@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.ui.login;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.trackdealer.R;
+import com.trackdealer.base.BaseActivity;
 import com.trackdealer.utils.Prefs;
 
 import java.text.ParseException;

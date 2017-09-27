@@ -2,10 +2,10 @@ package com.trackdealer.net;
 
 import com.trackdealer.module.AppModule;
 import com.trackdealer.module.NetModule;
-import com.trackdealer.ui.ChartFragment;
-import com.trackdealer.ui.FavourFragment;
-import com.trackdealer.ui.LoginActivity;
-import com.trackdealer.ui.MainActivity;
+import com.trackdealer.ui.main.chart.ChartFragment;
+import com.trackdealer.ui.main.favour.FavourFragment;
+import com.trackdealer.ui.login.LoginActivity;
+import com.trackdealer.ui.main.MainActivity;
 
 import javax.inject.Singleton;
 

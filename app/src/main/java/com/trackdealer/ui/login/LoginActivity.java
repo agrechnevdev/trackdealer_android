@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,9 +8,11 @@ import android.widget.RelativeLayout;
 
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
+import com.trackdealer.base.BaseActivity;
 import com.trackdealer.models.User;
 import com.trackdealer.net.FakeRestApi;
 import com.trackdealer.net.Restapi;
+import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;

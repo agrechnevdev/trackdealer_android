@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.ui.main;
 
 import android.graphics.Color;
 import android.os.Bundle;

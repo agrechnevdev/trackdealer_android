@@ -9,4 +9,5 @@ import com.trackdealer.models.TrackInfo;
 public interface IChoseTrack {
 
     void choseTrackForPlay(TrackInfo trackInfo, Integer pos);
+
 }

@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.ui.main.profile;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.interfaces.IConnected;
+import com.trackdealer.ui.main.DeezerActivity;
 import com.trackdealer.utils.Prefs;
 
 import butterknife.Bind;

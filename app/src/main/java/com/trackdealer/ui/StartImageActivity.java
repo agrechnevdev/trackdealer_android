@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.trackdealer.R;
+import com.trackdealer.ui.login.LoginActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.ui.main.favour;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -32,8 +32,8 @@ import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.helpersUI.SearchTracksAdapter;
 import com.trackdealer.interfaces.IClickTrack;
 import com.trackdealer.models.TrackInfo;
-import com.trackdealer.net.FakeRestApi;
 import com.trackdealer.net.Restapi;
+import com.trackdealer.ui.main.DeezerActivity;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
@@ -49,9 +49,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
-import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
@@ -63,7 +61,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class FavourFragment extends Fragment implements IClickTrack {
+public class FavourFragment extends Fragment implements FavourView, IClickTrack {
 
     private final String TAG = "FavourFragment ";
 
@@ -72,6 +70,7 @@ public class FavourFragment extends Fragment implements IClickTrack {
     private Restapi restapi;
 
     CompositeDisposable compositeDisposable;
+    FavourPresenter favourPresenter;
 
     @Bind(R.id.chose_song_lay_main)
     RelativeLayout relLayMain;
@@ -124,7 +123,8 @@ public class FavourFragment extends Fragment implements IClickTrack {
         restapi = retrofit.create(Restapi.class);
 
         compositeDisposable = new CompositeDisposable();
-
+        favourPresenter = new FavourPresenter(restapi, getActivity().getApplicationContext());
+        favourPresenter.attachView(this);
         loadFavouriteSongStart();
 
         initSubscription();
@@ -144,23 +144,23 @@ public class FavourFragment extends Fragment implements IClickTrack {
     public void onDestroy() {
         super.onDestroy();
         compositeDisposable.dispose();
+        favourPresenter.detachView();
     }
 
     public void loadFavouriteSongStart() {
         showProgressBar();
-        compositeDisposable.add(FakeRestApi.getFavouriteTrack(getActivity())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(
-                        this::loadFavouriteSongSuccess,
-                        ex -> Timber.d(TAG + ex.getMessage()),
-                        this::hideProgressBar
-                ));
+        favourPresenter.loadFavourTrack();
     }
 
-    public void loadFavouriteSongSuccess(TrackInfo trackInfo) {
+    @Override
+    public void loadFavourTrackSuccess(TrackInfo trackInfo) {
         hideProgressBar();
         setFavouriteSong(trackInfo);
+    }
+
+    @Override
+    public void loadFavourTrackFailed(String error) {
+
     }
 
     public void setFavouriteSong(TrackInfo trackInfo) {
@@ -185,11 +185,9 @@ public class FavourFragment extends Fragment implements IClickTrack {
     }
 
     public void initSubscription() {
-        compositeDisposable.add(
-                RxTextView.textChanges(textSearch)
-                        .skip(1)
-                        .debounce(1, TimeUnit.SECONDS)
+        compositeDisposable.add(RxTextView.textChanges(textSearch)
                         .filter(text -> text != null && !TextUtils.isEmpty(text.toString()))
+                        .debounce(1, TimeUnit.SECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(text -> startSearch(text.toString()))
         );

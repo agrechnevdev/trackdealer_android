@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.ui.main;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +17,9 @@ import com.trackdealer.interfaces.IProvideTrackList;
 import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
+import com.trackdealer.ui.main.chart.ChartFragment;
+import com.trackdealer.ui.main.favour.FavourFragment;
+import com.trackdealer.ui.main.profile.ProfileFragment;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

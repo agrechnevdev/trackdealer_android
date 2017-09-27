@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.base;
 
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
