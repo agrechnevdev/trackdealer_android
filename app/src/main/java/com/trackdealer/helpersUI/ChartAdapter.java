@@ -97,15 +97,6 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         return vh;
     }
 
-    public void changePositionIndicator() {
-        if(SPlay.init().positionPlay.oldPos == -1){
-            notifyDataSetChanged();
-        } else {
-            notifyItemChanged(SPlay.init().positionPlay.oldPos);
-            notifyItemChanged(SPlay.init().positionPlay.newPos);
-        }
-    }
-
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Timber.d(TAG + " onBindViewHolder " + position);

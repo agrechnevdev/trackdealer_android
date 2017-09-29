@@ -3,11 +3,20 @@ package com.trackdealer.utils;
 import android.content.Context;
 
 import com.deezer.sdk.model.Track;
+import com.deezer.sdk.network.connect.DeezerConnect;
+import com.deezer.sdk.network.request.DeezerRequest;
+import com.deezer.sdk.network.request.JsonUtils;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.models.User;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Observable;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_LIST;
@@ -93,5 +102,21 @@ public class StaticUtils {
         if (value < 10) {
             builder.insert(0, '0');
         }
+    }
+
+    public static Observable<Object> requestFromDeezer(DeezerConnect deezerConnect, DeezerRequest deezerRequest) {
+
+        return Observable.create(e -> {
+            String requestList2;
+            requestList2 = deezerConnect.requestSync(deezerRequest);
+            Object var3 = null;
+            Object var4;
+            if ((var4 = (new JSONTokener(requestList2)).nextValue()) instanceof JSONObject) {
+                var3 = JsonUtils.deserializeObject((JSONObject) var4);
+            } else if (var4 instanceof JSONArray) {
+                var3 = JsonUtils.deserializeArray((JSONArray) var4);
+            }
+            e.onNext(var3);
+        });
     }
 }

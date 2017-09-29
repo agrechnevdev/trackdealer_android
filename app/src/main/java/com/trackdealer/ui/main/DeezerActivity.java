@@ -15,11 +15,9 @@ import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.connect.SessionStore;
 import com.deezer.sdk.network.connect.event.DialogListener;
-import com.deezer.sdk.network.request.AsyncDeezerTask;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
 import com.deezer.sdk.network.request.event.DeezerError;
-import com.deezer.sdk.network.request.event.JsonRequestListener;
 import com.deezer.sdk.player.TrackPlayer;
 import com.deezer.sdk.player.event.BufferState;
 import com.deezer.sdk.player.event.OnBufferErrorListener;
@@ -43,10 +41,12 @@ import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.Prefs;
+import com.trackdealer.utils.StaticUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -56,6 +56,9 @@ import java.util.Locale;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
@@ -67,6 +70,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     private final String TAG = "DeezerActivity ";
 
     private PlayerHandler mPlayerHandler = new PlayerHandler();
+
+    CompositeDisposable subscription;
 
     @Bind(R.id.button_stop)
     protected ImageButton mButtonPlayerStop;
@@ -116,6 +121,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(R.string.app_name);
         }
+
+        subscription = new CompositeDisposable();
     }
 
     @Override
@@ -148,13 +155,13 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
         doDestroyPlayer();
+        subscription.dispose();
     }
 
     protected int playNextTrack() {
         List<TrackInfo> trackList = SPlay.init().trackList;
-        Track playingTrack = SPlay.init().playingTrack;
         for (int i = 0; i < trackList.size(); i++) {
-            if (trackList.get(i).getTrackId() == playingTrack.getId()) {
+            if (trackList.get(i).getTrackId() == SPlay.init().playingTrack.getId()) {
                 if (i + 1 < trackList.size()) {
                     choseTrackForPlay(trackList.get(i + 1), i + 1);
                     return i + 1;
@@ -167,12 +174,10 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         return 0;
     }
 
-    protected Integer getPositionPlay() {
-        List<TrackInfo> trackList = SPlay.init().trackList;
-        Track playingTrack = SPlay.init().playingTrack;
+    protected Integer getPositionPlay(Long trackId) {
         Integer positionPlay = -1;
-        for (int i = 0; i < trackList.size(); i++) {
-            if (playingTrack != null && playingTrack.getId() == trackList.get(i).getTrackId()) {
+        for (int i = 0; i < SPlay.init().trackList.size(); i++) {
+            if (trackId != null && trackId == SPlay.init().trackList.get(i).getTrackId()) {
                 positionPlay = i;
                 break;
             }
@@ -189,59 +194,51 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                 trackPlayer.pause();
             else if (playerState == PlayerState.PAUSED)
                 trackPlayer.play();
+            else if (trackPlayer.getPlayerState() == PlayerState.RELEASED)
+                recreatePlayer();
         } else {
             if (playerState == PlayerState.PLAYING)
                 trackPlayer.stop();
+            else if (trackPlayer.getPlayerState() == PlayerState.RELEASED)
+                recreatePlayer();
+            // меняем позицию индикатора
+            Integer oldPos = getPositionPlay(SPlay.init().getPlayingTrackId());
+            Integer newPos = getPositionPlay(trackInfo.getTrackId());
+            SPlay.init().positionPlay = new PositionPlay(oldPos, newPos);
+            EventBus.getDefault().post(SPlay.init().positionPlay);
+
+            // отображаем информацию о треке в плеере и кнопки
             displayTrackInfo(trackInfo, pos);
-            setButtonEnabled(mButtonPlayerPause, false);
-            setButtonEnabled(mButtonPlayerSkipForward, false);
-            setPlayerVisible(true);
+            // грузим песню
             loadSong(trackInfo);
         }
     }
 
+    // грузим загружаем песню
     public void loadSong(TrackInfo trackInfo) {
         DeezerRequest request = DeezerRequestFactory.requestTrack(trackInfo.getTrackId());
-        AsyncDeezerTask task = new AsyncDeezerTask(mDeezerConnect, new JsonRequestListener() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void onResult(final Object result, final Object requestId) {
+        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(obj -> {
+                            SPlay.init().playingTrack = (Track) obj;
 
-                Integer oldPos = getPositionPlay();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    trackPlayer.playTrack(SPlay.init().playingTrack.getId());
+                                }
+                            }).start();
 
-                SPlay.init().playingTrack = (Track) result;
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        trackPlayer.playTrack(SPlay.init().playingTrack.getId());
-                    }
-                }).start();
-
-                Integer newPos = getPositionPlay();
-                SPlay.init().positionPlay = new PositionPlay(oldPos, newPos);
-                EventBus.getDefault().post(SPlay.init().positionPlay);
-
-                setButtonEnabled(mButtonPlayerPause, true);
-                setButtonEnabled(mButtonPlayerSkipForward, true);
-
-            }
-
-            @Override
-            public void onUnparsedResult(final String response, final Object requestId) {
-                handleError(null, new DeezerError("Не удалось обработать ответ от сервера"));
-            }
-
-            @Override
-            public void onException(final Exception exception,
-                                    final Object requestId) {
-                if (exception instanceof ConnectException) {
-                    recreatePlayer();
-                }
-                handleError("Не удалось загрузить песню", exception);
-            }
-        });
-        task.execute(request);
+                            setButtonEnabled(mButtonPlayerPause, true);
+                            setButtonEnabled(mButtonPlayerSkipForward, true);
+                        },
+                        ex -> {
+                            if (ex instanceof ConnectException) {
+                                recreatePlayer();
+                            }
+                            handleError("Не удалось загрузить песню", (Exception) ex);
+                        }));
     }
 
     protected TrackPlayer recreatePlayer() {
@@ -273,6 +270,10 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         showPlayerProgress(0);
         mTextArtist.setText(trackInfo.getArtist());
         mTextTrack.setText(trackInfo.getTitle());
+        // блочим кнопки и показываем плеер
+        setButtonEnabled(mButtonPlayerPause, false);
+        setButtonEnabled(mButtonPlayerSkipForward, false);
+        setPlayerVisible(true);
     }
 
     public void showPlayerProgress(final long timePosition) {
@@ -292,12 +293,12 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
         switch (state) {
             case STARTED:
-                mButtonPlayerPause.setEnabled(true);
-                mButtonPlayerPause.setImageResource(R.drawable.ic_play);
+//                mButtonPlayerPause.setEnabled(true);
+//                mButtonPlayerPause.setImageResource(R.drawable.ic_play);
                 break;
             case INITIALIZING:
-                mButtonPlayerPause.setEnabled(true);
-                mButtonPlayerPause.setImageResource(R.drawable.ic_play);
+//                mButtonPlayerPause.setEnabled(true);
+//                mButtonPlayerPause.setImageResource(R.drawable.ic_play);
                 break;
             case READY:
                 mButtonPlayerPause.setEnabled(true);
@@ -442,6 +443,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             messageForUser = "Ошибка плеера";
         } else if (exception instanceof ConnectException) {
             messageForUser = "Ошибка соединения";
+        }else if (exception instanceof SocketException) {
+                messageForUser = "Ошибка при загрузке";
         } else if (exception instanceof DeezerError) {
             cause += ((DeezerError) exception).getMessage() != null ? " message " + ((DeezerError) exception).getMessage() : "";
             cause += " code " + ((DeezerError) exception).getErrorCode();

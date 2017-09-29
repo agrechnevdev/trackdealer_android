@@ -29,7 +29,10 @@ public class SPlay {
         return instance;
     }
 
-
-
-
+    public Long getPlayingTrackId() {
+        if(playingTrack != null)
+            return playingTrack.getId();
+        else
+            return null;
+    }
 }

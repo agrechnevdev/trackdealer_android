@@ -6,6 +6,6 @@ package com.trackdealer.interfaces;
 
 public interface ITrackListState {
 
-    void changePosIndicator();
+    void updatePosIndicator();
 
 }

@@ -19,11 +19,9 @@ import android.widget.TextView;
 
 import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
-import com.deezer.sdk.network.request.AsyncDeezerTask;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
 import com.deezer.sdk.network.request.SearchResultOrder;
-import com.deezer.sdk.network.request.event.JsonRequestListener;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.squareup.picasso.Picasso;
 import com.trackdealer.BaseApp;
@@ -49,6 +47,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
@@ -69,7 +68,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     Retrofit retrofit;
     private Restapi restapi;
 
-    CompositeDisposable compositeDisposable;
+    CompositeDisposable subscription;
     FavourPresenter favourPresenter;
 
     @Bind(R.id.chose_song_lay_main)
@@ -122,7 +121,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
         ((BaseApp) getActivity().getApplication()).getNetComponent().inject(this);
         restapi = retrofit.create(Restapi.class);
 
-        compositeDisposable = new CompositeDisposable();
+        subscription = new CompositeDisposable();
         favourPresenter = new FavourPresenter(restapi, getActivity().getApplicationContext());
         favourPresenter.attachView(this);
         loadFavouriteSongStart();
@@ -143,7 +142,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        compositeDisposable.dispose();
+        subscription.dispose();
         favourPresenter.detachView();
     }
 
@@ -185,7 +184,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     }
 
     public void initSubscription() {
-        compositeDisposable.add(RxTextView.textChanges(textSearch)
+        subscription.add(RxTextView.textChanges(textSearch)
                 .filter(text -> text != null && !TextUtils.isEmpty(text.toString()))
                 .debounce(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -194,37 +193,20 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     }
 
 
+
     public void startSearch(String search) {
         showProgressBar();
         DeezerRequest request = DeezerRequestFactory.requestSearchTracks(search, SearchResultOrder.Ranking);
-//        Bundle params = new Bundle(1);
-//        params.putString("q", search);
-//        DeezerRequest request = new DeezerRequest("search/track", params);
-        AsyncDeezerTask task = new AsyncDeezerTask(mDeezerConnect,
-                new JsonRequestListener() {
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    public void onResult(final Object result, final Object requestId) {
-                        trackList = StaticUtils.fromListTracks((List<Track>) result);
-                        showTrackList();
-                        hideProgressBar();
-                    }
 
-                    @Override
-                    public void onUnparsedResult(final String response, final Object requestId) {
-//                        handleError(new DeezerError("Unparsed reponse"));
-                        hideProgressBar();
-                    }
-
-                    @Override
-                    public void onException(final Exception exception,
-                                            final Object requestId) {
-                        hideProgressBar();
-//                        handleError(exception);
-                    }
-                }
-        );
-        task.execute(request);
+        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(obj -> {
+                            trackList = StaticUtils.fromListTracks((List<Track>) obj);
+                            showTrackList();
+                            hideProgressBar();
+                        },
+                        ex -> hideProgressBar()));
     }
 
     @OnClick(R.id.chose_song_song_empty)
@@ -302,4 +284,6 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
+
+
 }

@@ -85,7 +85,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void onResume() {
         super.onResume();
         if(SPlay.init().trackList != null)
-            iProvideTrackList.changePosIndicator();
+            iProvideTrackList.updatePosIndicator();
     }
 
     @Override
@@ -94,8 +94,8 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         chartPresenter.detachView();
     }
 
-    public void changePositionIndicator() {
-        mTracksAdapter.changePositionIndicator();
+    public void updatePositionIndicator() {
+        mTracksAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -122,7 +122,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void loadTrackListSuccess(List<TrackInfo> list) {
         swipeLay.setRefreshing(false);
         SPlay.init().trackList = list;
-        iProvideTrackList.changePosIndicator();
+        iProvideTrackList.updatePosIndicator();
         if (mTracksAdapter != null) {
             mTracksAdapter.updateAdapter(list);
         }

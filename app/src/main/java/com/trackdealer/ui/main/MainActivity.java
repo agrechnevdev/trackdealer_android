@@ -90,7 +90,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PositionPlay posPlay) {
-        chartFragment.changePositionIndicator();
+        chartFragment.updatePositionIndicator();
     }
 
     @Override
@@ -107,12 +107,10 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     }
 
     @Override
-    public void changePosIndicator() {
-        SPlay.init().positionPlay = new PositionPlay(-1, getPositionPlay());
-        chartFragment.changePositionIndicator();
+    public void updatePosIndicator() {
+        SPlay.init().positionPlay = new PositionPlay(-1, getPositionPlay(SPlay.init().getPlayingTrackId()));
+        chartFragment.updatePositionIndicator();
     }
-
-
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
