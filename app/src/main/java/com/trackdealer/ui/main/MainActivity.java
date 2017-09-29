@@ -158,7 +158,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Override
     public void onRequestException(final Exception e, final Object requestId) {
-        handleError(e);
+        handleError("Ошибка при запросе на сервер", e);
     }
 
 }

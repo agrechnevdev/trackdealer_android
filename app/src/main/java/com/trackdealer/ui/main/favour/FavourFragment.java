@@ -186,10 +186,10 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
 
     public void initSubscription() {
         compositeDisposable.add(RxTextView.textChanges(textSearch)
-                        .filter(text -> text != null && !TextUtils.isEmpty(text.toString()))
-                        .debounce(1, TimeUnit.SECONDS)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(text -> startSearch(text.toString()))
+                .filter(text -> text != null && !TextUtils.isEmpty(text.toString()))
+                .debounce(1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(text -> startSearch(text.toString()))
         );
     }
 
@@ -249,20 +249,24 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
             CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                     R.string.chose_song_title, R.string.chose_song_message,
                     R.string.yes, (dialog, id) -> {
-                hideKeyboard();
-                setFavouriteSong(trackInfo);
-                trackInfo.setUser(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER));
-                Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
-                ArrayList<TrackInfo> list = Prefs.getTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
-                list.add(trackInfo);
-                Prefs.putTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, list);
-                relLaySearch.setVisibility(View.GONE);
+                saveFavSong(trackInfo);
             },
                     R.string.no, (dialog, id) -> dialog.dismiss());
             builder.create().show();
         } else {
             ErrorHandler.showSnackbarError(relLayMain, "Песня уже в чарте!");
         }
+    }
+
+    public void saveFavSong(TrackInfo trackInfo) {
+        hideKeyboard();
+        setFavouriteSong(trackInfo);
+        trackInfo.setUser(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER));
+        Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
+        ArrayList<TrackInfo> list = Prefs.getTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
+        list.add(trackInfo);
+        Prefs.putTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, list);
+        relLaySearch.setVisibility(View.GONE);
     }
 
     public void hideKeyboard() {

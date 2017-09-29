@@ -19,7 +19,6 @@ import com.taishi.library.Indicator;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.ITrackOperation;
-import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.Prefs;
 
@@ -42,7 +41,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     IChoseTrack iChoseTrack;
     ITrackOperation iTrackOperation;
     LinearLayoutManager llm;
-    PositionPlay positionPlay;
+//    PositionPlay positionPlay;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -99,9 +98,12 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     }
 
     public void changePositionIndicator() {
-        this.positionPlay = SPlay.init().positionPlay;
-        notifyItemChanged(positionPlay.oldPos);
-        notifyItemChanged(positionPlay.newPos);
+        if(SPlay.init().positionPlay.oldPos == -1){
+            notifyDataSetChanged();
+        } else {
+            notifyItemChanged(SPlay.init().positionPlay.oldPos);
+            notifyItemChanged(SPlay.init().positionPlay.newPos);
+        }
     }
 
     @Override
@@ -120,8 +122,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
-        if (positionPlay != null) {
-            if (positionPlay.newPos != -1 && positionPlay.newPos == position) {
+        if (SPlay.init().positionPlay != null) {
+            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
                 Timber.d(TAG + " position VISIBLE " + position);
                 holder.indicator.setVisibility(View.VISIBLE);
                 holder.artistImage.setAlpha(0.3f);

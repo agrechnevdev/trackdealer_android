@@ -46,6 +46,7 @@ import com.trackdealer.utils.Prefs;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.net.ConnectException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -217,7 +218,6 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                     }
                 }).start();
 
-
                 Integer newPos = getPositionPlay();
                 SPlay.init().positionPlay = new PositionPlay(oldPos, newPos);
                 EventBus.getDefault().post(SPlay.init().positionPlay);
@@ -229,13 +229,16 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
             @Override
             public void onUnparsedResult(final String response, final Object requestId) {
-                handleError(new DeezerError("Не удалось обработать ответ от сервера"));
+                handleError(null, new DeezerError("Не удалось обработать ответ от сервера"));
             }
 
             @Override
             public void onException(final Exception exception,
                                     final Object requestId) {
-                handleError(exception);
+                if (exception instanceof ConnectException) {
+                    recreatePlayer();
+                }
+                handleError("Не удалось загрузить песню", exception);
             }
         });
         task.execute(request);
@@ -247,7 +250,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             trackPlayer = new TrackPlayer(getApplication(), mDeezerConnect, new WifiAndMobileNetworkStateChecker());
             setAttachedPlayer(trackPlayer);
         } catch (TooManyPlayersExceptions | DeezerError e) {
-            handleError(e);
+            handleError("Ошибка при создании плеера", e);
         }
         return trackPlayer;
     }
@@ -335,7 +338,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         @Override
         public void onBufferError(final Exception ex, final double percent) {
             Timber.d(TAG + "onBufferError");
-            runOnUiThread(() -> handleError(ex));
+            runOnUiThread(() -> handleError("Ошибка при загрузке буфера", ex));
         }
 
         @Override
@@ -348,7 +351,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         public void onPlayerError(final Exception ex, final long timePosition) {
             Timber.d(TAG + "onPlayerError");
             runOnUiThread(() -> {
-                handleError(ex);
+                handleError("Ошибка плеера", ex);
                 if (ex instanceof NotAllowedToPlayThatSongException) {
                     trackPlayer.skipToNextTrack();
                 }
@@ -423,25 +426,28 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
      *
      * @param exception the exception that occured while contacting Deezer services.
      */
-    protected void handleError(final Exception exception) {
-        String message = exception.getMessage();
+    protected void handleError(String messageForUser, final Exception exception) {
+        String cause = exception.getCause() != null ? exception.getCause().getMessage() : "";
         if (exception instanceof NotAllowedToPlayThatSongException) {
-            message = "Ошибка! Пользователь не имеет прав для вопроизведения.";
+            messageForUser = "Ошибка! Пользователь не имеет прав для вопроизведения.";
         } else if (exception instanceof StreamTokenAlreadyDecodedException) {
-            message = "Ошибка! Контент уже проигрывался.";
+            messageForUser = "Ошибка! Контент уже проигрывался.";
         } else if (exception instanceof InvalidStreamTokenException) {
-            message = "Ошибка! Недопустимый токен потока.";
+            messageForUser = "Ошибка! Недопустимый токен потока.";
         } else if (exception instanceof StreamLimitationException) {
-            message = "Ошибка! Аккаунт Deezer используется сразу на нескольких устройствах.";
+            messageForUser = "Ошибка! Аккаунт Deezer используется сразу на нескольких устройствах.";
         } else if (exception instanceof TooManyPlayersExceptions) {
-            message = "Ошибка! Слишком много плееров создано.";
+            messageForUser = "Ошибка! Слишком много плееров создано.";
         } else if (exception instanceof DeezerPlayerException) {
-            message = "Ошибка плеера";
+            messageForUser = "Ошибка плеера";
+        } else if (exception instanceof ConnectException) {
+            messageForUser = "Ошибка соединения";
         } else if (exception instanceof DeezerError) {
-            if (((DeezerError) exception).getErrorType() != null)
-                message = "Ошибка: " + ((DeezerError) exception).toString();
+            cause += ((DeezerError) exception).getMessage() != null ? " message " + ((DeezerError) exception).getMessage() : "";
+            cause += " code " + ((DeezerError) exception).getErrorCode();
+            cause += ((DeezerError) exception).getErrorType() != null ? " type " + ((DeezerError) exception).getErrorType() : "";
         } else {
-            message = exception.getClass().getName();
+            messageForUser = exception.getClass().getName();
         }
 
         HashMap<String, String> logMap = Prefs.getHashMap(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR);
@@ -449,14 +455,14 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             logMap = new HashMap<>();
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
         Calendar calendar = Calendar.getInstance();
-        logMap.put(sdf.format(calendar.getTime()), message);
+        logMap.put(sdf.format(calendar.getTime()), messageForUser + "\n" + cause + "\n" + exception.getClass().getName());
         Prefs.putHashMap(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR, logMap);
 
-        Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(this, messageForUser, Toast.LENGTH_LONG);
         ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(Color.RED);
         toast.show();
 
-        Timber.d(TAG + " Exception occured " + message);
+        Timber.d(TAG + " Exception occured " + messageForUser + "\n" + cause + "\n" + exception.getClass().getName());
     }
 
     /**
