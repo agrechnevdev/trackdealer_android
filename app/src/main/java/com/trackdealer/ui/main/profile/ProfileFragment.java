@@ -38,7 +38,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 public class ProfileFragment extends Fragment implements IConnected {
 
     private final String TAG = "ProfileFragment ";
-    CompositeDisposable compositeDisposable;
+    CompositeDisposable subscription;
 
     DeezerConnect mDeezerConnect = null;
     IConnectDeezer iConnectDeezer;
@@ -78,7 +78,7 @@ public class ProfileFragment extends Fragment implements IConnected {
 //        restapi = retrofit.create(Restapi.class);
 
         initFields();
-        compositeDisposable = new CompositeDisposable();
+        subscription = new CompositeDisposable();
         return view;
     }
 
@@ -125,7 +125,7 @@ public class ProfileFragment extends Fragment implements IConnected {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        compositeDisposable.dispose();
+        subscription.dispose();
     }
 
     @OnClick(R.id.profile_but_deezer_login)

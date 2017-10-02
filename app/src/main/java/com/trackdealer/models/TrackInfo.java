@@ -1,5 +1,7 @@
 package com.trackdealer.models;
 
+import com.deezer.sdk.model.Genre;
+
 import java.util.Random;
 
 /**
@@ -20,8 +22,10 @@ public class TrackInfo {
     private Boolean userLike;
 
     private User user;
+    private long albumId;
+    private Genre genre;
 
-    public TrackInfo(long trackId, String title, String artist, Integer duration, String coverImage) {
+    public TrackInfo(long trackId, String title, String artist, Integer duration, String coverImage, long albumId) {
         this.trackId = trackId;
         this.title = title;
         this.artist = artist;
@@ -29,20 +33,7 @@ public class TrackInfo {
         this.coverImage = coverImage;
         likes = new Random().nextInt(10000);
         dislikes = new Random().nextInt(10000);
-//        int rnd = new Random().nextInt(4);
-//        switch (rnd){
-//            case 0 :
-//                userLike = true;
-//                break;
-//            case 1 :
-//                userLike = false;
-//                break;
-//            case 2 :
-//            case 3 :
-//                userLike = null;
-//                break;
-//        }
-
+        this.albumId = albumId;
     }
 
     public long getTrackId() {
@@ -124,5 +115,21 @@ public class TrackInfo {
 
     public void setUserLike(Boolean userLike) {
         this.userLike = userLike;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
+    public long getAlbumId() {
+        return albumId;
+    }
+
+    public void setAlbumId(long albumId) {
+        this.albumId = albumId;
     }
 }

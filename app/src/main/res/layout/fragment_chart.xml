@@ -9,11 +9,53 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <RelativeLayout
+            android:id="@+id/fragment_chart_lay_help"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/horizontal_margin"
+            android:layout_marginRight="@dimen/horizontal_margin">
+
+            <ImageView
+                android:id="@+id/fragment_chart_but_random"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@drawable/ic_random_cube" />
+
+            <LinearLayout
+                android:id="@+id/fragment_chart_lay_filter"
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="@dimen/horizontal_margin"
+                android:layout_toRightOf="@id/fragment_chart_but_random"
+                android:background="@drawable/selectable_item_background">
+
+                <ImageView
+                    android:id="@+id/fragment_chart_but_filter"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:srcCompat="@drawable/ic_filter_list" />
+
+                <TextView
+                    android:id="@+id/fragment_chart_text_filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="12312312313213213123123123213123"
+                    android:textColor="@color/colorAccent" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_chart_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/player" />
+            android:layout_above="@id/player"
+            android:layout_below="@id/fragment_chart_lay_help" />
 
     </RelativeLayout>
 

@@ -24,9 +24,19 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_LIST;
 
 public class FakeRestApi {
 
-    public static Observable<Response<List<TrackInfo>>> getChartTrack(Context context) {
+    public static Observable<Response<List<TrackInfo>>> getChartTrack(Context context, String genre) {
         List<TrackInfo> list = Prefs.getTrackList(context.getApplicationContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
-        return Observable.just(Response.success(list));
+        List<TrackInfo> listFiltered = new ArrayList<>();
+        if (genre.equals("Все"))
+            return Observable.just(Response.success(list));
+        else {
+            for (TrackInfo trackInfo : list) {
+                if (trackInfo.getGenre() != null && trackInfo.getGenre().getName().equals(genre)) {
+                    listFiltered.add(trackInfo);
+                }
+            }
+            return Observable.just(Response.success(listFiltered));
+        }
     }
 
     public static Observable<Response<TrackInfo>> getFavouriteTrack(Context context) {
@@ -44,9 +54,9 @@ public class FakeRestApi {
 
     public static Observable<Response<ResponseBody>> trackLike(Context context, long trackInfoId, Boolean like) {
         ArrayList<TrackInfo> list = Prefs.getTrackList(context.getApplicationContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
-        for(TrackInfo trackInfo : list){
-            if(trackInfo.getTrackId() == trackInfoId){
-                if(like)
+        for (TrackInfo trackInfo : list) {
+            if (trackInfo.getTrackId() == trackInfoId) {
+                if (like)
                     trackInfo.setLikes(trackInfo.getLikes() + 1);
                 else
                     trackInfo.setDislikes(trackInfo.getDislikes() + 1);
@@ -55,6 +65,6 @@ public class FakeRestApi {
                 break;
             }
         }
-        return  Observable.just(Response.success(ResponseBody.create(MediaType.parse("application/json"), "")));
+        return Observable.just(Response.success(ResponseBody.create(MediaType.parse("application/json"), "")));
     }
 }

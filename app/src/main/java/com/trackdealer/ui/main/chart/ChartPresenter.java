@@ -43,9 +43,9 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         subscription.dispose();
     }
 
-    void loadTrackList(){
+    void loadTrackList(String genre){
         if (ConnectionsManager.isOnline(context)) {
-            subscription.add(FakeRestApi.getChartTrack(context)
+            subscription.add(FakeRestApi.getChartTrack(context, genre)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(

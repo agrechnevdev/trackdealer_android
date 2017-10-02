@@ -1,6 +1,8 @@
 package com.trackdealer.net;
 
-import com.trackdealer.models.MyTrack;
+import com.deezer.sdk.model.Genre;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.Response;
@@ -15,6 +17,6 @@ import retrofit2.http.Url;
 public interface Restapi {
 
     @GET()
-    Observable<Response<MyTrack>> getTrackById(@Url String url);
+    Observable<Response<List<Genre>>> getGenres(@Url String url);
 
 }

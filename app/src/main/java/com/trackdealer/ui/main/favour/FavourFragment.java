@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.deezer.sdk.model.Album;
 import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
@@ -193,7 +194,6 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     }
 
 
-
     public void startSearch(String search) {
         showProgressBar();
         DeezerRequest request = DeezerRequestFactory.requestSearchTracks(search, SearchResultOrder.Ranking);
@@ -211,6 +211,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
 
     @OnClick(R.id.chose_song_song_empty)
     public void clickChoseSong() {
+        hideProgressBar();
         relLaySearch.setVisibility(View.VISIBLE);
         textSearch.requestFocus();
         textSearch.setFocusableInTouchMode(true);
@@ -242,12 +243,23 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
 
     public void saveFavSong(TrackInfo trackInfo) {
         hideKeyboard();
+
+        DeezerRequest request = DeezerRequestFactory.requestAlbum(trackInfo.getAlbumId());
         setFavouriteSong(trackInfo);
-        trackInfo.setUser(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER));
-        Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
-        ArrayList<TrackInfo> list = Prefs.getTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
-        list.add(trackInfo);
-        Prefs.putTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, list);
+        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(obj -> {
+                            if (!((Album) obj).getGenres().isEmpty())
+                                trackInfo.setGenre(((Album) obj).getGenres().get(0));
+
+                            trackInfo.setUser(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER));
+                            Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
+                            ArrayList<TrackInfo> list = Prefs.getTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
+                            list.add(trackInfo);
+                            Prefs.putTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, list);
+                        },
+                        ex -> hideProgressBar()));
         relLaySearch.setVisibility(View.GONE);
     }
 

@@ -31,7 +31,7 @@ public class StaticUtils {
         ArrayList<TrackInfo> list = new ArrayList<>();
         for(Track track : tracks){
             Long id = track.getId();
-            list.add(new TrackInfo(id.intValue(), track.getTitle(), track.getArtist().getName(), track.getDuration(), track.getAlbum().getSmallImageUrl()));
+            list.add(new TrackInfo(id.intValue(), track.getTitle(), track.getArtist().getName(), track.getDuration(), track.getAlbum().getSmallImageUrl(), track.getAlbum().getId()));
         }
         return list;
     }
@@ -45,19 +45,11 @@ public class StaticUtils {
             User user3 = new User(3, "YA NE VALERA!!!");
             User user4 = new User(4, "ZDAROVA");
 
-            TrackInfo trackInfo1 = new TrackInfo(15911969, "Staring At It", "SafetySuit", 257, "http://api.deezer.com/album/1472647/image");
-            trackInfo1.setUser(user1);
-            tracks.add(trackInfo1);
-
-            TrackInfo trackInfo2 = new TrackInfo(15911968, "Let Go", "SafetySuit", 200, "http://api.deezer.com/album/1472647/image");
-            trackInfo2.setUser(user2);
-            tracks.add(trackInfo2);
-
-            TrackInfo trackInfo3 = new TrackInfo(356306401, "Perfect Color", "SafetySuit", 234, "http://api.deezer.com/album/40882681/image");
+            TrackInfo trackInfo3 = new TrackInfo(356306401, "Perfect Color", "SafetySuit", 234, "http://api.deezer.com/album/40882681/image", 40882681);
             trackInfo3.setUser(user3);
             tracks.add(trackInfo3);
 
-            TrackInfo trackInfo4 = new TrackInfo(136059064, "Numbers or Faith", "SafetySuit", 271, "http://api.deezer.com/album/14543916/image");
+            TrackInfo trackInfo4 = new TrackInfo(136059064, "Numbers or Faith", "SafetySuit", 271, "http://api.deezer.com/album/14543916/image", 14543916);
             trackInfo4.setUser(user4);
             tracks.add(trackInfo4);
 

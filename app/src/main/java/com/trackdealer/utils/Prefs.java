@@ -2,6 +2,7 @@ package com.trackdealer.utils;
 
 import android.content.Context;
 
+import com.deezer.sdk.model.Genre;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.trackdealer.models.TrackInfo;
@@ -11,6 +12,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -57,6 +59,19 @@ public class Prefs {
     public static ArrayList<TrackInfo> getTrackList(Context context, String prefName, String key) {
         String data = context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).getString(key, "");
         Type type = new TypeToken<ArrayList<TrackInfo>>() {
+        }.getType();
+        return new Gson().fromJson(data, type);
+    }
+
+    public static void putGenreList(Context context, String prefName, String key, List<Genre> genres) {
+        Gson gson = new Gson();
+        String json = gson.toJson(genres);
+        context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().putString(key, json).apply();
+    }
+
+    public static List<Genre> getGenreList(Context context, String prefName, String key) {
+        String data = context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).getString(key, "");
+        Type type = new TypeToken<List<Genre>>() {
         }.getType();
         return new Gson().fromJson(data, type);
     }
