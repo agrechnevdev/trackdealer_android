@@ -42,6 +42,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.net.ConnectException;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -146,26 +147,64 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         subscription.dispose();
     }
 
-    protected int playNextTrack() {
+    protected void playNextTrack() {
         List<TrackInfo> trackList = SPlay.init().playList;
-        for (int i = 0; i < trackList.size(); i++) {
-            if (trackList.get(i).getTrackId() == SPlay.init().playingTrack.getId()) {
-                if (i + 1 < trackList.size()) {
-                    choseTrackForPlay(trackList.get(i + 1), i + 1);
-                    return i + 1;
-                } else {
-                    choseTrackForPlay(trackList.get(0), 0);
-                    return 0;
+        if (trackList.size() != 1) {
+            for (int i = 0; i < trackList.size(); i++) {
+                if (trackList.get(i).getTrackId() == SPlay.init().playingTrack.getId()) {
+                    if (i + 1 < trackList.size()) {
+                        choseTrackForPlay(trackList.get(i + 1), i + 1);
+                        return;
+                    } else {
+                        choseTrackForPlay(trackList.get(0), 0);
+                        return;
+                    }
                 }
             }
         }
-        return 0;
     }
 
-    protected Integer getPositionPlay(Long trackId) {
+    @Override
+    public void playRandomTrack() {
+        if(SPlay.init().playList.isEmpty() && !SPlay.init().showList.isEmpty()){
+            SPlay.init().playList.clear();
+            SPlay.init().playList.addAll(SPlay.init().showList);
+            int pos = new Random().nextInt(SPlay.init().playList.size());
+            choseTrackForPlay(SPlay.init().playList.get(pos), pos);
+        } else if(SPlay.init().playList.size() == 1){
+            if(SPlay.init().playingTrack == null){
+                choseTrackForPlay(SPlay.init().playList.get(0), 0);
+            }
+        } else if(SPlay.init().playList.size() > 1){
+            int pos = new Random().nextInt(SPlay.init().playList.size());
+            if(SPlay.init().playingTrack == null){
+                choseTrackForPlay(SPlay.init().playList.get(pos), pos);
+            } else {
+                if(pos != getPosPlayForPlayList(SPlay.init().playingTrack.getId())){
+                    choseTrackForPlay(SPlay.init().playList.get(pos), pos);
+                } else {
+                    pos = pos == 0 ? SPlay.init().playList.size() - 1 : 0;
+                    choseTrackForPlay(SPlay.init().playList.get(pos), pos);
+                }
+            }
+        }
+    }
+
+    protected Integer getPosPlayForPlayList(Long trackId) {
         Integer positionPlay = -1;
         for (int i = 0; i < SPlay.init().playList.size(); i++) {
             if (trackId != null && trackId == SPlay.init().playList.get(i).getTrackId()) {
+                positionPlay = i;
+                break;
+            }
+        }
+        return positionPlay;
+    }
+
+    protected Integer getPosPlayForIndicator(Long trackId) {
+        Integer positionPlay = -1;
+        for (int i = 0; i < SPlay.init().showList.size(); i++) {
+            if (trackId != null && trackId == SPlay.init().showList.get(i).getTrackId()) {
                 positionPlay = i;
                 break;
             }
@@ -189,9 +228,10 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                 trackPlayer.stop();
             else if (trackPlayer.getPlayerState() == PlayerState.RELEASED)
                 recreatePlayer();
+
             // меняем позицию индикатора
-            Integer oldPos = getPositionPlay(SPlay.init().getPlayingTrackId());
-            Integer newPos = getPositionPlay(trackInfo.getTrackId());
+            Integer oldPos = getPosPlayForIndicator(SPlay.init().getPlayingTrackId());
+            Integer newPos = getPosPlayForIndicator(trackInfo.getTrackId());
             SPlay.init().positionPlay = new PositionPlay(oldPos, newPos);
             EventBus.getDefault().post(SPlay.init().positionPlay);
 

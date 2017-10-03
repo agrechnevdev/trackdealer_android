@@ -13,19 +13,20 @@
             android:id="@+id/fragment_chart_lay_help"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/horizontal_margin"
-            android:layout_marginRight="@dimen/horizontal_margin">
+            android:paddingLeft="@dimen/horizontal_margin"
+            android:paddingRight="@dimen/horizontal_margin"
+            android:background="@color/colorLightOrange">
 
             <ImageView
                 android:id="@+id/fragment_chart_but_random"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_random_cube" />
+                app:srcCompat="@drawable/ic_random_cube"                />
 
             <LinearLayout
                 android:id="@+id/fragment_chart_lay_filter"
-                android:layout_width="240dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginRight="@dimen/horizontal_margin"
@@ -40,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/fragment_chart_text_filter"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:gravity="center_vertical"
                     android:maxLines="2"

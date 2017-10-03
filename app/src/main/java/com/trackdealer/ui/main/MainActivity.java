@@ -73,6 +73,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
         recreatePlayer();
 
+        trackPlayer.addPlayerListener(this);
         chartFragment = new ChartFragment();
         favourFragment = new FavourFragment();
         profileFragment = new ProfileFragment();
@@ -97,13 +98,13 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     protected void onResume() {
         super.onResume();
         Timber.d(TAG + " onResume() ");
-        trackPlayer.addPlayerListener(this);
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        trackPlayer.removePlayerListener(this);
+
     }
 
     @Override
@@ -111,12 +112,13 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
         compositeDisposable.dispose();
+        trackPlayer.removePlayerListener(this);
 
     }
 
     @Override
     public void updatePosIndicator() {
-        SPlay.init().positionPlay = new PositionPlay(-1, getPositionPlay(SPlay.init().getPlayingTrackId()));
+        SPlay.init().positionPlay = new PositionPlay(-1, getPosPlayForIndicator(SPlay.init().getPlayingTrackId()));
         chartFragment.updatePositionIndicator();
     }
 

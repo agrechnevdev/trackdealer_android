@@ -34,7 +34,6 @@ import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
 
 import java.util.List;
-import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -104,13 +103,13 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         } else {
             textFilter.setText(genre);
         }
-        if (SPlay.init().playList == null || SPlay.init().playList.isEmpty()) {
+        if (SPlay.init().showList == null || SPlay.init().showList.isEmpty()) {
             loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
         }
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(llm);
-        mTracksAdapter = new ChartAdapter(SPlay.init().playList, getActivity().getApplicationContext(), iChoseTrack, this, this);
+        mTracksAdapter = new ChartAdapter(SPlay.init().showList, getActivity().getApplicationContext(), iChoseTrack, this, this);
         recyclerView.setAdapter(mTracksAdapter);
 //        recyclerView.addItemDecoration(new SpacesItemDecorator(20));
 
@@ -123,7 +122,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Override
     public void onResume() {
         super.onResume();
-        if (SPlay.init().playList != null)
+        if (SPlay.init().showList != null)
             iProvideTrackList.updatePosIndicator();
     }
 
@@ -155,14 +154,13 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     public void loadTrackListStart(String genre) {
         swipeLay.setRefreshing(true);
-        textFilter.setText(genre);
         chartPresenter.loadTrackList(genre);
     }
 
     @Override
     public void loadTrackListSuccess(List<TrackInfo> list) {
         swipeLay.setRefreshing(false);
-        SPlay.init().playList = list;
+        SPlay.init().showList = list;
         iProvideTrackList.updatePosIndicator();
         if (mTracksAdapter != null) {
             mTracksAdapter.updateAdapter(list);
@@ -182,7 +180,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(obj -> {
-                            Toast.makeText(getContext(), "Песня добавлена в ваши любимые треки", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Песня добавлена в ваши любимые треки на Deezer \u2764", Toast.LENGTH_LONG).show();
                             swipeLay.setRefreshing(false);
                         },
                         ex -> {
@@ -194,10 +192,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @OnClick(R.id.fragment_chart_but_random)
     public void clickRandomTrack() {
-        if (!SPlay.init().playList.isEmpty()) {
-            int pos = new Random().nextInt(SPlay.init().playList.size());
-            iChoseTrack.choseTrackForPlay(SPlay.init().playList.get(pos), pos);
-        }
+        iChoseTrack.playRandomTrack();
     }
 
     @OnClick(R.id.fragment_chart_lay_filter)
@@ -229,7 +224,9 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void filterClickStart() {
-        loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+        String genre = Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER);
+        textFilter.setText(genre);
+        loadTrackListStart(genre);
     }
 
     @Override

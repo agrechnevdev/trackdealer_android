@@ -54,8 +54,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         ImageView artistImage;
         @Bind(R.id.item_chart_play_indicator)
         Indicator indicator;
-        @Bind(R.id.item_chart_lay_main)
-        RelativeLayout relLayMain;
+        @Bind(R.id.item_chart_lay_info)
+        RelativeLayout relLayInfo;
         @Bind(R.id.item_chart_title)
         TextView title;
         @Bind(R.id.item_chart_artist)
@@ -108,25 +108,27 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUser().getUsername());
 //        holder.textPosition.setText(Integer.toString(position+1));
         Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
-        holder.relLayMain.setOnClickListener(view -> {
+        holder.relLayInfo.setOnClickListener(view -> {
+            SPlay.init().playList.clear();
+            SPlay.init().playList.addAll(SPlay.init().showList);
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
-        holder.relLayMain.setOnLongClickListener(v -> {
+        holder.relLayInfo.setOnLongClickListener(v -> {
             iLongClickTrack.onLongClickTrack(trackInfos.get(holder.getAdapterPosition()));
             return true;
         });
 
-        if (SPlay.init().positionPlay != null) {
-            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
-                Timber.d(TAG + " position VISIBLE " + position);
-                holder.indicator.setVisibility(View.VISIBLE);
-                holder.artistImage.setAlpha(0.3f);
-            } else {
-                holder.indicator.setVisibility(View.GONE);
-                holder.artistImage.setAlpha(1f);
-            }
-        }
+//        if (SPlay.init().positionPlay != null) {
+//            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
+//                Timber.d(TAG + " position VISIBLE " + position);
+//                holder.indicator.setVisibility(View.VISIBLE);
+//                holder.artistImage.setAlpha(0.3f);
+//            } else {
+//                holder.indicator.setVisibility(View.GONE);
+//                holder.artistImage.setAlpha(1f);
+//            }
+//        }
 
         fillNothing(holder);
         if(trackInfo.getUserLike() == null){

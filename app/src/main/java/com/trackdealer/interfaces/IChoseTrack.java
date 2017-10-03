@@ -10,4 +10,6 @@ public interface IChoseTrack {
 
     void choseTrackForPlay(TrackInfo trackInfo, Integer pos);
 
+    void playRandomTrack();
+
 }
