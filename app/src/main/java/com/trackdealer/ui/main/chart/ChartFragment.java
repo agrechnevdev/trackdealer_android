@@ -11,21 +11,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.deezer.sdk.model.Genre;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
+import com.deezer.sdk.network.request.event.DeezerError;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.ChartAdapter;
 import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IChoseTrack;
+import com.trackdealer.interfaces.ILongClickTrack;
 import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.interfaces.ITrackOperation;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.DeezerActivity;
+import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
 
@@ -52,7 +56,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_GENRES;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLayout.OnRefreshListener, DialogFilterClickListener, ITrackOperation {
+public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLayout.OnRefreshListener, DialogFilterClickListener, ITrackOperation, ILongClickTrack {
 
     private final String TAG = "MainCardsFragment ";
 
@@ -93,16 +97,20 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
         subscription = new CompositeDisposable();
 
-        if (SPlay.init().trackList == null || SPlay.init().trackList.isEmpty()) {
-            String genre = Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER);
-            if(!TextUtils.isEmpty(genre))
-                Prefs.putString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER, "Все");
-            loadTrackListStart("Все");
+        String genre = Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER);
+        if (TextUtils.isEmpty(genre)) {
+            Prefs.putString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER, "Все");
+            textFilter.setText("Все");
+        } else {
+            textFilter.setText(genre);
+        }
+        if (SPlay.init().playList == null || SPlay.init().playList.isEmpty()) {
+            loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
         }
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(llm);
-        mTracksAdapter = new ChartAdapter(SPlay.init().trackList, getActivity().getApplicationContext(), iChoseTrack, this, llm);
+        mTracksAdapter = new ChartAdapter(SPlay.init().playList, getActivity().getApplicationContext(), iChoseTrack, this, this);
         recyclerView.setAdapter(mTracksAdapter);
 //        recyclerView.addItemDecoration(new SpacesItemDecorator(20));
 
@@ -115,7 +123,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Override
     public void onResume() {
         super.onResume();
-        if (SPlay.init().trackList != null)
+        if (SPlay.init().playList != null)
             iProvideTrackList.updatePosIndicator();
     }
 
@@ -154,7 +162,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Override
     public void loadTrackListSuccess(List<TrackInfo> list) {
         swipeLay.setRefreshing(false);
-        SPlay.init().trackList = list;
+        SPlay.init().playList = list;
         iProvideTrackList.updatePosIndicator();
         if (mTracksAdapter != null) {
             mTracksAdapter.updateAdapter(list);
@@ -166,18 +174,36 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     }
 
+    @Override
+    public void onLongClickTrack(TrackInfo trackInfo) {
+        swipeLay.setRefreshing(true);
+        DeezerRequest request = DeezerRequestFactory.requestCurrentUserAddTrack(trackInfo.getTrackId());
+        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(obj -> {
+                            Toast.makeText(getContext(), "Песня добавлена в ваши любимые треки", Toast.LENGTH_LONG).show();
+                            swipeLay.setRefreshing(false);
+                        },
+                        ex -> {
+                            ErrorHandler.handleError(getContext(), "Не удалось добавить песню", (DeezerError) ex);
+                            swipeLay.setRefreshing(false);
+                        }
+                ));
+    }
+
     @OnClick(R.id.fragment_chart_but_random)
     public void clickRandomTrack() {
-        if(!SPlay.init().trackList.isEmpty()) {
-            int pos = new Random().nextInt(SPlay.init().trackList.size());
-            iChoseTrack.choseTrackForPlay(SPlay.init().trackList.get(pos), pos);
+        if (!SPlay.init().playList.isEmpty()) {
+            int pos = new Random().nextInt(SPlay.init().playList.size());
+            iChoseTrack.choseTrackForPlay(SPlay.init().playList.get(pos), pos);
         }
     }
 
     @OnClick(R.id.fragment_chart_lay_filter)
     public void clickFilter() {
         List<Genre> genres = Prefs.getGenreList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_GENRES);
-        if(genres == null) {
+        if (genres == null) {
             swipeLay.setRefreshing(true);
             DeezerRequest request = DeezerRequestFactory.requestGenres();
             subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
@@ -196,7 +222,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         }
     }
 
-    public void showFilterDialog(List<Genre> genres){
+    public void showFilterDialog(List<Genre> genres) {
         FilterDialogFragment alertDialog = FilterDialogFragment.newInstance(genres);
         alertDialog.show(ChartFragment.this.getChildFragmentManager(), "filter");
     }

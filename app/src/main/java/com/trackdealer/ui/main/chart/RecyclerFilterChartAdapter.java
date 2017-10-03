@@ -14,6 +14,7 @@ import com.trackdealer.R;
 import com.trackdealer.utils.Prefs;
 
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -58,8 +59,8 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
                                                                     int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_image_info, parent, false);
-
         ViewHolder vh = new ViewHolder(v);
+        vh.text.setTextColor(context.getResources().getColor(randomColor()));
         return vh;
     }
 
@@ -67,10 +68,26 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
     public void onBindViewHolder(RecyclerFilterChartAdapter.ViewHolder holder, int position) {
         Genre genre = genres.get(position);
         holder.text.setText(genre.getName());
+
         holder.relLayMain.setOnClickListener(view -> {
             Prefs.putString(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER, genres.get(position).getName());
             dialogItemClickListener.filterClickStart();
         });
+    }
+
+    public int randomColor(){
+        Random rnd = new Random();
+        int count = rnd.nextInt(7);
+        switch (count) {
+            case 0 : return R.color.colorRandom1;
+            case 1 : return R.color.colorRandom2;
+            case 2 : return R.color.colorRandom3;
+            case 3 : return R.color.colorRandom4;
+            case 4 : return R.color.colorRandom5;
+            case 5 : return R.color.colorRandom6;
+            case 6 : return R.color.colorRandom7;
+            default : return R.color.colorAccent;
+        }
     }
 
     @Override

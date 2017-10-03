@@ -108,7 +108,10 @@ public class StaticUtils {
             } else if (var4 instanceof JSONArray) {
                 var3 = JsonUtils.deserializeArray((JSONArray) var4);
             }
-            e.onNext(var3);
+            if(var3 != null)
+                e.onNext(var3);
+            else
+                e.onNext(new Object());
         });
     }
 }

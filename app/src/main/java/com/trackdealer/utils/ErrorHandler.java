@@ -1,17 +1,37 @@
 package com.trackdealer.utils;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.deezer.sdk.network.request.event.DeezerError;
+import com.deezer.sdk.player.exception.DeezerPlayerException;
+import com.deezer.sdk.player.exception.InvalidStreamTokenException;
+import com.deezer.sdk.player.exception.NotAllowedToPlayThatSongException;
+import com.deezer.sdk.player.exception.StreamLimitationException;
+import com.deezer.sdk.player.exception.StreamTokenAlreadyDecodedException;
+import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.trackdealer.R;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Locale;
 
 import retrofit2.Response;
+import timber.log.Timber;
 
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_LOG_ERROR;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
 
@@ -122,5 +142,88 @@ public class ErrorHandler {
                     return element;
                 }
         }
+    }
+
+    /**
+     * Handle errors by displaying a toast and logging.
+     *
+     * @param exception the exception that occured while contacting Deezer services.
+     */
+    public static void handleError(Context context, String messageForUser, final Exception exception) {
+        String cause = exception.getCause() != null ? exception.getCause().getMessage() : "";
+        if (exception instanceof NotAllowedToPlayThatSongException) {
+            messageForUser = "Ошибка! Пользователь не имеет прав для вопроизведения.";
+        } else if (exception instanceof StreamTokenAlreadyDecodedException) {
+            messageForUser = "Ошибка! Контент уже проигрывался.";
+        } else if (exception instanceof InvalidStreamTokenException) {
+            messageForUser = "Ошибка! Недопустимый токен потока.";
+        } else if (exception instanceof StreamLimitationException) {
+            messageForUser = "Ошибка! Аккаунт Deezer используется сразу на нескольких устройствах.";
+        } else if (exception instanceof TooManyPlayersExceptions) {
+            messageForUser = "Ошибка! Слишком много плееров создано.";
+        } else if (exception instanceof DeezerPlayerException) {
+            messageForUser = "Ошибка плеера";
+        }  else if (exception instanceof UnknownHostException) {
+                messageForUser = "Соединение с сервером не установлено";
+        } else if (exception instanceof ConnectException) {
+            messageForUser = "Ошибка соединения";
+        } else if (exception instanceof SocketException) {
+            messageForUser = "Ошибка при загрузке";
+        } else if (exception instanceof DeezerError) {
+            switch (((DeezerError) exception).getErrorCode()){
+                case DeezerError.ACCESS_TOKEN_RETRIEVAL_FAILURE :
+                case DeezerError.TOKEN_INVALID :
+                    messageForUser = "Не удалось войти в Deezer";
+                    break;
+                case DeezerError.DATA_NOT_FOUND :
+                    messageForUser = "Данные не загружены";
+                    break;
+                case DeezerError.OAUTH_FAILURE :
+                    messageForUser = "Требуется вход в Deezer";
+                    break;
+                case DeezerError.MISSING_PERMISSION :
+                    messageForUser = "Необходимо разрешение";
+                    break;
+                case DeezerError.PARAMETER :
+                case DeezerError.PARAMETER_MISSING :
+                    messageForUser = "Ошибка запроса";
+                    break;
+                case DeezerError.PERMISSION :
+                    messageForUser = "Необходимо разрешение";
+                    break;
+                case DeezerError.QUERY_INVALID :
+                case DeezerError.REQUEST_FAILURE :
+                    messageForUser = "Не удалось получить ответ от сервера";
+                    break;
+                case DeezerError.QUOTA :
+                case DeezerError.SERVICE_BUSY :
+                    messageForUser = "Сервер перегружен";
+                    break;
+                case DeezerError.UNEXPECTED_RESULT :
+                case DeezerError.UNKNOWN_FAILURE :
+                    messageForUser = "Неизвестная ошибка";
+                    break;
+                case DeezerError.USER_ID_NOT_FOUND :
+                    messageForUser = "Пользователь не найден";
+                    break;
+            }
+            cause += ((DeezerError) exception).getMessage() != null ? " message " + ((DeezerError) exception).getMessage() : "";
+            cause += " code " + ((DeezerError) exception).getErrorCode();
+            cause += ((DeezerError) exception).getErrorType() != null ? " type " + ((DeezerError) exception).getErrorType() : "";
+        }
+
+        HashMap<String, String> logMap = Prefs.getHashMap(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR);
+        if (logMap == null)
+            logMap = new HashMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        logMap.put(sdf.format(calendar.getTime()), messageForUser + "\n" + cause + "\n" + exception.getClass().getName());
+        Prefs.putHashMap(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR, logMap);
+
+        Toast toast = Toast.makeText(context, messageForUser, Toast.LENGTH_LONG);
+        ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(Color.RED);
+        toast.show();
+
+        Timber.d("ErrorHandler Exception occured " + messageForUser + "\n" + cause + "\n" + exception.getClass().getName());
     }
 }

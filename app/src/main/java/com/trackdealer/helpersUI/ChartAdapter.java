@@ -5,7 +5,6 @@ package com.trackdealer.helpersUI;
  */
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.taishi.library.Indicator;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IChoseTrack;
+import com.trackdealer.interfaces.ILongClickTrack;
 import com.trackdealer.interfaces.ITrackOperation;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.Prefs;
@@ -39,9 +39,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     private RecyclerView recyclerView;
     private TrackInfo chosenTrackInfo;
     IChoseTrack iChoseTrack;
+    ILongClickTrack iLongClickTrack;
     ITrackOperation iTrackOperation;
-    LinearLayoutManager llm;
-//    PositionPlay positionPlay;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -78,12 +77,12 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         }
     }
 
-    public ChartAdapter(List<TrackInfo> trackInfos, Context context, IChoseTrack iChoseTrack, ITrackOperation iTrackOperation, LinearLayoutManager llm) {
+    public ChartAdapter(List<TrackInfo> trackInfos, Context context, IChoseTrack iChoseTrack, ITrackOperation iTrackOperation, ILongClickTrack iLongClickTrack) {
         this.trackInfos = trackInfos;
         this.context = context;
         this.iChoseTrack = iChoseTrack;
+        this.iLongClickTrack = iLongClickTrack;
         this.iTrackOperation = iTrackOperation;
-        this.llm = llm;
         this.chosenTrackInfo = Prefs.getTrackInfo(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE);
 
     }
@@ -111,6 +110,11 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
         holder.relLayMain.setOnClickListener(view -> {
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
+        });
+
+        holder.relLayMain.setOnLongClickListener(v -> {
+            iLongClickTrack.onLongClickTrack(trackInfos.get(holder.getAdapterPosition()));
+            return true;
         });
 
         if (SPlay.init().positionPlay != null) {

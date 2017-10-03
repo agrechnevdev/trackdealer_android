@@ -42,9 +42,9 @@
                     android:id="@+id/fragment_chart_text_filter"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:gravity="center"
+                    android:gravity="center_vertical"
                     android:maxLines="2"
-                    android:text="12312312313213213123123123213123"
+                    android:text=""
                     android:textColor="@color/colorAccent" />
 
             </LinearLayout>

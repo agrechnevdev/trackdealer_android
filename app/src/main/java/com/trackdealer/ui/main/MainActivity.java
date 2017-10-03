@@ -19,6 +19,7 @@ import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.chart.ChartFragment;
 import com.trackdealer.ui.main.favour.FavourFragment;
 import com.trackdealer.ui.main.profile.ProfileFragment;
+import com.trackdealer.utils.ErrorHandler;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -71,7 +72,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         setupPlayerUI();
 
         recreatePlayer();
-        trackPlayer.addPlayerListener(this);
 
         chartFragment = new ChartFragment();
         favourFragment = new FavourFragment();
@@ -97,6 +97,13 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     protected void onResume() {
         super.onResume();
         Timber.d(TAG + " onResume() ");
+        trackPlayer.addPlayerListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        trackPlayer.removePlayerListener(this);
     }
 
     @Override
@@ -104,6 +111,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
         compositeDisposable.dispose();
+
     }
 
     @Override
@@ -156,7 +164,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Override
     public void onRequestException(final Exception e, final Object requestId) {
-        handleError("Ошибка при запросе на сервер", e);
+        ErrorHandler.handleError(getApplicationContext(), "Ошибка при запросе на сервер", e);
     }
 
 }

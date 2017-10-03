@@ -18,7 +18,7 @@ public class SPlay {
 
     public PositionPlay positionPlay;
     public Track playingTrack;
-    public List<TrackInfo> trackList = new ArrayList<>();
+    public List<TrackInfo> playList = new ArrayList<>();
 
     private SPlay() {
     }

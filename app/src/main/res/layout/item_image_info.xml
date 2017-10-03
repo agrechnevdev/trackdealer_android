@@ -8,21 +8,26 @@
     android:layout_marginBottom="@dimen/margin_types_cards"
     android:layout_marginLeft="@dimen/horizontal_margin"
     android:layout_marginRight="@dimen/horizontal_margin"
-    android:layout_marginTop="@dimen/margin_types_cards">
+    android:layout_marginTop="@dimen/margin_types_cards"
+    android:background="@drawable/selectable_item_background">
 
     <ImageView
         android:id="@+id/item_image_info_image"
         android:layout_width="@dimen/dp40"
         android:layout_height="@dimen/dp40"
-        android:layout_marginRight="@dimen/dp10" />
+        android:layout_marginRight="@dimen/dp10"
+        android:visibility="gone"
+        />
 
     <TextView
         android:id="@+id/item_image_info_text"
+        android:textStyle="bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_main"
+        android:textSize="@dimen/text_size_medium"
         android:layout_centerVertical="true"
-        android:gravity="center_vertical"
+        android:textColor="@color/colorAccent"
+        android:gravity="center"
         android:layout_toRightOf="@id/item_image_info_image"
         android:text="" />
 
