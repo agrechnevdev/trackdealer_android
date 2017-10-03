@@ -42,8 +42,12 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     ILongClickTrack iLongClickTrack;
     ITrackOperation iTrackOperation;
 
+    boolean favSongs = false;
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        @Bind(R.id.layout_like)
+        RelativeLayout relLayLikeMain;
         @Bind(R.id.layout_like_lay_like)
         RelativeLayout relLayLike;
         @Bind(R.id.layout_like_lay_dislike)
@@ -103,9 +107,14 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         holder.title.setText(trackInfo.getTitle());
         holder.artist.setText(trackInfo.getArtist());
         holder.duration.setText(" " + trackInfo.getDuration());
-        holder.textDislike.setText(trackInfo.getDislikes().toString());
-        holder.textLike.setText(trackInfo.getLikes().toString());
-        holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUser().getUsername());
+
+        if(trackInfo.getUser() != null) {
+            holder.textUsername.setVisibility(View.VISIBLE);
+            holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUser().getUsername());
+        }
+        else{
+            holder.textUsername.setVisibility(View.GONE);
+        }
 //        holder.textPosition.setText(Integer.toString(position+1));
         Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
         holder.relLayInfo.setOnClickListener(view -> {
@@ -114,10 +123,38 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
-        holder.relLayInfo.setOnLongClickListener(v -> {
-            iLongClickTrack.onLongClickTrack(trackInfos.get(holder.getAdapterPosition()));
-            return true;
-        });
+        if(!favSongs) {
+            holder.relLayLikeMain.setVisibility(View.VISIBLE);
+            holder.textDislike.setText(trackInfo.getDislikes().toString());
+            holder.textLike.setText(trackInfo.getLikes().toString());
+            holder.relLayInfo.setOnLongClickListener(v -> {
+                iLongClickTrack.onLongClickTrack(trackInfos.get(holder.getAdapterPosition()));
+                return true;
+            });
+            fillNothing(holder);
+            if(trackInfo.getUserLike() == null){
+                holder.relLayLike.setOnClickListener(view -> {
+                    Integer newLike = trackInfo.getLikes() + 1;
+                    holder.textLike.setText(newLike.toString());
+                    trackInfo.setUserLike(true);
+                    fillLikes(holder);
+                    iTrackOperation.trackLike(trackInfo.getTrackId(), true);
+                });
+                holder.relLayDislike.setOnClickListener(view -> {
+                    Integer newLike = trackInfo.getDislikes() + 1;
+                    holder.textDislike.setText(newLike.toString());
+                    trackInfo.setUserLike(false);
+                    fillDisLikes(holder);
+                    iTrackOperation.trackLike(trackInfo.getTrackId(), false);
+                });
+            } else if(trackInfo.getUserLike()){
+                fillLikes(holder);
+            } else {
+                fillDisLikes(holder);
+            }
+        } else {
+            holder.relLayLikeMain.setVisibility(View.GONE);
+        }
 
 //        if (SPlay.init().positionPlay != null) {
 //            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
@@ -130,27 +167,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
 //            }
 //        }
 
-        fillNothing(holder);
-        if(trackInfo.getUserLike() == null){
-            holder.relLayLike.setOnClickListener(view -> {
-                Integer newLike = trackInfo.getLikes() + 1;
-                holder.textLike.setText(newLike.toString());
-                trackInfo.setUserLike(true);
-                fillLikes(holder);
-                iTrackOperation.trackLike(trackInfo.getTrackId(), true);
-            });
-            holder.relLayDislike.setOnClickListener(view -> {
-                Integer newLike = trackInfo.getDislikes() + 1;
-                holder.textDislike.setText(newLike.toString());
-                trackInfo.setUserLike(false);
-                fillDisLikes(holder);
-                iTrackOperation.trackLike(trackInfo.getTrackId(), false);
-            });
-        } else if(trackInfo.getUserLike()){
-            fillLikes(holder);
-        } else {
-            fillDisLikes(holder);
-        }
+
     }
 
     @Override
@@ -159,7 +176,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public void updateAdapter(List<TrackInfo> newList) {
+    public void updateAdapter(List<TrackInfo> newList, boolean favSongs) {
+        this.favSongs = favSongs;
         trackInfos = newList;
         notifyDataSetChanged();
     }

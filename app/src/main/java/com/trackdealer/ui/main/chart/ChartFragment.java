@@ -10,10 +10,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deezer.sdk.model.Genre;
+import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
@@ -75,12 +78,20 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Bind(R.id.fragment_chart_text_filter)
     TextView textFilter;
 
+    @Bind(R.id.fragment_chart_lay_filter)
+    LinearLayout linLayFilter;
+
+    @Bind(R.id.fragment_chart_but_deezer_fav_tracks)
+    ImageView imageViewFavSongs;
+
     ChartAdapter mTracksAdapter;
 
     IChoseTrack iChoseTrack;
     ITrackListState iProvideTrackList;
 
     DeezerConnect mDeezerConnect = null;
+
+    boolean favSongs = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -163,7 +174,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         SPlay.init().showList = list;
         iProvideTrackList.updatePosIndicator();
         if (mTracksAdapter != null) {
-            mTracksAdapter.updateAdapter(list);
+            mTracksAdapter.updateAdapter(list, false);
         }
     }
 
@@ -193,6 +204,44 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @OnClick(R.id.fragment_chart_but_random)
     public void clickRandomTrack() {
         iChoseTrack.playRandomTrack();
+    }
+
+    @OnClick(R.id.fragment_chart_but_deezer_fav_tracks)
+    public void clickDeezerFavTracks() {
+        if (!favSongs) {
+            changeShowListState(true);
+            swipeLay.setRefreshing(true);
+            DeezerRequest request = DeezerRequestFactory.requestCurrentUserTracks();
+            subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(obj -> {
+                                SPlay.init().showList = StaticUtils.fromListTracks((List<Track>) obj);
+                                if (mTracksAdapter != null) {
+                                    mTracksAdapter.updateAdapter(SPlay.init().showList, true);
+                                }
+                                swipeLay.setRefreshing(false);
+                            },
+                            ex -> {
+                                ErrorHandler.handleError(getContext(), "Не получить список любимых песен", (DeezerError) ex);
+                                swipeLay.setRefreshing(false);
+                            }
+                    ));
+        } else {
+            changeShowListState(false);
+        }
+    }
+
+    public void changeShowListState(boolean favSongs) {
+        this.favSongs = favSongs;
+        if (favSongs) {
+            linLayFilter.setClickable(false);
+            imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorOrange));
+        } else {
+            linLayFilter.setClickable(true);
+            imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorAccent));
+            loadTrackListStart("Все");
+        }
     }
 
     @OnClick(R.id.fragment_chart_lay_filter)
@@ -239,6 +288,9 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+        if (favSongs)
+            clickDeezerFavTracks();
+        else
+            loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
     }
 }
