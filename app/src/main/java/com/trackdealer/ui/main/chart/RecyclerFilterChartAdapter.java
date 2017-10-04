@@ -60,7 +60,7 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_image_info, parent, false);
         ViewHolder vh = new ViewHolder(v);
-        vh.text.setTextColor(context.getResources().getColor(randomColor()));
+
         return vh;
     }
 
@@ -69,6 +69,8 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
         Genre genre = genres.get(position);
         holder.text.setText(genre.getName());
 
+        int color =position % 2 == 0 ? R.color.colorAccent : R.color.colorOrange;
+        holder.text.setTextColor(context.getResources().getColor(color));
         holder.relLayMain.setOnClickListener(view -> {
             Prefs.putString(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER, genres.get(position).getName());
             dialogItemClickListener.filterClickStart();
@@ -77,7 +79,7 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
 
     public int randomColor(){
         Random rnd = new Random();
-        int count = rnd.nextInt(7);
+        int count = rnd.nextInt(2);
         switch (count) {
             case 0 : return R.color.colorRandom1;
             case 1 : return R.color.colorRandom2;

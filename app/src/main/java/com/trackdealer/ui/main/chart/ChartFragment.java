@@ -195,7 +195,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                             swipeLay.setRefreshing(false);
                         },
                         ex -> {
-                            ErrorHandler.handleError(getContext(), "Не удалось добавить песню", (DeezerError) ex);
+                            ErrorHandler.handleError(getContext(), "Не удалось добавить песню.", (DeezerError) ex);
                             swipeLay.setRefreshing(false);
                         }
                 ));
@@ -210,26 +210,31 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void clickDeezerFavTracks() {
         if (!favSongs) {
             changeShowListState(true);
-            swipeLay.setRefreshing(true);
-            DeezerRequest request = DeezerRequestFactory.requestCurrentUserTracks();
-            subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(obj -> {
-                                SPlay.init().showList = StaticUtils.fromListTracks((List<Track>) obj);
-                                if (mTracksAdapter != null) {
-                                    mTracksAdapter.updateAdapter(SPlay.init().showList, true);
-                                }
-                                swipeLay.setRefreshing(false);
-                            },
-                            ex -> {
-                                ErrorHandler.handleError(getContext(), "Не получить список любимых песен", (DeezerError) ex);
-                                swipeLay.setRefreshing(false);
-                            }
-                    ));
+            loadFavSongsStart();
         } else {
             changeShowListState(false);
+            loadTrackListStart("Все");
         }
+    }
+
+    public void loadFavSongsStart(){
+        swipeLay.setRefreshing(true);
+        DeezerRequest request = DeezerRequestFactory.requestCurrentUserTracks();
+        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(obj -> {
+                            SPlay.init().showList = StaticUtils.fromListTracks((List<Track>) obj);
+                            if (mTracksAdapter != null) {
+                                mTracksAdapter.updateAdapter(SPlay.init().showList, true);
+                            }
+                            swipeLay.setRefreshing(false);
+                        },
+                        ex -> {
+                            ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", (DeezerError) ex);
+                            swipeLay.setRefreshing(false);
+                        }
+                ));
     }
 
     public void changeShowListState(boolean favSongs) {
@@ -240,7 +245,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         } else {
             linLayFilter.setClickable(true);
             imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorAccent));
-            loadTrackListStart("Все");
         }
     }
 
@@ -289,7 +293,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Override
     public void onRefresh() {
         if (favSongs)
-            clickDeezerFavTracks();
+            loadFavSongsStart();
         else
             loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
     }

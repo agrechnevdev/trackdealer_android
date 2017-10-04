@@ -5,9 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.MenuItem;
 
-import com.deezer.sdk.model.PlayableEntity;
 import com.deezer.sdk.network.connect.DeezerConnect;
-import com.deezer.sdk.player.event.PlayerWrapperListener;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
@@ -19,7 +17,6 @@ import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.chart.ChartFragment;
 import com.trackdealer.ui.main.favour.FavourFragment;
 import com.trackdealer.ui.main.profile.ProfileFragment;
-import com.trackdealer.utils.ErrorHandler;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -36,7 +33,7 @@ import timber.log.Timber;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, PlayerWrapperListener, ITrackListState {
+public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ITrackListState {
 
     private final String TAG = "MainActivity ";
 
@@ -71,9 +68,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
         setupPlayerUI();
 
-        recreatePlayer();
-
-        trackPlayer.addPlayerListener(this);
         chartFragment = new ChartFragment();
         favourFragment = new FavourFragment();
         profileFragment = new ProfileFragment();
@@ -112,7 +106,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
         compositeDisposable.dispose();
-        trackPlayer.removePlayerListener(this);
 
     }
 
@@ -145,28 +138,4 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         setButtonEnabled(mButtonPlayerSkipBackward, false);
         setButtonEnabled(mButtonPlayerStop, false);
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////
-    // Player listener
-    //////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void onPlayTrack(PlayableEntity playableEntity) {
-
-    }
-
-    @Override
-    public void onTrackEnded(PlayableEntity playableEntity) {
-        playNextTrack();
-    }
-
-    @Override
-    public void onAllTracksEnded() {
-    }
-
-    @Override
-    public void onRequestException(final Exception e, final Object requestId) {
-        ErrorHandler.handleError(getApplicationContext(), "Ошибка при запросе на сервер", e);
-    }
-
 }
