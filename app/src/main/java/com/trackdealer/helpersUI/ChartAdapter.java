@@ -46,6 +46,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
+        @Bind(R.id.item_chart_lay_main)
+        RelativeLayout relLayMain;
         @Bind(R.id.layout_like)
         RelativeLayout relLayLikeMain;
         @Bind(R.id.layout_like_lay_like)
@@ -154,6 +156,14 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
             }
         } else {
             holder.relLayLikeMain.setVisibility(View.GONE);
+        }
+        if (SPlay.init().positionPlay != null) {
+            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
+                Timber.d(TAG + " position VISIBLE " + position);
+                holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
+            } else {
+                holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
+            }
         }
 
 //        if (SPlay.init().positionPlay != null) {

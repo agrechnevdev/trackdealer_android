@@ -11,16 +11,33 @@ import com.trackdealer.utils.ErrorHandler;
 
 public class BaseActivity extends AppCompatActivity {
 
-    protected void showError(View v, String message){
-        hideProgressBar();
-        ErrorHandler.showSnackbarError(v, message);
+//    ProgressBar progressBar;
+//
+//    @Override
+//    public void setContentView(@LayoutRes int layoutResID) {
+//        LayoutInflater inflater = getLayoutInflater();
+//        RelativeLayout relLay = (RelativeLayout) inflater.inflate(R.layout.progressbar, null);
+//        progressBar = (ProgressBar) relLay.findViewById(R.id.progressbar);
+//
+//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+//        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+//        relLay.setLayoutParams(layoutParams);
+//
+//        RelativeLayout screenView = (RelativeLayout) inflater.inflate(layoutResID, null);
+//        screenView.addView(relLay);
+//        super.setContentView(screenView);
+//    }
+//
+    protected void showError(View v, String message) {
+//        hideProgressBar();
+
     }
 
-    protected void showProgressBar(){
-
-    }
-
-    protected void hideProgressBar(){
-
-    }
+//    protected void showProgressBar() {
+//        progressBar.setVisibility(View.VISIBLE);
+//    }
+//
+//    protected void hideProgressBar() {
+//        progressBar.setVisibility(View.GONE);
+//    }
 }

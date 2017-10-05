@@ -2,8 +2,10 @@ package com.trackdealer.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.trackdealer.BaseApp;
@@ -57,6 +59,9 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.login_btn_login)
     Button butLogin;
 
+    @Bind(R.id.progressbar)
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +97,7 @@ public class LoginActivity extends BaseActivity {
 //        );
     }
 
-    public void buttonEnabledState(boolean enabled){
+    public void buttonEnabledState(boolean enabled) {
         butLogin.setEnabled(enabled);
     }
 
@@ -109,13 +114,14 @@ public class LoginActivity extends BaseActivity {
     }
 
     @OnClick(R.id.login_show_log)
-    public void clickShowLog(){
+    public void clickShowLog() {
         startActivity(new Intent(this, LogActivity.class));
     }
 
     void login() {
+
         if (ConnectionsManager.isOnline(this)) {
-            subscription.add(FakeRestApi.login(this)
+            subscription.add(FakeRestApi.login(this, textLogin.getText().toString(), textPassword.getText().toString())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(response -> {
@@ -123,16 +129,19 @@ public class LoginActivity extends BaseActivity {
                                 if (response.isSuccessful()) {
                                     loginSuccess();
                                 } else {
-                                    showError(layMain, ErrorHandler.getErrorMessageFromResponse(response));
+                                    ErrorHandler.showSnackbarError(layMain, ErrorHandler.getErrorMessageFromResponse(response));
+                                    hideProgressBar();
                                 }
                             },
                             ex -> {
                                 Timber.e(ex, TAG + " login onError() " + ex.getMessage());
-                                showError(layMain, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                ErrorHandler.showSnackbarError(layMain, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                hideProgressBar();
                             }
                     ));
         } else {
-            showError(layMain, ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            hideProgressBar();
+            ErrorHandler.showSnackbarError(layMain, ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
         }
     }
 
@@ -143,6 +152,14 @@ public class LoginActivity extends BaseActivity {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    protected void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    protected void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
     }
 
 

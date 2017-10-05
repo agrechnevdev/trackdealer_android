@@ -18,6 +18,7 @@
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:padding="@dimen/dp25"
+        android:visibility="gone"
         app:srcCompat="@drawable/ic_music_wave" />
 
     <LinearLayout
@@ -88,4 +89,5 @@
         android:layout_margin="@dimen/dp10"
         android:src="@drawable/deezer_big"/>
 
+    <include layout="@layout/progressbar"/>
 </RelativeLayout>

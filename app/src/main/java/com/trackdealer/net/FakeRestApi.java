@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import okhttp3.MediaType;
+import okhttp3.Protocol;
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -48,9 +50,21 @@ public class FakeRestApi {
             return Completable.complete().toObservable();
     }
 
-    public static Observable<Response<ResponseBody>> login(Context context) {
-        return Observable.just(Response.success(ResponseBody.create(MediaType.parse("application/json"), ""))).delay(2, TimeUnit.SECONDS);
-//        return Observable.just(Response.error(500, ResponseBody.create(MediaType.parse("application/json"), "Здарова это ошибка")));
+    public static Observable<Response<ResponseBody>> login(Context context, String login, String password) {
+        if(login.contains("1")) {
+            ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), "");
+            Response<ResponseBody> response = Response.success(responseBody);
+            return Observable.just(response).delay(2, TimeUnit.SECONDS);
+        }
+        else {
+            ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), "Логин должен содержать цифру 1");
+            Response<ResponseBody> response = Response.error(responseBody, new okhttp3.Response.Builder() //
+                    .code(600)
+                    .protocol(Protocol.HTTP_1_1)
+                    .request(new Request.Builder().url("http://localhost/").build())
+                    .build());
+            return Observable.just(response);
+        }
     }
 
     public static Observable<Response<ResponseBody>> trackLike(Context context, long trackInfoId, Boolean like) {

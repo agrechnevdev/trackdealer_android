@@ -13,8 +13,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import io.reactivex.Observable;
 
@@ -113,5 +115,15 @@ public class StaticUtils {
             else
                 e.onNext(new Object());
         });
+    }
+
+    public static UUID generateUUID(Context context, String userName, String pass) {
+        UUID uuid = null;
+        try {
+            uuid = UUID.nameUUIDFromBytes((userName+pass).getBytes("utf8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return uuid;
     }
 }

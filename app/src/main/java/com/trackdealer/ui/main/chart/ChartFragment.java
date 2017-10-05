@@ -213,7 +213,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
             loadFavSongsStart();
         } else {
             changeShowListState(false);
-            loadTrackListStart("Все");
+            loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
         }
     }
 

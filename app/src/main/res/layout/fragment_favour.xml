@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content" />
 
             <ProgressBar
-                android:id="@+id/progressbar"
+                android:id="@+id/secondary_progressbar"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -164,8 +164,10 @@ public class ErrorHandler {
             messageForUser = "Ошибка плеера.";
         }  else if (exception instanceof UnknownHostException) {
                 messageForUser = "Соединение с сервером не установлено.";
+            messageForUser += " Проверьте соединение с интернетом. ";
         } else if (exception instanceof ConnectException) {
             messageForUser = "Ошибка соединения.";
+            messageForUser += " Проверьте соединение с интернетом. ";
         } else if (exception instanceof SocketException) {
             messageForUser = "Ошибка при загрузке.";
         } else if (exception instanceof DeezerError) {
@@ -178,7 +180,7 @@ public class ErrorHandler {
                     messageForUser = "Данные не загружены.";
                     break;
                 case DeezerError.OAUTH_FAILURE :
-                    messageForUser = "Требуется вход в Deezer.";
+                    messageForUser = "Требуется вход в Deezer аккаунт.";
                     break;
                 case DeezerError.MISSING_PERMISSION :
                     messageForUser = "Необходимо разрешение.";
@@ -193,6 +195,7 @@ public class ErrorHandler {
                 case DeezerError.QUERY_INVALID :
                 case DeezerError.REQUEST_FAILURE :
                     messageForUser = "Не удалось получить ответ от сервера.";
+                    messageForUser += " Проверьте соединение с интернетом. ";
                     break;
                 case DeezerError.QUOTA :
                 case DeezerError.SERVICE_BUSY :
@@ -201,6 +204,7 @@ public class ErrorHandler {
                 case DeezerError.UNEXPECTED_RESULT :
                 case DeezerError.UNKNOWN_FAILURE :
                     messageForUser += " Неизвестная ошибка.";
+                    messageForUser += " Проверьте соединение с интернетом. ";
                     break;
                 case DeezerError.USER_ID_NOT_FOUND :
                     messageForUser = "Пользователь не найден.";
@@ -210,7 +214,7 @@ public class ErrorHandler {
             cause += " Code: " + ((DeezerError) exception).getErrorCode() + "\n" ;
             cause += ((DeezerError) exception).getErrorType() != null ? " Type: " + ((DeezerError) exception).getErrorType() : "";
         }
-        messageForUser += " Проверьте соединение с интернетом. ";
+
 
 
         HashMap<String, String> logMap = Prefs.getHashMap(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR);

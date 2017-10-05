@@ -378,8 +378,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         public void onBufferError(final Exception ex, final double percent) {
             Timber.d(TAG + "onBufferError");
             runOnUiThread(() -> ErrorHandler.handleError(getApplicationContext(), "Ошибка при загрузке буфера.", ex));
-            recreatePlayer();
-            playNextTrack();
+//            recreatePlayer();
+//            playNextTrack();
         }
 
         @Override
@@ -393,8 +393,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             Timber.d(TAG + "onPlayerError");
             runOnUiThread(() -> {
                 ErrorHandler.handleError(getApplicationContext(), "Не удалось воспроизвести песню.", ex);
-                recreatePlayer();
-                playNextTrack();
+//                recreatePlayer();
+//                playNextTrack();
             });
         }
 

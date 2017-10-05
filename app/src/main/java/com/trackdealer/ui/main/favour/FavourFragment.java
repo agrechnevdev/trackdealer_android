@@ -106,7 +106,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
 
     @Bind(R.id.chose_song_search)
     EditText textSearch;
-    @Bind(R.id.progressbar)
+    @Bind(R.id.secondary_progressbar)
     ProgressBar progressBar;
 
     ArrayList<TrackInfo> trackList = new ArrayList<>();
