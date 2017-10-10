@@ -21,6 +21,7 @@ public class SPlay {
     public List<TrackInfo> playList = new ArrayList<>();
     public List<TrackInfo> showList = new ArrayList<>();
 
+    public boolean favSongs = false;
     private SPlay() {
     }
 

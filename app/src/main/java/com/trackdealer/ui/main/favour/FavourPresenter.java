@@ -60,6 +60,9 @@ public class FavourPresenter extends BasePresenter<FavourView> {
                             ex -> {
                                 Timber.e(ex, TAG + " loadFavourTrack onError() " + ex.getMessage());
                                 favourView.loadFavourTrackFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                            },
+                            () -> {
+                                favourView.loadFavourTrackFailed("Требуется загрузить песню");
                             }
                     ));
         } else {

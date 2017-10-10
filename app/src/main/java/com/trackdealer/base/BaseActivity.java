@@ -29,15 +29,15 @@ public class BaseActivity extends AppCompatActivity {
 //    }
 //
     protected void showError(View v, String message) {
-//        hideProgressBar();
+//        hideSearchProgressBar();
 
     }
 
-//    protected void showProgressBar() {
+//    protected void showSearchProgressBar() {
 //        progressBar.setVisibility(View.VISIBLE);
 //    }
 //
-//    protected void hideProgressBar() {
+//    protected void hideSearchProgressBar() {
 //        progressBar.setVisibility(View.GONE);
 //    }
 }

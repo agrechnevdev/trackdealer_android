@@ -131,14 +131,16 @@
                 android:layout_height="wrap_content" />
 
             <ProgressBar
-                android:id="@+id/secondary_progressbar"
+                android:id="@+id/search_progressbar"
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/vertical_margin_x2"
+                android:visibility="gone"
                 android:indeterminate="true" />
         </RelativeLayout>
     </RelativeLayout>
 
+    <include layout="@layout/progressbar"/>
 
 </RelativeLayout>

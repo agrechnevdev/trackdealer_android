@@ -30,6 +30,7 @@ import com.trackdealer.R;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.helpersUI.SearchTracksAdapter;
 import com.trackdealer.interfaces.IClickTrack;
+import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.DeezerActivity;
@@ -61,7 +62,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class FavourFragment extends Fragment implements FavourView, IClickTrack {
+public class FavourFragment extends Fragment implements FavourView, IClickTrack, IDispatchTouch {
 
     private final String TAG = "FavourFragment ";
 
@@ -106,7 +107,10 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
 
     @Bind(R.id.chose_song_search)
     EditText textSearch;
-    @Bind(R.id.secondary_progressbar)
+    @Bind(R.id.search_progressbar)
+    ProgressBar searchProgressBar;
+
+    @Bind(R.id.progressbar)
     ProgressBar progressBar;
 
     ArrayList<TrackInfo> trackList = new ArrayList<>();
@@ -135,6 +139,11 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     }
 
     @Override
+    public boolean dispatchTouch() {
+        return searchProgressBar.getVisibility() == View.VISIBLE || progressBar.getVisibility() == View.VISIBLE;
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
@@ -160,7 +169,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
 
     @Override
     public void loadFavourTrackFailed(String error) {
-
+        hideProgressBar();
     }
 
     public void setFavouriteSong(TrackInfo trackInfo) {
@@ -195,7 +204,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
 
 
     public void startSearch(String search) {
-        showProgressBar();
+        showSearchProgressBar();
         DeezerRequest request = DeezerRequestFactory.requestSearchTracks(search, SearchResultOrder.Ranking);
 
         subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
@@ -204,14 +213,14 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
                 .subscribe(obj -> {
                             trackList = StaticUtils.fromListTracks((List<Track>) obj);
                             showTrackList();
-                            hideProgressBar();
+                            hideSearchProgressBar();
                         },
-                        ex -> hideProgressBar()));
+                        ex -> hideSearchProgressBar()));
     }
 
     @OnClick(R.id.chose_song_song_empty)
     public void clickChoseSong() {
-        hideProgressBar();
+        hideSearchProgressBar();
         relLaySearch.setVisibility(View.VISIBLE);
         textSearch.requestFocus();
         textSearch.setFocusableInTouchMode(true);
@@ -243,7 +252,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
 
     public void saveFavSong(TrackInfo trackInfo) {
         hideKeyboard();
-
+        showProgressBar();
         DeezerRequest request = DeezerRequestFactory.requestAlbum(trackInfo.getAlbumId());
         setFavouriteSong(trackInfo);
         subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
@@ -258,6 +267,7 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
                             ArrayList<TrackInfo> list = Prefs.getTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
                             list.add(trackInfo);
                             Prefs.putTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, list);
+                            hideProgressBar();
                         },
                         ex -> hideProgressBar()));
         relLaySearch.setVisibility(View.GONE);
@@ -289,6 +299,14 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
         recyclerView.setAdapter(mTracksAdapter);
     }
 
+    public void showSearchProgressBar() {
+        searchProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideSearchProgressBar() {
+        searchProgressBar.setVisibility(View.GONE);
+    }
+
     public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
@@ -296,6 +314,4 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack 
     public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
     }
-
-
 }

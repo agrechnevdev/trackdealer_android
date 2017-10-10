@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.trackdealer.BaseApp;
@@ -11,6 +12,7 @@ import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
 import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IConnected;
+import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.models.PositionPlay;
 import com.trackdealer.net.Restapi;
@@ -50,6 +52,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     ProfileFragment profileFragment;
 
     IConnected iConnected;
+    IDispatchTouch iDispatchTouch;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         profileFragment = new ProfileFragment();
         iConnected = profileFragment;
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
+        iDispatchTouch = chartFragment;
 //        if(Prefs.getString(this, SHARED_FILENAME_TRACK, SHARED_KEY_FIRST_TIME).equals("")) {
 //          startActivity(new Intent(this, TutorialActivity.class));
 //        }
@@ -92,21 +96,25 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     protected void onResume() {
         super.onResume();
         Timber.d(TAG + " onResume() ");
-
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
     }
+
+
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
         compositeDisposable.dispose();
+    }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return iDispatchTouch.dispatchTouch() || super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -120,10 +128,12 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         switch (item.getItemId()) {
             case R.id.base_menu_list:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
+                iDispatchTouch = chartFragment;
                 return true;
 
             case R.id.base_menu_chose_song:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, favourFragment).commit();
+                iDispatchTouch = favourFragment;
                 return true;
 
             case R.id.base_menu_logout:

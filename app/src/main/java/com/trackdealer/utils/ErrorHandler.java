@@ -180,7 +180,7 @@ public class ErrorHandler {
                     messageForUser = "Данные не загружены.";
                     break;
                 case DeezerError.OAUTH_FAILURE :
-                    messageForUser = "Требуется вход в Deezer аккаунт.";
+                    messageForUser += "Требуется вход в Deezer аккаунт.";
                     break;
                 case DeezerError.MISSING_PERMISSION :
                     messageForUser = "Необходимо разрешение.";
@@ -208,6 +208,9 @@ public class ErrorHandler {
                     break;
                 case DeezerError.USER_ID_NOT_FOUND :
                     messageForUser = "Пользователь не найден.";
+                    break;
+                case 4007 :
+                    messageForUser += "Слабые условия приема сигнала.";
                     break;
             }
             cause += ((DeezerError) exception).getMessage() != null ? " Message: " + ((DeezerError) exception).getMessage() + "\n" : "";

@@ -18,29 +18,37 @@
             android:paddingRight="@dimen/horizontal_margin">
 
             <ImageView
+                android:id="@+id/fragment_chart_but_deezer_fav_tracks_back"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:padding="@dimen/dp4"
+                android:clickable="false"
+                app:srcCompat="@drawable/deezer_logo_circle" />
+
+            <ImageView
+                android:id="@+id/fragment_chart_but_deezer_fav_tracks"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:padding="@dimen/dp4"
+                android:clickable="false"
+                android:layout_alignParentLeft="true"
+                app:srcCompat="@drawable/ic_deezer_fav_songs" />
+
+            <ImageView
                 android:id="@+id/fragment_chart_but_random"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentRight="true"
                 app:srcCompat="@drawable/ic_random_cube" />
 
-            <ImageView
-                android:id="@+id/fragment_chart_but_deezer_fav_tracks"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_toLeftOf="@id/fragment_chart_but_random"
-                android:layout_marginRight="@dimen/dp10"
-                android:padding="@dimen/dp4"
-                android:clickable="false"
-                app:srcCompat="@drawable/ic_deezer_fav_songs" />
-
             <LinearLayout
                 android:id="@+id/fragment_chart_lay_filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/horizontal_margin"
                 android:layout_marginRight="@dimen/horizontal_margin"
-                android:layout_toLeftOf="@id/fragment_chart_but_deezer_fav_tracks"
+                android:layout_toLeftOf="@id/fragment_chart_but_random"
+                android:layout_toRightOf="@id/fragment_chart_but_deezer_fav_tracks_back"
                 android:background="@drawable/selectable_item_background">
 
                 <ImageView
