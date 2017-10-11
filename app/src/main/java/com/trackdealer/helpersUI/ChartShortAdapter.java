@@ -90,11 +90,10 @@ public class ChartShortAdapter extends RecyclerView.Adapter<ChartShortAdapter.Vi
         holder.artist.setText(trackInfo.getArtist());
         holder.duration.setText(" " + trackInfo.getDuration());
 
-        if(trackInfo.getUser() != null) {
+        if (trackInfo.getUser() != null) {
             holder.textUsername.setVisibility(View.VISIBLE);
             holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUser().getUsername());
-        }
-        else{
+        } else {
             holder.textUsername.setVisibility(View.GONE);
         }
 //        holder.textPosition.setText(Integer.toString(position+1));
@@ -103,25 +102,21 @@ public class ChartShortAdapter extends RecyclerView.Adapter<ChartShortAdapter.Vi
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
-        if (SPlay.init().positionPlay != null) {
-            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
-                Timber.d(TAG + " position VISIBLE " + position);
-                holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
-            } else {
-                holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
-            }
+        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getTrackId()) {
+            Timber.d(TAG + " position VISIBLE " + position);
+            holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
+        } else {
+            holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
         }
 
-//        if (SPlay.init().positionPlay != null) {
-//            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
-//                Timber.d(TAG + " position VISIBLE " + position);
-//                holder.indicator.setVisibility(View.VISIBLE);
-//                holder.artistImage.setAlpha(0.3f);
-//            } else {
-//                holder.indicator.setVisibility(View.GONE);
-//                holder.artistImage.setAlpha(1f);
-//            }
-//        }
+        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getTrackId()) {
+                Timber.d(TAG + " position VISIBLE " + position);
+                holder.indicator.setVisibility(View.VISIBLE);
+                holder.artistImage.setAlpha(0.3f);
+            } else {
+                holder.indicator.setVisibility(View.GONE);
+                holder.artistImage.setAlpha(1f);
+            }
     }
 
     @Override

@@ -14,7 +14,6 @@ import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.interfaces.ITrackListState;
-import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.ShowPlaylist;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.chart.ChartFragment;
@@ -91,9 +90,9 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(PositionPlay posPlay) {
+    public void onMessageEvent(Long playTrackId) {
         chartFragment.updatePositionIndicator();
-        if(playlistDialog != null){
+        if (playlistDialog != null) {
             playlistDialog.updatePositionIndicator();
         }
     }
@@ -116,7 +115,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     }
 
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -131,7 +129,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Override
     public void updatePosIndicator() {
-        SPlay.init().positionPlay = new PositionPlay(-1, getPosPlayForIndicator(SPlay.init().getPlayingTrackId()));
+        SPlay.init().playTrackId = SPlay.init().getPlayingTrackId();
         chartFragment.updatePositionIndicator();
     }
 

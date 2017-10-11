@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/vertical_margin"
-    android:layout_marginBottom="@dimen/vertical_margin">
+    android:paddingTop="@dimen/vertical_margin">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -99,7 +98,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/item_chart_short_lay_image_play"
-
                 android:layout_marginTop="@dimen/dp10"
                 android:text="coool"
                 android:textColor="@color/textColorPrimary"

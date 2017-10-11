@@ -34,7 +34,6 @@ import com.trackdealer.R;
 import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IConnectDeezer;
-import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.ShowPlaylist;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.ConnectionsManager;
@@ -188,7 +187,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             if (SPlay.init().playingTrack == null) {
                 choseTrackForPlay(SPlay.init().playList.get(pos), pos);
             } else {
-                if (pos != getPosPlayForPlayList(SPlay.init().playingTrack.getId())) {
+                if (pos != SPlay.init().getPosPlayForPlayList(SPlay.init().playingTrack.getId())) {
                     choseTrackForPlay(SPlay.init().playList.get(pos), pos);
                 } else {
                     pos = pos == 0 ? SPlay.init().playList.size() - 1 : 0;
@@ -198,27 +197,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         }
     }
 
-    protected Integer getPosPlayForPlayList(Long trackId) {
-        Integer positionPlay = -1;
-        for (int i = 0; i < SPlay.init().playList.size(); i++) {
-            if (trackId != null && trackId == SPlay.init().playList.get(i).getTrackId()) {
-                positionPlay = i;
-                break;
-            }
-        }
-        return positionPlay;
-    }
 
-    protected Integer getPosPlayForIndicator(Long trackId) {
-        Integer positionPlay = -1;
-        for (int i = 0; i < SPlay.init().showList.size(); i++) {
-            if (trackId != null && trackId == SPlay.init().showList.get(i).getTrackId()) {
-                positionPlay = i;
-                break;
-            }
-        }
-        return positionPlay;
-    }
 
     @Override
     public void choseTrackForPlay(TrackInfo trackInfo, Integer pos) {
@@ -238,10 +217,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                 recreatePlayer();
 
             // меняем позицию индикатора
-            Integer oldPos = getPosPlayForIndicator(SPlay.init().getPlayingTrackId());
-            Integer newPos = getPosPlayForIndicator(trackInfo.getTrackId());
-            SPlay.init().positionPlay = new PositionPlay(oldPos, newPos);
-            EventBus.getDefault().post(SPlay.init().positionPlay);
+            SPlay.init().playTrackId = trackInfo.getTrackId();
+            EventBus.getDefault().post(SPlay.init().playTrackId);
 
             // отображаем информацию о треке в плеере и кнопки
             displayTrackInfo(trackInfo, pos);

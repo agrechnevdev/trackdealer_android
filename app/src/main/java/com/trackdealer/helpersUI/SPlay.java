@@ -1,7 +1,6 @@
 package com.trackdealer.helpersUI;
 
 import com.deezer.sdk.model.Track;
-import com.trackdealer.models.PositionPlay;
 import com.trackdealer.models.TrackInfo;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class SPlay {
     private final String TAG = "SPlay";
     private static SPlay instance = null;
 
-    public PositionPlay positionPlay;
+    public Long playTrackId;
     public Track playingTrack;
     public List<TrackInfo> playList = new ArrayList<>();
     public List<TrackInfo> showList = new ArrayList<>();
@@ -36,5 +35,23 @@ public class SPlay {
             return playingTrack.getId();
         else
             return null;
+    }
+
+    public Integer getPosPlayForPlayList(Long trackId) {
+        for (int i = 0; i < playList.size(); i++) {
+            if (trackId != null && trackId == playList.get(i).getTrackId()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public Integer getPosPlayForIndicator(Long trackId) {
+        for (int i = 0; i < showList.size(); i++) {
+            if (trackId != null && trackId == showList.get(i).getTrackId()) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

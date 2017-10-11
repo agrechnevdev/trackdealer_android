@@ -110,11 +110,10 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         holder.artist.setText(trackInfo.getArtist());
         holder.duration.setText(" " + trackInfo.getDuration());
 
-        if(trackInfo.getUser() != null) {
+        if (trackInfo.getUser() != null) {
             holder.textUsername.setVisibility(View.VISIBLE);
             holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUser().getUsername());
-        }
-        else{
+        } else {
             holder.textUsername.setVisibility(View.GONE);
         }
 //        holder.textPosition.setText(Integer.toString(position+1));
@@ -125,7 +124,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
-        if(!favSongs) {
+        if (!favSongs) {
             holder.relLayLikeMain.setVisibility(View.VISIBLE);
             holder.textDislike.setText(trackInfo.getDislikes().toString());
             holder.textLike.setText(trackInfo.getLikes().toString());
@@ -134,7 +133,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
                 return true;
             });
             fillNothing(holder);
-            if(trackInfo.getUserLike() == null){
+            if (trackInfo.getUserLike() == null) {
                 holder.relLayLike.setOnClickListener(view -> {
                     Integer newLike = trackInfo.getLikes() + 1;
                     holder.textLike.setText(newLike.toString());
@@ -149,7 +148,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
                     fillDisLikes(holder);
                     iTrackOperation.trackLike(trackInfo.getTrackId(), false);
                 });
-            } else if(trackInfo.getUserLike()){
+            } else if (trackInfo.getUserLike()) {
                 fillLikes(holder);
             } else {
                 fillDisLikes(holder);
@@ -157,27 +156,22 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         } else {
             holder.relLayLikeMain.setVisibility(View.GONE);
         }
-        if (SPlay.init().positionPlay != null) {
-            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
-                Timber.d(TAG + " position VISIBLE " + position);
-                holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
-            } else {
-                holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
-            }
+
+        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getTrackId()) {
+            Timber.d(TAG + " position VISIBLE " + position);
+            holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
+        } else {
+            holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
         }
 
-//        if (SPlay.init().positionPlay != null) {
-//            if (SPlay.init().positionPlay.newPos != -1 && SPlay.init().positionPlay.newPos == position) {
-//                Timber.d(TAG + " position VISIBLE " + position);
-//                holder.indicator.setVisibility(View.VISIBLE);
-//                holder.artistImage.setAlpha(0.3f);
-//            } else {
-//                holder.indicator.setVisibility(View.GONE);
-//                holder.artistImage.setAlpha(1f);
-//            }
-//        }
-
-
+        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getTrackId()) {
+            Timber.d(TAG + " position VISIBLE " + position);
+            holder.indicator.setVisibility(View.VISIBLE);
+            holder.artistImage.setAlpha(0.3f);
+        } else {
+            holder.indicator.setVisibility(View.GONE);
+            holder.artistImage.setAlpha(1f);
+        }
     }
 
     @Override
@@ -197,21 +191,21 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         return trackInfos.size();
     }
 
-    private void fillLikes(ViewHolder holder){
+    private void fillLikes(ViewHolder holder) {
         int colorOrange = context.getResources().getColor(R.color.colorOrange);
         holder.imageLike.setColorFilter(colorOrange);
         holder.textLike.setTextColor(colorOrange);
         clickableLikes(holder, false);
     }
 
-    private void fillDisLikes(ViewHolder holder){
+    private void fillDisLikes(ViewHolder holder) {
         int colorAccent = context.getResources().getColor(R.color.colorAccent);
         holder.imageDislike.setColorFilter(colorAccent);
         holder.textDislike.setTextColor(colorAccent);
         clickableLikes(holder, false);
     }
 
-    private void fillNothing(ViewHolder holder){
+    private void fillNothing(ViewHolder holder) {
         int color = context.getResources().getColor(R.color.colorGrey);
         holder.imageLike.setColorFilter(color);
         holder.textLike.setTextColor(color);
@@ -221,7 +215,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         clickableLikes(holder, true);
     }
 
-    private void clickableLikes(ViewHolder holder, boolean clickable){
+    private void clickableLikes(ViewHolder holder, boolean clickable) {
         holder.relLayLike.setClickable(clickable);
         holder.relLayDislike.setClickable(clickable);
     }
