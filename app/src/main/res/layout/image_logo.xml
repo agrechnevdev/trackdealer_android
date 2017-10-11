@@ -11,6 +11,6 @@
         android:layout_marginTop="30dp"
         android:layout_centerHorizontal="true"
         android:padding="@dimen/dp25"
-        app:srcCompat="@drawable/ic_music_wave" />
+        app:srcCompat="@drawable/app_logo" />
 
 </RelativeLayout>

@@ -14,6 +14,7 @@
         android:layout_height="4dp"
         android:layout_gravity="center_vertical"
         android:max="100"
+        android:clickable="false"
         android:paddingEnd="0dp"
         android:paddingStart="0dp"
         android:progressDrawable="@drawable/seek_bar_color"
@@ -55,12 +56,22 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_play" />
 
+        <ImageButton
+            android:id="@+id/button_playlist"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_toLeftOf="@id/button_pause"
+            android:layout_marginRight="@dimen/horizontal_margin"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_playlist_play" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/horizontal_margin"
-            android:layout_toLeftOf="@+id/button_pause"
+            android:layout_toLeftOf="@id/button_playlist"
             android:orientation="vertical">
 
             <TextView

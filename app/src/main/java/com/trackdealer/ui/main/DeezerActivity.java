@@ -35,6 +35,7 @@ import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.models.PositionPlay;
+import com.trackdealer.models.ShowPlaylist;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
@@ -76,6 +77,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     @Bind(R.id.button_seek_forward)
     protected ImageButton mButtonPlayerSeekForward;
 
+    @Bind(R.id.button_playlist)
+    protected ImageButton mButtonPlayerPlaylist;
     @Bind(R.id.button_repeat)
     protected ImageButton mButtonPlayerRepeat;
 
@@ -266,6 +269,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
                                 setButtonEnabled(mButtonPlayerPause, true);
                                 setButtonEnabled(mButtonPlayerSkipForward, true);
+                                setButtonEnabled(mButtonPlayerPlaylist, true);
                             },
                             ex -> {
                                 if (ex instanceof ConnectException) {
@@ -311,6 +315,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         // блочим кнопки и показываем плеер
         setButtonEnabled(mButtonPlayerPause, false);
         setButtonEnabled(mButtonPlayerSkipForward, false);
+        setButtonEnabled(mButtonPlayerPlaylist, false);
         setPlayerVisible(true);
     }
 
@@ -426,7 +431,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.button_pause, R.id.button_skip_forward})
+    @OnClick({R.id.button_pause, R.id.button_skip_forward,  R.id.button_playlist})
     public void onClickButton(final View v) {
         if (v == mButtonPlayerPause) {
             if (trackPlayer.getPlayerState() == PlayerState.PLAYING) {
@@ -436,6 +441,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             }
         } else if (v == mButtonPlayerSkipForward) {
             playNextTrack();
+        } else if (v == mButtonPlayerPlaylist) {
+            EventBus.getDefault().post(new ShowPlaylist());
         }
     }
 

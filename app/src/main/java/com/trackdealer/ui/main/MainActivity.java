@@ -15,8 +15,10 @@ import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.models.PositionPlay;
+import com.trackdealer.models.ShowPlaylist;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.chart.ChartFragment;
+import com.trackdealer.ui.main.chart.PlaylistDialog;
 import com.trackdealer.ui.main.favour.FavourFragment;
 import com.trackdealer.ui.main.profile.ProfileFragment;
 
@@ -50,6 +52,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     ChartFragment chartFragment;
     FavourFragment favourFragment;
     ProfileFragment profileFragment;
+    PlaylistDialog playlistDialog;
 
     IConnected iConnected;
     IDispatchTouch iDispatchTouch;
@@ -90,6 +93,15 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PositionPlay posPlay) {
         chartFragment.updatePositionIndicator();
+        if(playlistDialog != null){
+            playlistDialog.updatePositionIndicator();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ShowPlaylist showPlaylist) {
+        playlistDialog = new PlaylistDialog();
+        playlistDialog.show(getSupportFragmentManager(), "playlist");
     }
 
     @Override

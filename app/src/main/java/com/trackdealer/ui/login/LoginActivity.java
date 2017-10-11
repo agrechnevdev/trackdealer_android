@@ -49,7 +49,6 @@ public class LoginActivity extends BaseActivity {
 
     CompositeDisposable subscription;
 
-
     @Bind(R.id.login_text_password)
     EditText textPassword;
 
@@ -113,10 +112,6 @@ public class LoginActivity extends BaseActivity {
         login();
     }
 
-    @OnClick(R.id.login_show_log)
-    public void clickShowLog() {
-        startActivity(new Intent(this, LogActivity.class));
-    }
 
     void login() {
 

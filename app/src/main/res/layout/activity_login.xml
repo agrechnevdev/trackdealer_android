@@ -1,42 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/login_lay_main"
     android:layout_width="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:id="@+id/login_show_log"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:clickable="true"/>
-
-    <ImageView
-        android:id="@+id/logo_image_view"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true"
-        android:padding="@dimen/dp25"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_music_wave" />
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="80dp"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical"
         android:paddingLeft="@dimen/vertical_margin"
         android:paddingRight="@dimen/vertical_margin">
-
-        <ImageView
-            android:id="@+id/login_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="center_horizontal" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/login_lay_text_login"
@@ -45,49 +24,35 @@
             <EditText
                 android:id="@+id/login_text_login"
                 style="@style/EditTextStyle"
-                android:maxLines="1"
-                android:hint="@string/login" />
+                android:hint="@string/login"
+                android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/login_lay_text_password"
-            style="@style/TextInputLayoutAccent">
-            <EditText android:id="@+id/login_text_password"
+            style="@style/TextInputLayoutAccent"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/colorAccent">
+
+            <EditText
+                android:id="@+id/login_text_password"
                 style="@style/EditTextStyle"
-                android:maxLines="1"
+                android:hint="@string/password"
                 android:inputType="textPassword"
-                android:hint="@string/password" />
+                android:maxLines="1" />
         </android.support.design.widget.TextInputLayout>
+
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/login_btn_login"
             style="@style/ButtonColoredAccent"
             android:layout_width="320dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/vertical_margin_x2"
             android:padding="12dp"
-            android:text="@string/singin"/>
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/login_btn_register"
-            style="@style/ButtonColoredAccent"
-            android:layout_width="320dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:padding="12dp"
-            android:text="@string/register"/>
-
+            android:text="@string/singin" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/login_deezer_big"
-        android:layout_width="100dp"
-        android:layout_height="56dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/dp10"
-        android:src="@drawable/deezer_big"/>
-
-    <include layout="@layout/progressbar"/>
+    <include layout="@layout/progressbar" />
 </RelativeLayout>

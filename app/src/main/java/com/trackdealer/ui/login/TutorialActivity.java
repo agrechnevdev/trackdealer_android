@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.ui.login;
 
 import android.support.v7.app.AppCompatActivity;
 

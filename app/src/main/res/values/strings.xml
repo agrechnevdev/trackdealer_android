@@ -11,7 +11,7 @@
 
     <!-- Text -->
 
-    <string name="singin">Войти</string>
+    <string name="singin">Вход</string>
     <string name="register">Регистрация</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>

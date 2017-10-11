@@ -109,6 +109,7 @@
         <!-- цвет линии, когда в фокусе -->
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/colorAccent</item>
     </style>
 
     <style name="CheckBoxRight">

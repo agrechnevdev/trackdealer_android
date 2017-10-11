@@ -1,4 +1,4 @@
-package com.trackdealer.ui;
+package com.trackdealer.ui.login;
 
 import android.animation.ValueAnimator;
 import android.content.Intent;
@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.trackdealer.R;
-import com.trackdealer.ui.login.LoginActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -20,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class StartImageActivity extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 2000;
+    private static int SPLASH_TIME_OUT = 1000;
 
     @Bind(R.id.logo_image_view)
     ImageView imageView;
@@ -32,7 +31,7 @@ public class StartImageActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         createAnim();
         new Handler().postDelayed(() -> {
-            startActivity(new Intent(StartImageActivity.this, LoginActivity.class));
+            startActivity(new Intent(StartImageActivity.this, PreloginActivity.class));
             overridePendingTransition(0, 0);
             finish();
         }, SPLASH_TIME_OUT);
@@ -43,10 +42,10 @@ public class StartImageActivity extends AppCompatActivity {
                 to =   new float[3];
 
         Color.colorToHSV(Color.parseColor("#FFFFFFFF"), from);   // from white
-        Color.colorToHSV(Color.parseColor("#FFFF0000"), to);     // to red
+        Color.colorToHSV(Color.parseColor("#FF007cd0"), to);     // to red
 
         ValueAnimator anim = ValueAnimator.ofFloat(0, 1);   // animate from 0 to 1
-        anim.setDuration(2000);                              // for 300 ms
+        anim.setDuration(SPLASH_TIME_OUT);                              // for 300 ms
 
         final float[] hsv  = new float[3];                  // transition color
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
