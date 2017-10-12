@@ -17,6 +17,7 @@
     <color name="colorAccentTranslucent55">#557CB342</color>
 
     <color name="colorBackground">#FAFAFA</color>
+    <color name="colorAlmostWhite">#f0fcfd</color>
 
     <color name="colorBackgroundChosen">#d7d7d7</color>
     <color name="colorGrey">#d3d3d3</color>

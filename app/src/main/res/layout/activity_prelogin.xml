@@ -9,7 +9,7 @@
         android:id="@+id/prelogin_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.2"/>
+        android:alpha="0.2" />
 
     <TextView
         android:id="@+id/prelogin_show_log"
@@ -19,13 +19,13 @@
 
     <ImageView
         android:id="@+id/logo_image_view"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:padding="@dimen/dp25"
-        android:visibility="visible"
-        app:srcCompat="@drawable/app_logo" />
+        android:src="@drawable/app_logo_2"
+        android:visibility="visible" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -62,14 +62,26 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/login_deezer_big"
-        android:layout_width="100dp"
-        android:layout_height="56dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/dp10"
-        android:src="@drawable/deezer_big" />
+        android:layout_alignParentRight="true">
+
+        <ImageView
+            android:id="@+id/logo_flaticon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/dp10"
+            app:srcCompat="@drawable/ic_flaticon_logo" />
+
+        <ImageView
+            android:id="@+id/login_deezer_big"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="@dimen/dp10"
+            android:src="@drawable/deezer_logo_circle" />
+    </LinearLayout>
 
     <include layout="@layout/progressbar" />
 </RelativeLayout>

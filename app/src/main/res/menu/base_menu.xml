@@ -3,7 +3,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/base_menu_list"
-            android:icon="@drawable/ic_playlist_play"
+            android:icon="@drawable/ic_playlist"
             android:checked="true"
             android:title="@string/chart" />
 
@@ -14,7 +14,7 @@
 
         <item
             android:id="@+id/base_menu_logout"
-            android:icon="@drawable/ic_account_circle"
+            android:icon="@drawable/app_logo_2"
             android:title="@string/profile" />
     </group>
 </menu>
