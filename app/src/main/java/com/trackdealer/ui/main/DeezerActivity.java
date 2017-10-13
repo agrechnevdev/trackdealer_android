@@ -148,6 +148,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     protected void onDestroy() {
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
+        mDeezerConnect.logout(this);
         trackPlayer.removePlayerListener(this);
         doDestroyPlayer();
         subscription.dispose();
@@ -198,7 +199,6 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     }
 
 
-
     @Override
     public void choseTrackForPlay(TrackInfo trackInfo, Integer pos) {
         Track playingTrack = SPlay.init().playingTrack;
@@ -221,7 +221,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             EventBus.getDefault().post(SPlay.init().playTrackId);
 
             // отображаем информацию о треке в плеере и кнопки
-            displayTrackInfo(trackInfo, pos);
+            displayTrackInfo(trackInfo);
             // грузим песню
             loadSong(trackInfo);
         }
@@ -252,10 +252,10 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                                 if (ex instanceof ConnectException) {
                                     recreatePlayer();
                                 }
-                                ErrorHandler.handleError(getApplicationContext(), "Не удалось загрузить песню.", (Exception) ex);
+                                ErrorHandler.handleError(this, "Не удалось загрузить песню.", (Exception) ex, (dialog, which) -> loadSong(trackInfo));
                             }));
         } else {
-            ErrorHandler.handleError(getApplicationContext(), "Ошибка соединения.", new Exception());
+            ErrorHandler.handleError(this, "Ошибка соединения.", new Exception(), (dialog, which) -> loadSong(trackInfo));
         }
     }
 
@@ -266,7 +266,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             trackPlayer.addPlayerListener(this);
             setAttachedPlayer(trackPlayer);
         } catch (TooManyPlayersExceptions | DeezerError e) {
-            ErrorHandler.handleError(getApplicationContext(), "Ошибка при создании плеера.", e);
+            ErrorHandler.handleError(this, "Ошибка при создании плеера.", e, null);
         }
         return trackPlayer;
     }
@@ -283,7 +283,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         }
     }
 
-    protected void displayTrackInfo(final TrackInfo trackInfo, Integer pos) {
+    protected void displayTrackInfo(final TrackInfo trackInfo) {
         //Зануляем прогресс воспроизведения
         showBufferProgress(0);
         showPlayerProgress(0);
@@ -307,9 +307,9 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     }
 
     public void showPlayerState(final PlayerState state) {
-        mSeekBar.setEnabled(true);
-        mButtonPlayerPause.setEnabled(true);
-        mButtonPlayerStop.setEnabled(true);
+//        mSeekBar.setEnabled(true);
+//        mButtonPlayerPause.setEnabled(true);
+//        mButtonPlayerStop.setEnabled(true);
 
         switch (state) {
             case STARTED:
@@ -359,7 +359,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         @Override
         public void onBufferError(final Exception ex, final double percent) {
             Timber.d(TAG + "onBufferError");
-            runOnUiThread(() -> ErrorHandler.handleError(getApplicationContext(), "Ошибка при загрузке буфера.", ex));
+            runOnUiThread(() -> ErrorHandler.handleError(getApplicationContext(), "Ошибка при загрузке буфера.", ex, null));
 //            recreatePlayer();
 //            playNextTrack();
         }
@@ -373,11 +373,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         @Override
         public void onPlayerError(final Exception ex, final long timePosition) {
             Timber.d(TAG + "onPlayerError");
-            runOnUiThread(() -> {
-                ErrorHandler.handleError(getApplicationContext(), "Не удалось воспроизвести песню.", ex);
-//                recreatePlayer();
-//                playNextTrack();
-            });
+            runOnUiThread(() -> ErrorHandler.handleError(getApplicationContext(), "Ошибка плеера", ex, null));
         }
 
         @Override
@@ -408,7 +404,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.button_pause, R.id.button_skip_forward,  R.id.button_playlist})
+    @OnClick({R.id.button_pause, R.id.button_skip_forward, R.id.button_playlist})
     public void onClickButton(final View v) {
         if (v == mButtonPlayerPause) {
             if (trackPlayer.getPlayerState() == PlayerState.PLAYING) {
@@ -539,7 +535,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
     @Override
     public void onRequestException(final Exception e, final Object requestId) {
-        ErrorHandler.handleError(getApplicationContext(), "Ошибка при запросе на сервер.", e);
+        ErrorHandler.handleError(this, "Ошибка при запросе на сервер.", e, null);
     }
 
 }

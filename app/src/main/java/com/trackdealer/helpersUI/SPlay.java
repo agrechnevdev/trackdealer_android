@@ -54,4 +54,14 @@ public class SPlay {
         }
         return -1;
     }
+
+    public TrackInfo getTrackInfoPlaying(){
+        for (int i = 0; i < playList.size(); i++) {
+            if (playTrackId != null && playTrackId == playList.get(i).getTrackId()) {
+                return playList.get(i);
+            }
+        }
+        return null;
+    }
+
 }

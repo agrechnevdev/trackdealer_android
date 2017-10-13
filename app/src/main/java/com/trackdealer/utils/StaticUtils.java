@@ -29,9 +29,9 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_LIST;
 
 public class StaticUtils {
 
-    public static ArrayList<TrackInfo> fromListTracks(List<Track> tracks){
+    public static ArrayList<TrackInfo> fromListTracks(List<Track> tracks) {
         ArrayList<TrackInfo> list = new ArrayList<>();
-        for(Track track : tracks){
+        for (Track track : tracks) {
             Long id = track.getId();
             list.add(new TrackInfo(id.intValue(), track.getTitle(), track.getArtist().getName(), track.getDuration(), track.getAlbum().getSmallImageUrl(), track.getAlbum().getId()));
         }
@@ -110,17 +110,18 @@ public class StaticUtils {
             } else if (var4 instanceof JSONArray) {
                 var3 = JsonUtils.deserializeArray((JSONArray) var4);
             }
-            if(var3 != null)
+            if (var3 != null)
                 e.onNext(var3);
             else
                 e.onNext(new Object());
+
         });
     }
 
     public static UUID generateUUID(Context context, String userName, String pass) {
         UUID uuid = null;
         try {
-            uuid = UUID.nameUUIDFromBytes((userName+pass).getBytes("utf8"));
+            uuid = UUID.nameUUIDFromBytes((userName + pass).getBytes("utf8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

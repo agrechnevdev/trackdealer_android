@@ -20,7 +20,6 @@ import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
-import com.deezer.sdk.network.request.event.DeezerError;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.ChartAdapter;
@@ -205,7 +204,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                             swipeLay.setRefreshing(false);
                         },
                         ex -> {
-                            ErrorHandler.handleError(getContext(), "Не удалось добавить песню.", (DeezerError) ex);
+                            ErrorHandler.handleError(getContext(), "Не удалось добавить песню.", (Exception) ex, null);
                             swipeLay.setRefreshing(false);
                         }
                 ));
@@ -243,7 +242,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                         ex -> {
                             swipeLay.setRefreshing(false);
                             changeShowListState(false);
-                            ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", (DeezerError) ex);
+                            ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", (Exception) ex, ((dialog, which) -> loadFavSongsStart()));
                         }
                 ));
     }

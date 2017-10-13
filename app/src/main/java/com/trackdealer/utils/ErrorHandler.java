@@ -1,12 +1,12 @@
 package com.trackdealer.utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.deezer.sdk.network.request.event.DeezerError;
 import com.deezer.sdk.player.exception.DeezerPlayerException;
@@ -16,6 +16,7 @@ import com.deezer.sdk.player.exception.StreamLimitationException;
 import com.deezer.sdk.player.exception.StreamTokenAlreadyDecodedException;
 import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.trackdealer.R;
+import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -49,6 +50,7 @@ public class ErrorHandler {
     public static String DEFAULT_SERVER_ERROR_MESSAGE = "Возникла ошибка на сервере";
 
     public static final int DURATION = 5000;
+
     /**
      * Отображает snackbar
      *
@@ -148,7 +150,7 @@ public class ErrorHandler {
      *
      * @param exception the exception that occured while contacting Deezer services.
      */
-    public static void handleError(Context context, String messageForUser, final Exception exception) {
+    public static void handleError(Context context, String messageForUser, final Exception exception, DialogInterface.OnClickListener repeatListener) {
         String cause = exception.getCause() != null ? exception.getCause().getMessage() : "";
         if (exception instanceof NotAllowedToPlayThatSongException) {
             messageForUser = "Ошибка! Пользователь не имеет прав для вопроизведения.";
@@ -162,8 +164,8 @@ public class ErrorHandler {
             messageForUser = "Ошибка! Слишком много плееров создано.";
         } else if (exception instanceof DeezerPlayerException) {
             messageForUser = "Ошибка плеера.";
-        }  else if (exception instanceof UnknownHostException) {
-                messageForUser = "Соединение с сервером не установлено.";
+        } else if (exception instanceof UnknownHostException) {
+            messageForUser = "Соединение с сервером не установлено.";
             messageForUser += " Проверьте соединение с интернетом. ";
         } else if (exception instanceof ConnectException) {
             messageForUser = "Ошибка соединения.";
@@ -171,53 +173,52 @@ public class ErrorHandler {
         } else if (exception instanceof SocketException) {
             messageForUser = "Ошибка при загрузке.";
         } else if (exception instanceof DeezerError) {
-            switch (((DeezerError) exception).getErrorCode()){
-                case DeezerError.ACCESS_TOKEN_RETRIEVAL_FAILURE :
-                case DeezerError.TOKEN_INVALID :
+            switch (((DeezerError) exception).getErrorCode()) {
+                case DeezerError.ACCESS_TOKEN_RETRIEVAL_FAILURE:
+                case DeezerError.TOKEN_INVALID:
                     messageForUser = "Не удалось войти в Deezer.";
                     break;
-                case DeezerError.DATA_NOT_FOUND :
+                case DeezerError.DATA_NOT_FOUND:
                     messageForUser = "Данные не загружены.";
                     break;
-                case DeezerError.OAUTH_FAILURE :
+                case DeezerError.OAUTH_FAILURE:
                     messageForUser += "Требуется вход в Deezer аккаунт.";
                     break;
-                case DeezerError.MISSING_PERMISSION :
+                case DeezerError.MISSING_PERMISSION:
                     messageForUser = "Необходимо разрешение.";
                     break;
-                case DeezerError.PARAMETER :
-                case DeezerError.PARAMETER_MISSING :
+                case DeezerError.PARAMETER:
+                case DeezerError.PARAMETER_MISSING:
                     messageForUser += "Ошибка запроса.";
                     break;
-                case DeezerError.PERMISSION :
+                case DeezerError.PERMISSION:
                     messageForUser = "Необходимо разрешение.";
                     break;
-                case DeezerError.QUERY_INVALID :
-                case DeezerError.REQUEST_FAILURE :
+                case DeezerError.QUERY_INVALID:
+                case DeezerError.REQUEST_FAILURE:
                     messageForUser = "Не удалось получить ответ от сервера.";
                     messageForUser += " Проверьте соединение с интернетом. ";
                     break;
-                case DeezerError.QUOTA :
-                case DeezerError.SERVICE_BUSY :
+                case DeezerError.QUOTA:
+                case DeezerError.SERVICE_BUSY:
                     messageForUser = "Сервер перегружен.";
                     break;
-                case DeezerError.UNEXPECTED_RESULT :
-                case DeezerError.UNKNOWN_FAILURE :
+                case DeezerError.UNEXPECTED_RESULT:
+                case DeezerError.UNKNOWN_FAILURE:
                     messageForUser += " Неизвестная ошибка.";
                     messageForUser += " Проверьте соединение с интернетом. ";
                     break;
-                case DeezerError.USER_ID_NOT_FOUND :
+                case DeezerError.USER_ID_NOT_FOUND:
                     messageForUser = "Пользователь не найден.";
                     break;
-                case 4007 :
+                case 4007:
                     messageForUser += "Слабые условия приема сигнала.";
                     break;
             }
             cause += ((DeezerError) exception).getMessage() != null ? " Message: " + ((DeezerError) exception).getMessage() + "\n" : "";
-            cause += " Code: " + ((DeezerError) exception).getErrorCode() + "\n" ;
+            cause += " Code: " + ((DeezerError) exception).getErrorCode() + "\n";
             cause += ((DeezerError) exception).getErrorType() != null ? " Type: " + ((DeezerError) exception).getErrorType() : "";
         }
-
 
 
         HashMap<String, String> logMap = Prefs.getHashMap(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR);
@@ -227,10 +228,15 @@ public class ErrorHandler {
         Calendar calendar = Calendar.getInstance();
         logMap.put(sdf.format(calendar.getTime()), messageForUser + "\n" + cause + "\n" + exception.getClass().getName());
         Prefs.putHashMap(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_LOG_ERROR, logMap);
-
-        Toast toast = Toast.makeText(context, messageForUser, Toast.LENGTH_LONG);
-        ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(context.getResources().getColor(R.color.colorOrange));
-        toast.show();
+        if (repeatListener != null) {
+            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(context, 0, messageForUser,
+                    R.string.back, (dialog, id) -> {
+            }, R.string.repeat, repeatListener);
+            builder.create().show();
+        }
+//        Toast toast = Toast.makeText(context, messageForUser, Toast.LENGTH_LONG);
+//        ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(context.getResources().getColor(R.color.colorOrange));
+//        toast.show();
 
         Timber.d("ErrorHandler Exception occured " + messageForUser + "\n" + cause + "\n" + exception.getClass().getName());
     }

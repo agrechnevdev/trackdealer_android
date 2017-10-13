@@ -14,13 +14,12 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder {
         super(context);
     }
 
-    public CustomAlertDialogBuilder(Context context, int title, int message,
+    public CustomAlertDialogBuilder(Context context, int title, String message,
                                     int positive, DialogInterface.OnClickListener positiveListener) {
         super(context);
         if (title != 0)
             setTitle(title);
-        if (message != 0)
-            setMessage(message);
+        setMessage(message);
         setPositiveButton(positive, positiveListener);
         setCancelable(false);
     }
@@ -35,6 +34,19 @@ public class CustomAlertDialogBuilder extends AlertDialog.Builder {
             setMessage(message);
         setPositiveButton(positive, positiveListener);
         setNegativeButton(negative, negativeListener);
+        setCancelable(false);
+    }
+
+    public CustomAlertDialogBuilder(Context context, int title, String message,
+                                    int positive, DialogInterface.OnClickListener positiveListener,
+                                    int negative, DialogInterface.OnClickListener negativeListener) {
+        super(context);
+        if (title != 0)
+            setTitle(title);
+        setMessage(message);
+        setPositiveButton(positive, positiveListener);
+        if(negativeListener != null)
+            setNegativeButton(negative, negativeListener);
         setCancelable(false);
     }
 
