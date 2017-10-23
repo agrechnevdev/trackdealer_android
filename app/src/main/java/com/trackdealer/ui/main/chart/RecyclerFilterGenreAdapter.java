@@ -26,12 +26,12 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_FILTER;
  * Created by grechnev-av on 27.07.2017.
  */
 
-public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFilterChartAdapter.ViewHolder> {
+public class RecyclerFilterGenreAdapter extends RecyclerView.Adapter<RecyclerFilterGenreAdapter.ViewHolder> {
 
     private List<Genre> genres;
     private Context context;
     private RecyclerView recyclerView;
-    DialogFilterClickListener dialogItemClickListener;
+    FilterDialogGenreListener dialogItemClickListener;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -48,14 +48,14 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
         }
     }
 
-    public RecyclerFilterChartAdapter(List<Genre> genres, Context context, DialogFilterClickListener dialogItemClickListener) {
+    public RecyclerFilterGenreAdapter(List<Genre> genres, Context context, FilterDialogGenreListener dialogItemClickListener) {
         this.genres = genres;
         this.context = context;
         this.dialogItemClickListener = dialogItemClickListener;
     }
 
     @Override
-    public RecyclerFilterChartAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+    public RecyclerFilterGenreAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                                     int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_image_info, parent, false);
@@ -65,7 +65,7 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
     }
 
     @Override
-    public void onBindViewHolder(RecyclerFilterChartAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerFilterGenreAdapter.ViewHolder holder, int position) {
         Genre genre = genres.get(position);
         holder.text.setText(genre.getName());
 
@@ -74,7 +74,7 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
         holder.text.setTextColor(context.getResources().getColor(color));
         holder.relLayMain.setOnClickListener(view -> {
             Prefs.putString(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER, genres.get(position).getName());
-            dialogItemClickListener.filterClickStart();
+            dialogItemClickListener.filterGenreClickStart();
         });
     }
 

@@ -27,15 +27,15 @@ import butterknife.ButterKnife;
  * Created by grechnev-av on 27.07.2017.
  */
 
-public class FilterDialogFragment extends DialogFragment implements DialogFilterClickListener {
+public class FilterDialogFragment extends DialogFragment implements FilterDialogGenreListener {
 
     final String TAG = "FilterDialogFragment";
 
     @Bind(R.id.list_recycler)
     RecyclerView recyclerView;
 
-    RecyclerFilterChartAdapter adapter;
-    private DialogFilterClickListener dialogInterface;
+    RecyclerFilterGenreAdapter adapter;
+    private FilterDialogGenreListener dialogInterface;
 
     public static FilterDialogFragment newInstance(List<Genre> genres) {
         FilterDialogFragment dialogFragment = new FilterDialogFragment();
@@ -63,10 +63,10 @@ public class FilterDialogFragment extends DialogFragment implements DialogFilter
         builder.setView(view);
         ButterKnife.bind(this, view);
 
-        dialogInterface = (DialogFilterClickListener) getParentFragment();
+        dialogInterface = (FilterDialogGenreListener) getParentFragment();
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(llm);
-        adapter = new RecyclerFilterChartAdapter(genres, getContext(), this);
+        adapter = new RecyclerFilterGenreAdapter(genres, getContext(), this);
         recyclerView.setAdapter(adapter);
         builder.setCancelable(true);
 
@@ -85,8 +85,8 @@ public class FilterDialogFragment extends DialogFragment implements DialogFilter
     }
 
     @Override
-    public void filterClickStart() {
-        dialogInterface.filterClickStart();
+    public void filterGenreClickStart() {
+        dialogInterface.filterGenreClickStart();
         dismiss();
     }
 }

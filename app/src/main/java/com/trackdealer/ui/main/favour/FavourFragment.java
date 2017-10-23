@@ -3,14 +3,10 @@ package com.trackdealer.ui.main.favour;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -18,18 +14,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.deezer.sdk.model.Album;
-import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
-import com.deezer.sdk.network.request.SearchResultOrder;
-import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.squareup.picasso.Picasso;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
-import com.trackdealer.helpersUI.SearchTracksAdapter;
-import com.trackdealer.interfaces.IClickTrack;
 import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
@@ -39,8 +30,6 @@ import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -62,7 +51,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class FavourFragment extends Fragment implements FavourView, IClickTrack, IDispatchTouch {
+public class FavourFragment extends Fragment implements FavourView, ISearchDialog, IDispatchTouch {
 
     private final String TAG = "FavourFragment ";
 
@@ -79,9 +68,6 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
     @Bind(R.id.chose_song_lay_all)
     RelativeLayout relLayAll;
 
-    @Bind(R.id.chose_song_recycler_view)
-    RecyclerView recyclerView;
-
     @Bind(R.id.chose_song_fav_song)
     RelativeLayout relLayFavSong;
 
@@ -97,9 +83,6 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
     @Bind(R.id.chose_song_fav_song_empty)
     RelativeLayout relLayEmpty;
 
-    @Bind(R.id.chose_song_lay_search)
-    RelativeLayout relLaySearch;
-
     @Bind(R.id.chose_song_like)
     RelativeLayout relLayPercentLike;
     @Bind(R.id.percent_like_text_like)
@@ -109,18 +92,12 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
     @Bind(R.id.percent_like_seekbar)
     SeekBar seekBarLike;
 
-    @Bind(R.id.chose_song_search)
-    EditText textSearch;
-    @Bind(R.id.search_progressbar)
-    ProgressBar searchProgressBar;
-
     @Bind(R.id.progressbar)
     ProgressBar progressBar;
 
-    ArrayList<TrackInfo> trackList = new ArrayList<>();
-
-    SearchTracksAdapter mTracksAdapter;
     DeezerConnect mDeezerConnect = null;
+
+    SearchDialogFragment searchDialogFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -135,16 +112,13 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
         favourPresenter.attachView(this);
         loadFavouriteSongStart();
 
-        initSubscription();
-        relLaySearch.setVisibility(View.GONE);
         relLayFavSong.setVisibility(View.GONE);
-        showTrackList();
         return view;
     }
 
     @Override
     public boolean dispatchTouch() {
-        return searchProgressBar.getVisibility() == View.VISIBLE || progressBar.getVisibility() == View.VISIBLE;
+        return progressBar.getVisibility() == View.VISIBLE;
     }
 
     @Override
@@ -198,40 +172,14 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
         }
     }
 
-    public void initSubscription() {
-        subscription.add(RxTextView.textChanges(textSearch)
-                .filter(text -> text != null && !TextUtils.isEmpty(text.toString()))
-                .debounce(1, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(text -> startSearch(text.toString()))
-        );
-    }
-
-
-    public void startSearch(String search) {
-        showSearchProgressBar();
-        DeezerRequest request = DeezerRequestFactory.requestSearchTracks(search, SearchResultOrder.Ranking);
-
-        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(obj -> {
-                            trackList = StaticUtils.fromListTracks((List<Track>) obj);
-                            showTrackList();
-                            hideSearchProgressBar();
-                        },
-                        ex -> hideSearchProgressBar()));
-    }
 
     @OnClick(R.id.chose_song_song_empty)
     public void clickChoseSong() {
-        hideSearchProgressBar();
-        relLaySearch.setVisibility(View.VISIBLE);
-        textSearch.requestFocus();
-        textSearch.setFocusableInTouchMode(true);
+        searchDialogFragment = new SearchDialogFragment();
+        searchDialogFragment.show(FavourFragment.this.getChildFragmentManager(), "search");
     }
 
-    @OnClick(R.id.chose_song_lay_fav_song_info)
+    @OnClick(R.id.chose_song_but_change)
     public void clickReChoseSong() {
         CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                 R.string.chose_song_title, R.string.rechose_song_message,
@@ -245,10 +193,16 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
         if (checkTrackUnique(trackInfo)) {
             CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                     R.string.chose_song_title, R.string.chose_song_message,
-                    R.string.yes, (dialog, id) -> {
-                saveFavSong(trackInfo);
-            },
-                    R.string.no, (dialog, id) -> dialog.dismiss());
+                    R.string.yes,
+                    (dialog, id) -> {
+                        searchDialogFragment.dismiss();
+                        saveFavSong(trackInfo);
+                    },
+                    R.string.no,
+                    (dialog, id) -> {
+                        dialog.dismiss();
+                        searchDialogFragment.dismiss();
+                    });
             builder.create().show();
         } else {
             ErrorHandler.showSnackbarError(relLayMain, "Песня уже в чарте!");
@@ -275,7 +229,6 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
                             hideProgressBar();
                         },
                         ex -> hideProgressBar()));
-        relLaySearch.setVisibility(View.GONE);
     }
 
     public void hideKeyboard() {
@@ -294,22 +247,6 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
             }
         }
         return true;
-
-    }
-
-    private void showTrackList() {
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(llm);
-        mTracksAdapter = new SearchTracksAdapter(trackList, getActivity(), this);
-        recyclerView.setAdapter(mTracksAdapter);
-    }
-
-    public void showSearchProgressBar() {
-        searchProgressBar.setVisibility(View.VISIBLE);
-    }
-
-    public void hideSearchProgressBar() {
-        searchProgressBar.setVisibility(View.GONE);
     }
 
     public void showProgressBar() {

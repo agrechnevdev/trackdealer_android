@@ -23,6 +23,7 @@
     <string name="chosed_by">Выбрал</string>
 
     <string name="your_chose">Твой выбор на этой неделе:</string>
+    <string name="change">Изменить</string>
     <string name="fav_song_empty_message">Ты еще не выбрал любимую песню? Кликай сюда!</string>
     <string name="chose_song">Выберите любимую песню</string>
     <string name="chose_song_title">Подтверждение выбора</string>

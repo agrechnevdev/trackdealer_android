@@ -12,7 +12,7 @@ import com.trackdealer.R;
 import com.trackdealer.interfaces.IClickTrack;
 import com.trackdealer.models.TrackInfo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
 
 public class SearchTracksAdapter extends RecyclerView.Adapter<SearchTracksAdapter.ViewHolder> {
 
-    private ArrayList<TrackInfo> trackInfos;
+    private List<TrackInfo> trackInfos;
     private Context context;
     private RecyclerView recyclerView;
     IClickTrack iClickTrack;
@@ -45,7 +45,7 @@ public class SearchTracksAdapter extends RecyclerView.Adapter<SearchTracksAdapte
         }
     }
 
-    public SearchTracksAdapter(ArrayList<TrackInfo> trackInfos, Context context, IClickTrack iClickTrack) {
+    public SearchTracksAdapter(List<TrackInfo> trackInfos, Context context, IClickTrack iClickTrack) {
         this.trackInfos = trackInfos;
         this.context = context;
         this.iClickTrack = iClickTrack;

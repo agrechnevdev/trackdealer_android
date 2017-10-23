@@ -59,7 +59,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_GENRES;
  */
 
 public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLayout.OnRefreshListener,
-        DialogFilterClickListener, ITrackOperation, ILongClickTrack, IDispatchTouch {
+        FilterDialogGenreListener, ITrackOperation, ILongClickTrack, IDispatchTouch {
 
     private final String TAG = "MainCardsFragment ";
 
@@ -304,7 +304,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     }
 
     @Override
-    public void filterClickStart() {
+    public void filterGenreClickStart() {
         String genre = Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER);
         textFilter.setText(genre);
         loadTrackListStart(genre);
