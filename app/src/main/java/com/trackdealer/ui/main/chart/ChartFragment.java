@@ -181,9 +181,10 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void loadTrackListSuccess(List<TrackInfo> list) {
         swipeLay.setRefreshing(false);
         SPlay.init().showList = list;
+        SPlay.init().favSongs = false;
         iProvideTrackList.updatePosIndicator();
         if (mTracksAdapter != null) {
-            mTracksAdapter.updateAdapter(list, false);
+            mTracksAdapter.updateAdapter(list);
         }
     }
 
@@ -219,30 +220,35 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void clickDeezerFavTracks() {
         if (!SPlay.init().favSongs) {
             changeShowListState(true);
-            loadFavSongsStart();
+            loadFavSongsStart("0");
         } else {
             changeShowListState(false);
             loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
         }
     }
 
-    public void loadFavSongsStart() {
+    public void loadFavSongsStart(String index) {
         swipeLay.setRefreshing(true);
+        if(index.equals("0"))
+            SPlay.init().showList.clear();
         DeezerRequest request = DeezerRequestFactory.requestCurrentUserTracks();
+        request.addParam("access_token", mDeezerConnect.getAccessToken());
+        request.addParam("index", index);
         subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(obj -> {
-                            SPlay.init().showList = StaticUtils.fromListTracks((List<Track>) obj);
+                            SPlay.init().showList.addAll(StaticUtils.fromListTracks((List<Track>) obj));
+                            SPlay.init().favSongs = true;
                             if (mTracksAdapter != null) {
-                                mTracksAdapter.updateAdapter(SPlay.init().showList, true);
+                                mTracksAdapter.updateAdapter(SPlay.init().showList);
                             }
                             swipeLay.setRefreshing(false);
                         },
                         ex -> {
                             swipeLay.setRefreshing(false);
                             changeShowListState(false);
-                            ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", (Exception) ex, ((dialog, which) -> loadFavSongsStart()));
+                            ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", (Exception) ex, ((dialog, which) -> loadFavSongsStart(index)));
                         }
                 ));
     }
@@ -303,7 +309,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Override
     public void onRefresh() {
         if (SPlay.init().favSongs)
-            loadFavSongsStart();
+            loadFavSongsStart("0");
         else
             loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
     }

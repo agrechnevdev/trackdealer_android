@@ -10,7 +10,7 @@
         android:id="@+id/percent_like_lay_dislike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/vertical_margin_x2">
+        android:layout_marginLeft="@dimen/vertical_margin">
 
         <ImageView
             android:id="@+id/percent_like_image_dislike"
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/vertical_margin_x2">
+        android:layout_marginRight="@dimen/vertical_margin">
 
         <TextView
             android:id="@+id/percent_like_text_like"

@@ -13,11 +13,11 @@
 
     <ImageView
         android:id="@+id/item_image_info_image"
-        android:layout_width="@dimen/dp40"
-        android:layout_height="@dimen/dp40"
+        android:layout_width="@dimen/dp25"
+        android:layout_height="@dimen/dp25"
         android:layout_marginRight="@dimen/dp10"
-        android:visibility="gone"
-        />
+        android:layout_centerVertical="true"
+        android:src="@drawable/app_logo_2"/>
 
     <TextView
         android:id="@+id/item_image_info_text"
@@ -27,7 +27,7 @@
         android:textSize="@dimen/text_size_medium"
         android:layout_centerVertical="true"
         android:textColor="@color/colorAccent"
-        android:gravity="center"
+        android:layout_marginLeft="@dimen/dp10"
         android:layout_toRightOf="@id/item_image_info_image"
         android:text="" />
 

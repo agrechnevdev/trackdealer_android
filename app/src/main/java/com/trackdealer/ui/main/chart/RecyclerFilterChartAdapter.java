@@ -69,7 +69,8 @@ public class RecyclerFilterChartAdapter extends RecyclerView.Adapter<RecyclerFil
         Genre genre = genres.get(position);
         holder.text.setText(genre.getName());
 
-        int color =position % 2 == 0 ? R.color.colorAccent : R.color.colorOrange;
+//        int color =position % 2 == 0 ? R.color.colorAccent : R.color.colorOrange;
+        int color = R.color.colorAccent;
         holder.text.setTextColor(context.getResources().getColor(color));
         holder.relLayMain.setOnClickListener(view -> {
             Prefs.putString(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER, genres.get(position).getName());

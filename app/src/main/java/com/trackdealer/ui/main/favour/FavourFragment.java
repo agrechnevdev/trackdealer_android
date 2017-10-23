@@ -76,11 +76,15 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
     @Bind(R.id.chose_song_lay_main)
     RelativeLayout relLayMain;
 
+    @Bind(R.id.chose_song_lay_all)
+    RelativeLayout relLayAll;
+
     @Bind(R.id.chose_song_recycler_view)
     RecyclerView recyclerView;
 
-    @Bind(R.id.chose_song_lay_fav_song_info)
+    @Bind(R.id.chose_song_fav_song)
     RelativeLayout relLayFavSong;
+
     @Bind(R.id.chose_song_title)
     TextView textSongTitle;
     @Bind(R.id.chose_song_artist)
@@ -90,8 +94,8 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
     @Bind(R.id.chose_song_heart)
     ImageView imageViewSong;
 
-    @Bind(R.id.chose_song_song_empty)
-    TextView textSongEmpty;
+    @Bind(R.id.chose_song_fav_song_empty)
+    RelativeLayout relLayEmpty;
 
     @Bind(R.id.chose_song_lay_search)
     RelativeLayout relLaySearch;
@@ -175,9 +179,10 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
     public void setFavouriteSong(TrackInfo trackInfo) {
         if (trackInfo != null) {
             Picasso.with(getContext()).load(trackInfo.getCoverImage()).into(imageViewSong);
+
+            relLayEmpty.setVisibility(View.GONE);
             relLayFavSong.setVisibility(View.VISIBLE);
-            relLayPercentLike.setVisibility(View.VISIBLE);
-            textSongEmpty.setVisibility(View.GONE);
+
             textSongTitle.setText(trackInfo.getTitle());
             textSongArtist.setText(trackInfo.getArtist());
             textSongDur.setText(trackInfo.getDuration());
@@ -186,10 +191,10 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
             textDisLike.setText(Integer.toString(trackInfo.getDislikes()));
             Float progress = (float) trackInfo.getDislikes() / (float) (trackInfo.getDislikes() + trackInfo.getLikes()) * 100;
             seekBarLike.setProgress(progress.intValue());
+
         } else {
-            textSongEmpty.setVisibility(View.VISIBLE);
+            relLayEmpty.setVisibility(View.VISIBLE);
             relLayFavSong.setVisibility(View.GONE);
-            relLayPercentLike.setVisibility(View.GONE);
         }
     }
 
@@ -309,9 +314,11 @@ public class FavourFragment extends Fragment implements FavourView, IClickTrack,
 
     public void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
+        relLayAll.setVisibility(View.GONE);
     }
 
     public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
+        relLayAll.setVisibility(View.VISIBLE);
     }
 }

@@ -42,8 +42,6 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     ILongClickTrack iLongClickTrack;
     ITrackOperation iTrackOperation;
 
-    boolean favSongs = false;
-
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.item_chart_lay_main)
@@ -124,7 +122,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
-        if (!favSongs) {
+        if (!SPlay.init().favSongs) {
             holder.relLayLikeMain.setVisibility(View.VISIBLE);
             holder.textDislike.setText(trackInfo.getDislikes().toString());
             holder.textLike.setText(trackInfo.getLikes().toString());
@@ -180,8 +178,7 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public void updateAdapter(List<TrackInfo> newList, boolean favSongs) {
-        this.favSongs = favSongs;
+    public void updateAdapter(List<TrackInfo> newList) {
         trackInfos = newList;
         notifyDataSetChanged();
     }

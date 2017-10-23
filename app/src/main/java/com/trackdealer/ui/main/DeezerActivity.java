@@ -237,12 +237,14 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                     .subscribe(obj -> {
                                 SPlay.init().playingTrack = (Track) obj;
 
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        trackPlayer.playTrack(SPlay.init().playingTrack.getId());
-                                    }
-                                }).start();
+//                                new Thread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        trackPlayer.playTrack(SPlay.init().playingTrack.getId());
+//                                    }
+//                                }).start();
+
+                                trackPlayer.playTrack(SPlay.init().playingTrack.getId());
 
                                 setButtonEnabled(mButtonPlayerPause, true);
                                 setButtonEnabled(mButtonPlayerSkipForward, true);
@@ -388,13 +390,15 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         @Override
         public void onBufferProgress(final double percent) {
 //            Timber.d(TAG + "onBufferProgress " + percent);
-            runOnUiThread(() -> showBufferProgress((int) Math.round(percent)));
+            new Thread(() -> showBufferProgress((int) Math.round(percent))).start();
+//            runOnUiThread(() -> showBufferProgress((int) Math.round(percent)));
         }
 
         @Override
         public void onPlayerProgress(final long timePosition) {
 //            Timber.d(TAG + "onPlayerProgress " + timePosition);
-            runOnUiThread(() -> showPlayerProgress(timePosition));
+            new Thread(() -> showPlayerProgress(timePosition)).start();
+//            runOnUiThread(() -> showPlayerProgress(timePosition));
         }
     }
 

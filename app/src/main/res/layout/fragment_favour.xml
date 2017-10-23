@@ -6,141 +6,161 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/chose_song_text_your_chose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/horizontal_margin"
-        android:layout_marginTop="@dimen/horizontal_margin"
-        android:text="@string/your_chose"
-        android:textColor="@color/textColorPrimary" />
-
     <RelativeLayout
-        android:id="@+id/chose_song_fav_song"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/chose_song_text_your_chose"
-        android:layout_marginLeft="@dimen/horizontal_margin"
-        android:layout_marginRight="@dimen/horizontal_margin"
-        android:layout_marginTop="@dimen/horizontal_margin">
+        android:id="@+id/chose_song_lay_all"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/chose_song_heart"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_love_music" />
+        <TextView
+            android:id="@+id/chose_song_text_your_chose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/horizontal_margin"
+            android:text="@string/your_chose"
+            android:textColor="@color/textColorPrimary" />
 
         <RelativeLayout
-            android:id="@+id/chose_song_lay_fav_song_info"
-            android:layout_width="match_parent"
+            android:id="@+id/chose_song_fav_song"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:layout_toRightOf="@id/chose_song_heart">
+            android:layout_below="@id/chose_song_text_your_chose"
+            android:layout_marginLeft="@dimen/horizontal_margin"
+            android:layout_marginRight="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/horizontal_margin">
 
-            <TextView
-                android:id="@+id/chose_song_duration"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/chose_song_lay_fav_song_info"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
+                android:clickable="true">
+
+                <ImageView
+                    android:id="@+id/chose_song_heart"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:id="@+id/chose_song_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="3:00"
+                    android:textColor="@color/textColorPrimary" />
+
+                <TextView
+                    android:id="@+id/chose_song_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp4"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toRightOf="@id/chose_song_heart"
+                    android:layout_toLeftOf="@id/chose_song_duration"
+                    android:maxLines="2"
+                    android:text="Название"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_size_medium" />
+
+                <TextView
+                    android:id="@+id/chose_song_artist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/chose_song_title"
+                    android:layout_toRightOf="@id/chose_song_heart"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toLeftOf="@id/chose_song_duration"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="Артист"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="@dimen/text_size_main" />
+            </RelativeLayout>
+
+            <include
+                android:id="@+id/chose_song_like"
+                layout="@layout/layout_percent_like"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chose_song_lay_fav_song_info"
+                android:layout_marginTop="@dimen/vertical_margin" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/chose_song_fav_song_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chose_song_text_your_chose"
+            android:layout_marginLeft="@dimen/horizontal_margin"
+            android:layout_marginRight="@dimen/horizontal_margin"
+            android:layout_marginTop="@dimen/horizontal_margin">
+
+            <ImageView
+                android:id="@+id/chose_song_image_empty"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_centerVertical="true"
-                android:text="3:00"
-                android:textColor="@color/textColorPrimary" />
+                app:srcCompat="@drawable/ic_love_music" />
 
             <TextView
-                android:id="@+id/chose_song_title"
+                android:id="@+id/chose_song_song_empty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp4"
                 android:layout_marginLeft="@dimen/dp10"
                 android:layout_marginRight="@dimen/dp10"
-                android:layout_toLeftOf="@id/chose_song_duration"
+                android:layout_toRightOf="@id/chose_song_image_empty"
+                android:clickable="true"
                 android:maxLines="2"
-                android:text="Название"
+                android:text="@string/fav_song_empty_message"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/text_size_medium" />
 
-            <TextView
-                android:id="@+id/chose_song_artist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/chose_song_title"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
-                android:layout_toLeftOf="@id/chose_song_duration"
-
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="Артист"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="@dimen/text_size_main" />
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/chose_song_song_empty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp4"
-            android:layout_marginLeft="@dimen/dp10"
-            android:layout_toRightOf="@id/chose_song_heart"
-            android:layout_marginRight="@dimen/dp10"
-            android:maxLines="2"
-            android:text="@string/fav_song_empty_message"
-            android:clickable="true"
-            android:textColor="@color/colorAccent"
-            android:textSize="@dimen/text_size_medium" />
-
-
-
-    </RelativeLayout>
-
-    <include layout="@layout/layout_percent_like"
-        android:id="@+id/chose_song_like"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/vertical_margin"
-        android:layout_below="@id/chose_song_fav_song"
-        />
-
-
-    <RelativeLayout
-        android:id="@+id/chose_song_lay_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/chose_song_like">
-
-        <EditText
-            android:id="@+id/chose_song_search"
-            style="@style/EditTextStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/horizontal_margin"
-            android:layout_marginRight="@dimen/horizontal_margin"
-            android:layout_marginTop="@dimen/vertical_margin"
-            android:hint="@string/chose_song" />
 
         <RelativeLayout
+            android:id="@+id/chose_song_lay_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/chose_song_search"
-            android:layout_marginTop="@dimen/vertical_margin">
+            android:layout_below="@id/chose_song_fav_song">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/chose_song_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <ProgressBar
-                android:id="@+id/search_progressbar"
-                style="?android:attr/progressBarStyleLarge"
+            <EditText
+                android:id="@+id/chose_song_search"
+                style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/vertical_margin_x2"
-                android:visibility="gone"
-                android:indeterminate="true" />
+                android:layout_marginLeft="@dimen/horizontal_margin"
+                android:layout_marginRight="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/vertical_margin"
+                android:hint="@string/chose_song" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/chose_song_search"
+                android:layout_marginTop="@dimen/vertical_margin">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/chose_song_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <ProgressBar
+                    android:id="@+id/search_progressbar"
+                    style="?android:attr/progressBarStyleLarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/vertical_margin_x2"
+                    android:indeterminate="true"
+                    android:visibility="gone" />
+            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 
-    <include layout="@layout/progressbar"/>
+    <include layout="@layout/progressbar" />
 
 </RelativeLayout>
