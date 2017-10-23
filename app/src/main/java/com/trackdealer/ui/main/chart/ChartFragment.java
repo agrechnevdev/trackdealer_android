@@ -94,6 +94,13 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     ITrackListState iProvideTrackList;
 
     DeezerConnect mDeezerConnect = null;
+    LinearLayoutManager layoutManager;
+
+    private int previousTotal = 0;
+    private boolean loading = true;
+    private int visibleThreshold = 5;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
+    InfiniteScrollListener infiniteScrollListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -120,13 +127,14 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
             loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
         }
 
-        changeShowListState(SPlay.init().favSongs);
-
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerView.setLayoutManager(llm);
+        layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView.setLayoutManager(layoutManager);
         mTracksAdapter = new ChartAdapter(SPlay.init().showList, getActivity().getApplicationContext(), iChoseTrack, this, this);
         recyclerView.setAdapter(mTracksAdapter);
 //        recyclerView.addItemDecoration(new SpacesItemDecorator(20));
+
+        infiniteScrollListener = new InfiniteScrollListener();
+        changeShowListState(SPlay.init().favSongs);
 
         swipeLay.setOnRefreshListener(this);
         swipeLay.setColorSchemeResources(R.color.colorAccent);
@@ -218,6 +226,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @OnClick(R.id.fragment_chart_but_deezer_fav_tracks_back)
     public void clickDeezerFavTracks() {
+        previousTotal = 0;
         if (!SPlay.init().favSongs) {
             changeShowListState(true);
             loadFavSongsStart("0");
@@ -228,6 +237,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     }
 
     public void loadFavSongsStart(String index) {
+        Timber.d(TAG + " loadFavSongsStart " + index );
         swipeLay.setRefreshing(true);
         if(index.equals("0"))
             SPlay.init().showList.clear();
@@ -258,9 +268,11 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         if (favSongs) {
             linLayFilter.setVisibility(View.GONE);
             imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorOrange));
+            recyclerView.addOnScrollListener(infiniteScrollListener);
         } else {
             linLayFilter.setVisibility(View.VISIBLE);
             imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorAccent));
+            recyclerView.removeOnScrollListener(infiniteScrollListener);
         }
     }
 
@@ -308,9 +320,36 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void onRefresh() {
+        previousTotal = 0;
         if (SPlay.init().favSongs)
             loadFavSongsStart("0");
         else
             loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+    }
+
+    public class InfiniteScrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            visibleItemCount = recyclerView.getChildCount();
+            totalItemCount = layoutManager.getItemCount();
+            firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+
+            if (loading) {
+                if (totalItemCount > previousTotal) {
+                    loading = false;
+                    previousTotal = totalItemCount;
+                }
+            }
+            if (!loading && (totalItemCount - visibleItemCount)
+                    <= (firstVisibleItem + visibleThreshold)) {
+                if(SPlay.init().favSongs && SPlay.init().showList.size() % 25 == 0) {
+                    loadFavSongsStart(String.valueOf(SPlay.init().showList.size()));
+                }
+                loading = true;
+            }
+        }
     }
 }
