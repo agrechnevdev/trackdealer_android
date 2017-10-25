@@ -44,6 +44,11 @@
         <!--<item name="android:textAppearance">@style/TextAppearance.AppCompat.Widget.Button.Colored</item>-->
     </style>
 
+    <style name="ButtonColoredRed" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@color/colorErrorSnackbar</item>
+        <item name="android:textColor">@drawable/selector_main_button_text_color</item>
+    </style>
+
 
     <style name="ButtonUncolored" parent="Widget.AppCompat.Button.Colored">
         <item name="android:color">@color/colorPrimaryDark</item>

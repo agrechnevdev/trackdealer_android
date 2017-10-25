@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_FILTER;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_GENRES;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 /**
  * Created by grechnev-av on 31.08.2017.
@@ -72,6 +74,9 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Bind(R.id.fragment_chart_swipe_lay_main)
     SwipeRefreshLayout swipeLay;
+
+    @Bind(R.id.fragment_chart_lay_help)
+    RelativeLayout relLayHelpPanel;
 
     @Bind(R.id.fragment_chart_recycler_view)
     RecyclerView recyclerView;
@@ -139,6 +144,10 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         swipeLay.setOnRefreshListener(this);
         swipeLay.setColorSchemeResources(R.color.colorAccent);
 
+        if(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER"))
+            relLayHelpPanel.setVisibility(View.VISIBLE);
+        else
+            relLayHelpPanel.setVisibility(View.GONE);
         return view;
     }
 

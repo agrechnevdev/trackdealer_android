@@ -142,7 +142,10 @@ public class LoginActivity extends BaseActivity {
 
     public void loginSuccess() {
         hideProgressBar();
-        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(100, textLogin.getText().toString()));
+        if(textLogin.getText().toString().contains("super"))
+            Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(100, textLogin.getText().toString(), "TRACKDEALER"));
+        else
+            Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(100, textLogin.getText().toString(), "TRACKLISTENER"));
         Prefs.putString(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_PASSWORD, textPassword.getText().toString());
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);

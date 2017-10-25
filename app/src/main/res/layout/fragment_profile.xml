@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/profile_scroll_view_main"
     android:layout_width="match_parent"
@@ -7,208 +7,266 @@
     android:background="@color/colorLightBlue"
     android:fillViewport="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/profile_lay_user"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_background_orange"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/vertical_margin"
-            android:paddingLeft="@dimen/horizontal_margin"
-            android:paddingRight="@dimen/horizontal_margin"
-            android:paddingTop="@dimen/vertical_margin">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/profile_user_logo"
-                android:layout_width="@dimen/dp40"
-                android:layout_height="@dimen/dp40"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                app:srcCompat="@drawable/app_logo_2" />
-
-            <TextView
-                android:id="@+id/profile_text_username"
+            <RelativeLayout
+                android:id="@+id/profile_lay_user"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_toRightOf="@id/profile_user_logo"
-                android:text="@string/empty"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_size_main" />
+                android:background="@drawable/selector_background_orange"
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/vertical_margin"
+                android:paddingLeft="@dimen/horizontal_margin"
+                android:paddingRight="@dimen/horizontal_margin"
+                android:paddingTop="@dimen/vertical_margin">
 
-        </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/profile_user_lay_logo_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        <include layout="@layout/divider_16dp" />
+                    <ImageView
+                        android:id="@+id/profile_user_logo"
+                        android:layout_width="@dimen/dp40"
+                        android:layout_height="@dimen/dp40"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        app:srcCompat="@drawable/app_logo_end" />
 
-        <!-- ............................................................................ -->
+                    <TextView
+                        android:id="@+id/profile_text_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp10"
+                        android:layout_toRightOf="@id/profile_user_logo"
+                        android:text="@string/empty"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/text_size_main" />
 
-        <RelativeLayout
-            android:id="@+id/profile_lay_deezer_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/vertical_margin"
-            android:paddingLeft="@dimen/horizontal_margin"
-            android:paddingRight="@dimen/horizontal_margin"
-            android:paddingTop="@dimen/vertical_margin">
+                </RelativeLayout>
 
-            <ImageView
-                android:id="@+id/profile_deezer_logo"
-                android:layout_width="@dimen/dp40"
-                android:layout_height="@dimen/dp40"
-                android:src="@drawable/deezer_logo_circle" />
+                <RelativeLayout
+                    android:id="@+id/profile_user_lay_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/profile_user_lay_logo_username">
 
-            <ImageView
-                android:id="@+id/profile_but_deezer_login"
-                android:layout_width="@dimen/dp40"
-                android:layout_height="@dimen/dp40"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                app:srcCompat="@drawable/ic_add_circle" />
+                    <TextView
+                        android:id="@+id/profile_user_text_status_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/user_status"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/text_size_main" />
 
-            <LinearLayout
+                    <ImageView
+                        android:id="@+id/profile_user_but_status"
+                        android:layout_width="@dimen/dp25"
+                        android:layout_height="@dimen/dp25"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_question"
+                        android:tint="@color/colorAccent" />
+
+                    <TextView
+                        android:id="@+id/profile_user_text_status"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/dp10"
+                        android:textColor="@color/colorOrange"
+                        android:layout_toLeftOf="@id/profile_user_but_status"
+                        android:layout_toRightOf="@id/profile_user_text_status_info"
+                        android:textSize="@dimen/text_size_main" />
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <include layout="@layout/divider_16dp" />
+
+            <!-- ............................................................................ -->
+
+            <RelativeLayout
+                android:id="@+id/profile_lay_deezer_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
-                android:layout_toLeftOf="@id/profile_but_deezer_login"
-                android:layout_toRightOf="@id/profile_deezer_logo"
-                android:orientation="vertical">
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/vertical_margin"
+                android:paddingLeft="@dimen/horizontal_margin"
+                android:paddingRight="@dimen/horizontal_margin"
+                android:paddingTop="@dimen/vertical_margin">
 
-                <TextView
-                    android:id="@+id/profile_text_deezer_subscribe"
+                <ImageView
+                    android:id="@+id/profile_deezer_logo"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:src="@drawable/deezer_logo_circle" />
+
+                <ImageView
+                    android:id="@+id/profile_but_deezer_login"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_add_circle" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/deezer_account_login"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/text_size_main" />
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toLeftOf="@id/profile_but_deezer_login"
+                    android:layout_toRightOf="@id/profile_deezer_logo"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/profile_text_deezer_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/deezer_account_info"
-                    android:textSize="@dimen/text_size_small_10" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/profile_text_deezer_subscribe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/deezer_account_login"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/text_size_main" />
 
-        </RelativeLayout>
+                    <TextView
+                        android:id="@+id/profile_text_deezer_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/deezer_account_info"
+                        android:textSize="@dimen/text_size_small_10" />
+                </LinearLayout>
 
-        <include layout="@layout/divider_16dp" />
-        <!-- ............................................................................ -->
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/profile_lay_deezer_logout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/vertical_margin"
-            android:paddingLeft="@dimen/horizontal_margin"
-            android:paddingRight="@dimen/horizontal_margin"
-            android:paddingTop="@dimen/vertical_margin">
+            <include layout="@layout/divider_16dp" />
+            <!-- ............................................................................ -->
 
-            <ImageView
-                android:id="@+id/profile_deezer_logout_logo"
-                android:layout_width="@dimen/dp40"
-                android:layout_height="@dimen/dp40"
-                android:src="@drawable/deezer_logo_circle"
-                android:layout_centerVertical="true"/>
-
-            <ImageView
-                android:id="@+id/profile_deezer_but_logout"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                app:srcCompat="@drawable/ic_minus_circle" />
-
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/profile_lay_deezer_logout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
-                android:layout_toLeftOf="@id/profile_deezer_but_logout"
-                android:layout_toRightOf="@id/profile_deezer_logout_logo"
-                android:orientation="vertical">
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/vertical_margin"
+                android:paddingLeft="@dimen/horizontal_margin"
+                android:paddingRight="@dimen/horizontal_margin"
+                android:paddingTop="@dimen/vertical_margin">
 
-                <TextView
-                    android:id="@+id/profile_text_deezer_logout_subscribe"
+                <ImageView
+                    android:id="@+id/profile_deezer_logout_logo"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/deezer_logo_circle" />
+
+                <ImageView
+                    android:id="@+id/profile_deezer_but_logout"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    app:srcCompat="@drawable/ic_minus_circle" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/deezer_already_login"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/text_size_small_14" />
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toLeftOf="@id/profile_deezer_but_logout"
+                    android:layout_toRightOf="@id/profile_deezer_logout_logo"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/profile_text_deezer_logout_subscribe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/deezer_already_login"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/text_size_small_14" />
 
 
+                </LinearLayout>
 
 
-            </LinearLayout>
+            </RelativeLayout>
 
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/profile_lay_deezer_account"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:gravity="center_vertical"
-            android:paddingBottom="@dimen/vertical_margin"
-            android:paddingLeft="@dimen/horizontal_margin"
-            android:paddingRight="@dimen/horizontal_margin"
-            android:paddingTop="@dimen/vertical_margin">
-
-            <ImageView
-                android:id="@+id/profile_deezer_account_user_logo"
-                android:layout_width="@dimen/dp40"
-                android:layout_height="@dimen/dp40"
-                android:src="@drawable/empty_user" />
-
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/profile_lay_deezer_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_toRightOf="@id/profile_deezer_account_user_logo"
-                android:orientation="vertical">
+                android:clickable="true"
+                android:gravity="center_vertical"
+                android:paddingBottom="@dimen/vertical_margin"
+                android:paddingLeft="@dimen/horizontal_margin"
+                android:paddingRight="@dimen/horizontal_margin"
+                android:paddingTop="@dimen/vertical_margin">
 
-                <TextView
-                    android:id="@+id/profile_text_deezer_account_name"
+                <ImageView
+                    android:id="@+id/profile_deezer_account_user_logo"
+                    android:layout_width="@dimen/dp40"
+                    android:layout_height="@dimen/dp40"
+                    android:src="@drawable/empty_user" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/empty"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/text_size_small_14" />
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_toRightOf="@id/profile_deezer_account_user_logo"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/profile_text_deezer_account_status"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/empty"
-                    android:textSize="@dimen/text_size_small_10" />
+                    <TextView
+                        android:id="@+id/profile_text_deezer_account_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/text_size_small_14" />
 
-                <TextView
-                    android:id="@+id/profile_text_status_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/deezer_premium_account"
-                    android:textSize="@dimen/text_size_small_10" />
+                    <TextView
+                        android:id="@+id/profile_text_deezer_account_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty"
+                        android:textColor="@color/deezer_color"
+                        android:textSize="@dimen/text_size_small_10" />
 
-            </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+                    <TextView
+                        android:id="@+id/profile_text_status_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/deezer_premium_account"
+                        android:textSize="@dimen/text_size_small_10" />
+
+                </LinearLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/profile_but_exit"
+            style="@style/ButtonColoredRed"
+            android:layout_width="@dimen/button_main_width"
+            android:layout_height="@dimen/button_main_height"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/vertical_margin"
+            android:text="@string/exit"
+            android:textSize="@dimen/text_size_main" />
+    </RelativeLayout>
+</ScrollView>

@@ -14,7 +14,7 @@
 
         <item
             android:id="@+id/base_menu_logout"
-            android:icon="@drawable/app_logo_2"
+            android:icon="@drawable/app_logo_end"
             android:title="@string/profile" />
     </group>
 </menu>

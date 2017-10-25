@@ -42,10 +42,10 @@ public class StaticUtils {
         if (Prefs.getTrackList(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST) == null) {
             ArrayList<TrackInfo> tracks = new ArrayList<>();
 
-            User user1 = new User(1, "coolbatch");
-            User user2 = new User(2, "vasilii petrovich");
-            User user3 = new User(3, "YA NE VALERA!!!");
-            User user4 = new User(4, "ZDAROVA");
+            User user1 = new User(1, "coolbatch", "TRACKLISTENER");
+            User user2 = new User(2, "vasilii petrovich", "TRACKLISTENER");
+            User user3 = new User(3, "YA NE VALERA!!!", "TRACKLISTENER");
+            User user4 = new User(4, "ZDAROVA", "TRACKLISTENER");
 
             TrackInfo trackInfo3 = new TrackInfo(356306401, "Perfect Color", "SafetySuit", 234, "http://api.deezer.com/album/40882681/image", 40882681);
             trackInfo3.setUser(user3);

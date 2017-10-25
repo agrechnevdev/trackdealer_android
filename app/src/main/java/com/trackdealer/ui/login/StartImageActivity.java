@@ -3,6 +3,8 @@ package com.trackdealer.ui.login;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +21,7 @@ import butterknife.ButterKnife;
 
 public class StartImageActivity extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 1000;
+    private static int SPLASH_TIME_OUT = 4000;
 
     @Bind(R.id.logo_image_view)
     ImageView imageView;
@@ -27,14 +29,23 @@ public class StartImageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.image_logo);
+        setContentView(R.layout.activity_start_image);
         ButterKnife.bind(this);
-        createAnim();
+
         new Handler().postDelayed(() -> {
             startActivity(new Intent(StartImageActivity.this, PreloginActivity.class));
             overridePendingTransition(0, 0);
             finish();
         }, SPLASH_TIME_OUT);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Drawable drawable = imageView.getDrawable();
+        if (drawable instanceof Animatable) {
+            ((Animatable) drawable).start();
+        }
     }
 
     public void createAnim(){

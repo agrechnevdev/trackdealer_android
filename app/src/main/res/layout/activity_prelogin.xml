@@ -24,7 +24,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:padding="@dimen/dp25"
-        android:src="@drawable/app_logo_2"
+        app:srcCompat="@drawable/app_logo_end"
         android:visibility="visible" />
 
     <LinearLayout

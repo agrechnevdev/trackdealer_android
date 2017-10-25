@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <objectAnimator
+        android:duration="0"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:propertyName="strokeColor"
+        android:startOffset="600"
+        android:valueFrom="#ffffff"
+        android:valueTo="#007CD0"
+        android:valueType="colorType" />
+    <objectAnimator
+        android:duration="400"
+        android:interpolator="@android:anim/linear_interpolator"
+        android:propertyName="trimPathEnd"
+        android:startOffset="600"
+        android:valueFrom="0"
+        android:valueTo="1"
+        android:valueType="floatType" />
+</set>

@@ -8,10 +8,12 @@ public class User {
 
     private Integer id;
     private String username;
+    private String status;
 
-    public User(Integer id, String username) {
+    public User(Integer id, String username, String status) {
         this.id = id;
         this.username = username;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -28,5 +30,13 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

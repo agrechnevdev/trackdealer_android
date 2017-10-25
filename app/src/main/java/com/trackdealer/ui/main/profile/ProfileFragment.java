@@ -46,6 +46,9 @@ public class ProfileFragment extends Fragment implements IConnected {
     @Bind(R.id.profile_text_username)
     TextView textUsername;
 
+    @Bind(R.id.profile_user_text_status)
+    TextView textStatus;
+
     @Bind(R.id.profile_lay_deezer_login)
     RelativeLayout relLayDeezerLogin;
 
@@ -84,6 +87,7 @@ public class ProfileFragment extends Fragment implements IConnected {
 
     public void initFields() {
         textUsername.setText(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getUsername());
+        textStatus.setText(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus());
         if (!mDeezerConnect.isSessionValid()) {
             relLayDeezerLogin.setVisibility(View.VISIBLE);
             relLayDeezerLogout.setVisibility(View.GONE);
@@ -129,14 +133,22 @@ public class ProfileFragment extends Fragment implements IConnected {
     }
 
     @OnClick(R.id.profile_but_deezer_login)
-    public void clickLogin() {
+    public void clickLoginDeezer() {
         iConnectDeezer.connectToDeezer();
+    }
+
+    @OnClick(R.id.profile_user_but_status)
+    public void clickStatusInfo() {
+        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
+                R.string.user_status_info_header, R.string.user_status_info,
+                R.string.ok, (dialog, id) -> {});
+        builder.create().show();
     }
 
     @OnClick(R.id.profile_deezer_but_logout)
     public void clickLogout() {
         CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-                R.string.deezer_exit, R.string.deezer_account_logout,
+                R.string.exit, R.string.deezer_account_logout,
                 R.string.yes, (dialog, id) -> {
             iConnectDeezer.disconnectFromDeezer();
             initFields();
