@@ -91,7 +91,7 @@
                 android:maxLines="2"
                 android:text="Артист"
                 android:textColor="@color/textColorPrimary"
-                android:textSize="@dimen/text_size_small_12" />
+                android:textSize="@dimen/text_size_small_14" />
 
             <TextView
                 android:id="@+id/item_chart_user"
@@ -99,6 +99,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/item_chart_lay_image_play"
                 android:layout_marginTop="@dimen/dp10"
+                android:layout_marginLeft="50dp"
                 android:text="coool"
                 android:textStyle="italic"
                 android:textColor="@color/textColorPrimary"

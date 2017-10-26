@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 
 public class StartImageActivity extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 4000;
+    private static int SPLASH_TIME_OUT = 2000;
 
     @Bind(R.id.logo_image_view)
     ImageView imageView;

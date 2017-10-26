@@ -24,7 +24,7 @@
 
     <string name="your_chose">Твой выбор на этой неделе:</string>
     <string name="change">Изменить</string>
-    <string name="fav_song_empty_message">Ты еще не выбрал любимую песню? Кликай сюда!</string>
+    <string name="fav_song_empty_message">Еще не выбрал любимую песню? Кликай сюда!</string>
     <string name="chose_song">Введите низвание песни</string>
     <string name="chose_song_title">Подтверждение выбора</string>
     <string name="chose_song_message">Вы точно хотите выбрать эту песню любимой?\n\nПредыдущая песня будет удалена из чарта, и информация по ней будет утеряна</string>
@@ -33,16 +33,18 @@
 
     <string name="deezer_account_login">Подключить аккаунт Deezer</string>
     <string name="deezer_account_info">Подключение к Deezer позволит добавлять треки в плейлист "Любимые треки", а c аккаунтом PREMIUM или PREMIUM+ позволит Вам прослушивать треки полностью</string>
-    <string name="deezer_already_login">Ты подключил аккаунт Deezer!</string>
-    <string name="deezer_premium_account">Тебе доступны прослушивание полных песен и добавление в плейлист "Любимые треки"</string>
+    <string name="deezer_already_login">Аккаунт Deezer подключен!</string>
+    <string name="deezer_premium_account">Доступно прослушивание полных песен и добавление в плейлист "Любимые треки"</string>
     <string name="deezer_freemium_account">Можно добавлять песни в плейлист "Любимые треки", но недоступны для прослушивания полные треки (требуется статус PREMIUM или PREMIUM+)</string>
-    <string name="deezer_account_logout">Вы действительно хотите отключить аккаунт Deezer?</string>
+    <string name="deezer_account_logout">Действительно отключить аккаунт Deezer?</string>
 
     <string name="user_status">Статус: </string>
     <string name="user_status_info_header">Информация</string>
-    <string name="user_status_info">Статус TRACKLISTENER - базовый статус для всех пользователей.\n
-        Статус TRACKDEALER позволит открыть дополнительные возможности: фильт треков по жанру, воспроизведение плейлиста "Любимые песни" с Deezer-аккаунта,
-        а также слушать произвольную подборку треков.\nЧтобы получить статус TRACKDEALER нужно набрать более ??? лайков за выбранную песню.</string>
+    <string name="user_status_info">Статус TRACKLISTENER:\nбазовый статус для всех пользователей.\n\nСтатус TRACKDEALER:\nпозволит открыть дополнительные возможности:\n -фильтр треков по жанру, \n -воспроизведение плейлиста \"Любимые песни\" с Deezer-аккаунта,
+        \n -прослушать произвольную подборку треков.\n\nПолучить статус TRACKDEALER можно, набрав более ??? лайков за выбранную песню.</string>
+
+    <string name="account_logout_header">Подтверждение выхода</string>
+    <string name="account_logout">Вы действительно хотите выйти из TrackDealer?\n\nПри выходе автоматически будет совершен выход из Deezer-аккаунта.</string>
 
     <string name="ok">OK</string>
     <string name="yes">Да</string>

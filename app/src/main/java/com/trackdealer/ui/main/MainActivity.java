@@ -1,18 +1,19 @@
 package com.trackdealer.ui.main;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
 import com.deezer.sdk.network.connect.DeezerConnect;
+import com.deezer.sdk.player.event.PlayerState;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
 import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.interfaces.IDispatchTouch;
+import com.trackdealer.interfaces.ILogout;
 import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.models.ShowPlaylist;
 import com.trackdealer.net.Restapi;
@@ -20,6 +21,7 @@ import com.trackdealer.ui.main.chart.ChartFragment;
 import com.trackdealer.ui.main.chart.PlaylistDialog;
 import com.trackdealer.ui.main.favour.FavourFragment;
 import com.trackdealer.ui.main.profile.ProfileFragment;
+import com.trackdealer.utils.Prefs;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -36,7 +38,7 @@ import timber.log.Timber;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ITrackListState {
+public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ITrackListState, ILogout {
 
     private final String TAG = "MainActivity ";
 
@@ -104,6 +106,15 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     }
 
     @Override
+    public void logout() {
+        Prefs.clearUserData(this);
+        if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
+            trackPlayer.stop();
+        doDestroyPlayer();
+        finish();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         Timber.d(TAG + " onResume() ");
@@ -134,7 +145,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.base_menu_list:
                 getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();

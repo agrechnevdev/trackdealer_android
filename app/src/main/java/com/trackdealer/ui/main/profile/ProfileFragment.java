@@ -16,7 +16,9 @@ import com.trackdealer.R;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.interfaces.IConnected;
+import com.trackdealer.interfaces.ILogout;
 import com.trackdealer.ui.main.DeezerActivity;
+import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.utils.Prefs;
 
 import butterknife.Bind;
@@ -42,6 +44,7 @@ public class ProfileFragment extends Fragment implements IConnected {
 
     DeezerConnect mDeezerConnect = null;
     IConnectDeezer iConnectDeezer;
+    ILogout iLogout;
 
     @Bind(R.id.profile_text_username)
     TextView textUsername;
@@ -124,6 +127,7 @@ public class ProfileFragment extends Fragment implements IConnected {
         super.onAttach(context);
         mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
         iConnectDeezer = ((DeezerActivity) context);
+        iLogout = ((MainActivity) context);
     }
 
     @Override
@@ -141,18 +145,31 @@ public class ProfileFragment extends Fragment implements IConnected {
     public void clickStatusInfo() {
         CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                 R.string.user_status_info_header, R.string.user_status_info,
-                R.string.ok, (dialog, id) -> {});
+                R.string.ok, (dialog, id) -> {
+        });
         builder.create().show();
     }
 
     @OnClick(R.id.profile_deezer_but_logout)
-    public void clickLogout() {
+    public void clickDeezerLogout() {
         CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                 R.string.exit, R.string.deezer_account_logout,
                 R.string.yes, (dialog, id) -> {
             iConnectDeezer.disconnectFromDeezer();
             initFields();
         }, R.string.no, null);
+        builder.create().show();
+    }
+
+    @OnClick(R.id.profile_but_exit)
+    public void clickLogout() {
+        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
+                R.string.account_logout_header, R.string.account_logout,
+                R.string.yes,
+                (dialog, id) -> {
+                    iConnectDeezer.disconnectFromDeezer();
+                    iLogout.logout();
+                }, R.string.no, null);
         builder.create().show();
 
     }
