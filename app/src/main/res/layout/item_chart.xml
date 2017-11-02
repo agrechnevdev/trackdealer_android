@@ -97,7 +97,7 @@
                 android:id="@+id/item_chart_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/item_chart_lay_image_play"
+                android:layout_below="@id/item_chart_artist"
                 android:layout_marginTop="@dimen/dp10"
                 android:layout_marginLeft="50dp"
                 android:text="coool"

@@ -1,5 +1,9 @@
 package com.trackdealer.ui.main;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -35,13 +39,14 @@ import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.models.ShowPlaylist;
 import com.trackdealer.models.TrackInfo;
+import com.trackdealer.ui.notification.MediaPlayerService;
 import com.trackdealer.utils.ConnectionsManager;
+import com.trackdealer.utils.ConstValues;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.StaticUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.net.ConnectException;
 import java.util.List;
 import java.util.Random;
 
@@ -52,6 +57,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
+
+import static com.trackdealer.utils.ConstValues.ACTION_TO_ACTIVITY;
+import static com.trackdealer.utils.ConstValues.ACTION_TO_SERVICE;
+import static com.trackdealer.utils.ConstValues.ARTIST;
+import static com.trackdealer.utils.ConstValues.CHANGE_INFO_ACTION;
+import static com.trackdealer.utils.ConstValues.NEXT_ACTION;
+import static com.trackdealer.utils.ConstValues.TYPE_OF_ACTION;
+import static com.trackdealer.utils.ConstValues.PAUSE_ACTION;
+import static com.trackdealer.utils.ConstValues.PLAY_ACTION;
+import static com.trackdealer.utils.ConstValues.STOPFOREGROUND_ACTION;
+import static com.trackdealer.utils.ConstValues.TRACK_NAME;
 
 
 public class DeezerActivity extends AppCompatActivity implements IConnectDeezer, IChoseTrack, PlayerWrapperListener {
@@ -115,6 +131,10 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         }
 
         subscription = new CompositeDisposable();
+
+        final IntentFilter myFilter = new IntentFilter(ACTION_TO_ACTIVITY);
+        registerReceiver(mReceiver, myFilter);
+
         recreatePlayer();
     }
 
@@ -148,10 +168,11 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
         mDeezerConnect.logout(this);
+        mDeezerConnect = null;
         trackPlayer.removePlayerListener(this);
         doDestroyPlayer();
         subscription.dispose();
-
+        unregisterReceiver(mReceiver);
     }
 
     protected void playNextTrack() {
@@ -207,14 +228,18 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                 trackPlayer.pause();
             else if (playerState == PlayerState.PAUSED)
                 trackPlayer.play();
-            else if (trackPlayer.getPlayerState() == PlayerState.RELEASED)
+            else if (playerState == PlayerState.RELEASED)
                 recreatePlayer();
         } else {
             if (playerState == PlayerState.PLAYING)
                 trackPlayer.stop();
-            else if (trackPlayer.getPlayerState() == PlayerState.RELEASED)
-                recreatePlayer();
-
+            if(playerState == PlayerState.STARTED) {
+                Intent intent = new Intent(this, MediaPlayerService.class);
+                intent.setAction(ConstValues.STARTFOREGROUND_ACTION);
+                intent.putExtra(ARTIST, trackInfo.getArtist());
+                intent.putExtra(TRACK_NAME, trackInfo.getTitle());
+                startService(intent);
+            }
             // меняем позицию индикатора
             SPlay.init().playTrackId = trackInfo.getTrackId();
             EventBus.getDefault().post(SPlay.init().playTrackId);
@@ -228,6 +253,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
     // грузим загружаем песню
     public void loadSong(TrackInfo trackInfo) {
+
         if (ConnectionsManager.isConnected(this)) {
             DeezerRequest request = DeezerRequestFactory.requestTrack(trackInfo.getTrackId());
             subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
@@ -242,7 +268,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 //                                        trackPlayer.playTrack(SPlay.init().playingTrack.getId());
 //                                    }
 //                                }).start();
-
+                                if (trackPlayer.getPlayerState() == PlayerState.RELEASED)
+                                    recreatePlayer();
                                 trackPlayer.playTrack(SPlay.init().playingTrack.getId());
 
                                 setButtonEnabled(mButtonPlayerPause, true);
@@ -250,9 +277,6 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                                 setButtonEnabled(mButtonPlayerPlaylist, true);
                             },
                             ex -> {
-                                if (ex instanceof ConnectException) {
-                                    recreatePlayer();
-                                }
                                 ErrorHandler.handleError(this, "Не удалось загрузить песню.", (Exception) ex, (dialog, which) -> loadSong(trackInfo));
                             }));
         } else {
@@ -295,6 +319,12 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         setButtonEnabled(mButtonPlayerSkipForward, false);
         setButtonEnabled(mButtonPlayerPlaylist, false);
         setPlayerVisible(true);
+
+        Intent intent = new Intent(ACTION_TO_SERVICE);
+        intent.putExtra(TYPE_OF_ACTION, CHANGE_INFO_ACTION);
+        intent.putExtra(ARTIST, trackInfo.getArtist());
+        intent.putExtra(TRACK_NAME, trackInfo.getTitle());
+        sendBroadcast(intent);
     }
 
     public synchronized void showPlayerProgress(final long timePosition) {
@@ -308,32 +338,28 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     }
 
     public void showPlayerState(final PlayerState state) {
-//        mSeekBar.setEnabled(true);
-//        mButtonPlayerPause.setEnabled(true);
-//        mButtonPlayerStop.setEnabled(true);
 
         switch (state) {
             case STARTED:
-//                mButtonPlayerPause.setEnabled(true);
-//                mButtonPlayerPause.setImageResource(R.drawable.ic_play);
                 break;
             case INITIALIZING:
-//                mButtonPlayerPause.setEnabled(true);
-//                mButtonPlayerPause.setImageResource(R.drawable.ic_play);
                 break;
             case READY:
                 mButtonPlayerPause.setEnabled(true);
                 mButtonPlayerPause.setImageResource(R.drawable.ic_play);
+                sendMessageToService(PAUSE_ACTION);
                 showPlayerProgress(0);
                 break;
             case PLAYING:
                 mButtonPlayerPause.setEnabled(true);
                 mButtonPlayerPause.setImageResource(R.drawable.ic_pause);
+                sendMessageToService(PLAY_ACTION);
                 break;
             case PAUSED:
             case PLAYBACK_COMPLETED:
                 mButtonPlayerPause.setEnabled(true);
                 mButtonPlayerPause.setImageResource(R.drawable.ic_play);
+                sendMessageToService(PAUSE_ACTION);
                 break;
 
             case WAITING_FOR_DATA:
@@ -345,6 +371,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                 showPlayerProgress(0);
                 showBufferProgress(0);
                 mButtonPlayerPause.setImageResource(R.drawable.ic_play);
+                sendMessageToService(PAUSE_ACTION);
                 mButtonPlayerStop.setEnabled(false);
                 break;
             case RELEASED:
@@ -491,6 +518,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             trackPlayer.stop();
         }
         // then release it
+        sendMessageToService(STOPFOREGROUND_ACTION);
         trackPlayer.release();
     }
 
@@ -507,6 +535,12 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         } else {
             findViewById(R.id.player).setVisibility(View.GONE);
         }
+    }
+
+    public void sendMessageToService(String action){
+        Intent serviceIntent = new Intent(ACTION_TO_SERVICE);
+        serviceIntent.putExtra(TYPE_OF_ACTION, action);
+        sendBroadcast(serviceIntent);
     }
 
     protected void setButtonEnabled(final View button, final boolean enabled) {
@@ -541,4 +575,19 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         ErrorHandler.handleError(this, "Ошибка при запросе на сервер.", e, null);
     }
 
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String typeOfAction = intent.getExtras().getString(TYPE_OF_ACTION);
+            Timber.d(TAG + " onReceive() " + typeOfAction);
+            if (typeOfAction.equals(PLAY_ACTION)) {
+                onClickButton(mButtonPlayerPause);
+            } else if (typeOfAction.equals(NEXT_ACTION)) {
+                onClickButton(mButtonPlayerSkipForward);
+            } else if (typeOfAction.equals(STOPFOREGROUND_ACTION)) {
+
+            }
+        }
+    };
 }
