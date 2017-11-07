@@ -13,12 +13,15 @@ import android.widget.RemoteViews;
 
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.NotificationDismissedReceiver;
+import com.trackdealer.ui.main.MainActivity;
 
 import timber.log.Timber;
 
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
 import static com.trackdealer.utils.ConstValues.ACTION_TO_ACTIVITY;
 import static com.trackdealer.utils.ConstValues.ACTION_TO_SERVICE;
 import static com.trackdealer.utils.ConstValues.ARTIST;
+import static com.trackdealer.utils.ConstValues.BUTTON_PLAY;
 import static com.trackdealer.utils.ConstValues.CHANGE_INFO_ACTION;
 import static com.trackdealer.utils.ConstValues.FOREGROUND_SERVICE;
 import static com.trackdealer.utils.ConstValues.MAIN_ACTION;
@@ -58,12 +61,12 @@ public class MediaPlayerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction().equals(STARTFOREGROUND_ACTION)) {
-            showNotification(intent.getExtras().getString(ARTIST), intent.getExtras().getString(TRACK_NAME));
+            showNotification(intent.getExtras().getString(ARTIST), intent.getExtras().getString(TRACK_NAME), intent.getExtras().getBoolean(BUTTON_PLAY));
         }
         return START_STICKY;
     }
 
-    private void showNotification(String artist, String trackName) {
+    private void showNotification(String artist, String trackName, Boolean buttonPlay) {
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.player_notification);
 
         Intent playIntent = new Intent(ACTION_TO_ACTIVITY);
@@ -78,6 +81,13 @@ public class MediaPlayerService extends Service {
         closeIntent.putExtra(TYPE_OF_ACTION, STOPFOREGROUND_ACTION);
         PendingIntent pcloseIntent = PendingIntent.getBroadcast(this, 3, closeIntent, 0);
 
+//        Intent openIntent = new Intent(ACTION_TO_ACTIVITY);
+//        openIntent.putExtra(TYPE_OF_ACTION, RESUME_MAIN_ACTION);
+//        PendingIntent popenIntent = PendingIntent.getBroadcast(this, 3, openIntent, 0);
+        Intent openIntent = new Intent(this, MainActivity.class);
+        openIntent.setFlags(FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent popenIntent = PendingIntent.getActivity(this, 3, openIntent, 0);
+
         Intent intent = new Intent(this, NotificationDismissedReceiver.class);
         intent.putExtra(MAIN_ACTION, FOREGROUND_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, FOREGROUND_SERVICE, intent, 0);
@@ -86,6 +96,11 @@ public class MediaPlayerService extends Service {
         views.setOnClickPendingIntent(R.id.button_skip_forward, pnextIntent);
         views.setTextViewText(R.id.text_track, trackName);
         views.setTextViewText(R.id.text_artist, artist);
+        views.setOnClickPendingIntent(R.id.player_notification_main_lay, popenIntent);
+        if (buttonPlay)
+            views.setImageViewResource(R.id.button_pause, R.drawable.ic_pause);
+        else
+            views.setImageViewResource(R.id.button_pause, R.drawable.ic_play);
 
         status = new Notification.Builder(this).build();
         status.contentView = views;
@@ -108,27 +123,27 @@ public class MediaPlayerService extends Service {
         public void onReceive(Context context, Intent intent) {
             String typeOfAction = intent.getExtras().getString(TYPE_OF_ACTION);
             Timber.d(TAG + " onReceive() " + typeOfAction);
-            switch (typeOfAction){
-                case (CHANGE_INFO_ACTION) :
+            switch (typeOfAction) {
+                case (CHANGE_INFO_ACTION):
                     status.contentView.setTextViewText(R.id.text_artist, intent.getExtras().getString(ARTIST));
                     status.contentView.setTextViewText(R.id.text_track, intent.getExtras().getString(TRACK_NAME));
                     mNotificationManager.notify(FOREGROUND_SERVICE, status);
                     break;
-                case (PLAY_ACTION) :
+                case (PLAY_ACTION):
                     status.contentView.setImageViewResource(R.id.button_pause, R.drawable.ic_pause);
                     status.flags = Notification.FLAG_ONGOING_EVENT;
                     mNotificationManager.notify(FOREGROUND_SERVICE, status);
                     break;
-                case (PAUSE_ACTION) :
+                case (PAUSE_ACTION):
                     status.contentView.setImageViewResource(R.id.button_pause, R.drawable.ic_play);
                     status.flags = Notification.FLAG_AUTO_CANCEL;
                     mNotificationManager.notify(FOREGROUND_SERVICE, status);
                     break;
-                case (PREV_ACTION) :
+                case (PREV_ACTION):
                     break;
-                case (NEXT_ACTION) :
+                case (NEXT_ACTION):
                     break;
-                case (STOPFOREGROUND_ACTION) :
+                case (STOPFOREGROUND_ACTION):
                     stopForeground(true);
                     stopSelf();
                     break;

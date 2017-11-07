@@ -51,12 +51,11 @@ public class FakeRestApi {
     }
 
     public static Observable<Response<ResponseBody>> login(Context context, String login, String password) {
-        if(login.contains("1")) {
+        if (true) {
             ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), "");
             Response<ResponseBody> response = Response.success(responseBody);
             return Observable.just(response).delay(2, TimeUnit.SECONDS);
-        }
-        else {
+        } else {
             ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), "Логин должен содержать цифру 1");
             Response<ResponseBody> response = Response.error(responseBody, new okhttp3.Response.Builder() //
                     .code(600)
@@ -65,6 +64,13 @@ public class FakeRestApi {
                     .build());
             return Observable.just(response);
         }
+    }
+
+    public static Observable<Response<ResponseBody>> register(Context context, String login, String password, String name, String email) {
+        ResponseBody responseBody = ResponseBody.create(MediaType.parse("application/json"), "");
+        Response<ResponseBody> response = Response.success(responseBody);
+        return Observable.just(response).delay(2, TimeUnit.SECONDS);
+
     }
 
     public static Observable<Response<ResponseBody>> trackLike(Context context, long trackInfoId, Boolean like) {

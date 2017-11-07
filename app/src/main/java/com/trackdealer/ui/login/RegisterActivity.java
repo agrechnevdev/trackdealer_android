@@ -2,19 +2,20 @@ package com.trackdealer.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
-import com.trackdealer.models.User;
 import com.trackdealer.net.FakeRestApi;
 import com.trackdealer.net.Restapi;
-import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
@@ -26,37 +27,49 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_PASSWORD;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
+/**
+ * Created by grechnev-av on 07.11.2017.
+ */
 
-public class LoginActivity extends BaseActivity {
+public class RegisterActivity extends BaseActivity {
 
-    private final String TAG = "LoginActivity";
+    private final String TAG = "RegisterActivity";
 
     @Inject
     Retrofit retrofit;
     private Restapi restapi;
 
-    @Bind(R.id.login_lay_main)
+    @Bind(R.id.register_lay_main)
     RelativeLayout layMain;
 
     CompositeDisposable subscription;
 
-    @Bind(R.id.login_text_password)
-    EditText textPassword;
 
-    @Bind(R.id.login_text_login)
+    @Bind(R.id.register_text_login)
     EditText textLogin;
+    @Bind(R.id.register_text_password)
+    EditText textPassword;
+    @Bind(R.id.register_text_repeat_password)
+    EditText textPassword2;
+    @Bind(R.id.register_text_email)
+    EditText textEmail;
+    @Bind(R.id.register_text_name)
+    EditText textName;
 
-    @Bind(R.id.login_btn_login)
-    Button butLogin;
+    @Bind(R.id.register_lay_text_password)
+    TextInputLayout textLayPassword;
+    @Bind(R.id.register_lay_text_repeat_password)
+    TextInputLayout textLayPassword2;
+
+    @Bind(R.id.register_btn_continue)
+    Button butContinue;
 
     @Bind(R.id.progressbar)
     ProgressBar progressBar;
@@ -66,13 +79,12 @@ public class LoginActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         Set<String> preferences = Prefs.getStringSet(this, "User-Cookie", "Cookies");
 //        if (preferences.isEmpty()) {
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
         ((BaseApp) getApplication()).getNetComponent().inject(this);
         restapi = retrofit.create(Restapi.class);
         ButterKnife.bind(this);
-
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.singin);
+            getSupportActionBar().setTitle(R.string.registration);
         }
         initSubscribtion();
 //        getMetrics();
@@ -89,18 +101,40 @@ public class LoginActivity extends BaseActivity {
     public void initSubscribtion() {
         subscription = new CompositeDisposable();
 
-//        subscription.add(Observable.combineLatest(
-//                RxTextView.textChanges(textLogin).observeOn(AndroidSchedulers.mainThread()),
-//                RxTextView.textChanges(textPassword).observeOn(AndroidSchedulers.mainThread()),
-//               (register, pass) -> !TextUtils.isEmpty(register) && !TextUtils.isEmpty(pass))
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribeOn(Schedulers.io())
-//                        .subscribe(this::buttonEnabledState)
-//        );
+        Observable<CharSequence> observablePass = RxTextView.textChanges(textPassword).skip(1);
+        Observable<CharSequence> observablePass2 = RxTextView.textChanges(textPassword2).skip(1);
+
+        subscription.add(Observable.combineLatest(
+                observablePass, observablePass2, (pass, pass2) ->
+                        pass.toString().equals(pass2.toString()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(ebable -> {
+                    if(ebable){
+                        textLayPassword2.setErrorEnabled(false);
+                    } else {
+                        textLayPassword2.setError("Пароли не совпадают!");
+                    }
+
+                })
+        );
+
+        subscription.add(Observable.combineLatest(
+                RxTextView.textChanges(textLogin), observablePass,
+                observablePass2 , RxTextView.textChanges(textName),
+                RxTextView.textChanges(textEmail),
+                (login, pass, pass2, name, email) -> !TextUtils.isEmpty(login) && !TextUtils.isEmpty(pass) &&
+                        !TextUtils.isEmpty(pass2) && !TextUtils.isEmpty(name) &&
+                        pass.length() > 3 && pass2.length() > 3
+                        && pass.toString().equals(pass2.toString()))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(this::buttonEnabledState)
+        );
     }
 
     public void buttonEnabledState(boolean enabled) {
-        butLogin.setEnabled(enabled);
+        butContinue.setEnabled(enabled);
     }
 
     @Override
@@ -109,23 +143,24 @@ public class LoginActivity extends BaseActivity {
         subscription.dispose();
     }
 
-    @OnClick(R.id.login_btn_login)
-    public void clickLogin() {
+    @OnClick(R.id.register_btn_continue)
+    public void clickRegister() {
         showProgressBar();
-        login();
+        register();
     }
 
 
-    void login() {
+    void register() {
 
         if (ConnectionsManager.isOnline(this)) {
-            subscription.add(FakeRestApi.login(this, textLogin.getText().toString(), textPassword.getText().toString())
+            subscription.add(FakeRestApi.register(this, textLogin.getText().toString(), textPassword.getText().toString(),
+                    textName.getText().toString(), textEmail.getText().toString())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(response -> {
                                 Timber.e(TAG + " register response code: " + response.code());
                                 if (response.isSuccessful()) {
-                                    loginSuccess();
+                                    registerSuccess();
                                 } else {
                                     ErrorHandler.showSnackbarError(layMain, ErrorHandler.getErrorMessageFromResponse(response));
                                     hideProgressBar();
@@ -143,14 +178,9 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    public void loginSuccess() {
+    public void registerSuccess() {
         hideProgressBar();
-        if(textLogin.getText().toString().contains("super"))
-            Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(100, textLogin.getText().toString(), "TRACKDEALER"));
-        else
-            Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(100, textLogin.getText().toString(), "TRACKLISTENER"));
-        Prefs.putString(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_PASSWORD, textPassword.getText().toString());
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();
     }

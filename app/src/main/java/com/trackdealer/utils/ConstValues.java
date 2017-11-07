@@ -26,7 +26,7 @@ public class ConstValues {
 
     public static final String TYPE_OF_ACTION = "com.trackdealer.action.typeofaction";
     public static final String MAIN_ACTION = "com.trackdealer.action.main";
-    public static final String INIT_ACTION = "com.trackdealer.action.init";
+    public static final String RESUME_MAIN_ACTION = "com.trackdealer.action.resumemainaction";
     public static final String PREV_ACTION = "com.trackdealer.action.prev";
     public static final String PLAY_ACTION = "com.trackdealer.action.play";
     public static final String PAUSE_ACTION = "com.trackdealer.action.pause";
@@ -39,6 +39,7 @@ public class ConstValues {
     public static final String ACTION_TO_ACTIVITY = "com.trackdealer.action.actiontoactivity";
     public static final String ARTIST = "com.trackdealer.action.artist";
     public static final String TRACK_NAME = "com.trackdealer.action.trackname";
+    public static final String BUTTON_PLAY = "com.trackdealer.action.buttonplay";
     public static int FOREGROUND_SERVICE = 101;
 
 }

@@ -17,15 +17,31 @@
         android:layout_height="60dp"
         android:clickable="true" />
 
-    <ImageView
-        android:id="@+id/logo_image_view"
-        android:layout_width="300dp"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:padding="@dimen/dp25"
-        app:srcCompat="@drawable/app_logo_end"
-        android:visibility="visible" />
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/logo_image_view"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:padding="@dimen/dp25"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            app:srcCompat="@drawable/app_logo_end"
+            android:alpha="0.5"/>
+
+        <TextView
+            android:id="@+id/logo_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="@dimen/text_size_very_big" />
+
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -57,7 +73,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:padding="12dp"
-                android:text="@string/register" />
+                android:text="@string/registration" />
         </LinearLayout>
 
     </LinearLayout>

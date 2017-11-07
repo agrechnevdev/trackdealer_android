@@ -61,8 +61,10 @@ import timber.log.Timber;
 import static com.trackdealer.utils.ConstValues.ACTION_TO_ACTIVITY;
 import static com.trackdealer.utils.ConstValues.ACTION_TO_SERVICE;
 import static com.trackdealer.utils.ConstValues.ARTIST;
+import static com.trackdealer.utils.ConstValues.BUTTON_PLAY;
 import static com.trackdealer.utils.ConstValues.CHANGE_INFO_ACTION;
 import static com.trackdealer.utils.ConstValues.NEXT_ACTION;
+import static com.trackdealer.utils.ConstValues.RESUME_MAIN_ACTION;
 import static com.trackdealer.utils.ConstValues.TYPE_OF_ACTION;
 import static com.trackdealer.utils.ConstValues.PAUSE_ACTION;
 import static com.trackdealer.utils.ConstValues.PLAY_ACTION;
@@ -234,11 +236,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             if (playerState == PlayerState.PLAYING)
                 trackPlayer.stop();
             if(playerState == PlayerState.STARTED) {
-                Intent intent = new Intent(this, MediaPlayerService.class);
-                intent.setAction(ConstValues.STARTFOREGROUND_ACTION);
-                intent.putExtra(ARTIST, trackInfo.getArtist());
-                intent.putExtra(TRACK_NAME, trackInfo.getTitle());
-                startService(intent);
+                startNotificationPlayer(trackInfo.getArtist(), trackInfo.getTitle(), false);
             }
             // меняем позицию индикатора
             SPlay.init().playTrackId = trackInfo.getTrackId();
@@ -327,6 +325,15 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         sendBroadcast(intent);
     }
 
+    public void startNotificationPlayer(String artist, String trackName, Boolean buttonPlay){
+        Intent intent = new Intent(this, MediaPlayerService.class);
+        intent.setAction(ConstValues.STARTFOREGROUND_ACTION);
+        intent.putExtra(ARTIST, artist);
+        intent.putExtra(TRACK_NAME, trackName);
+        intent.putExtra(BUTTON_PLAY, buttonPlay);
+        startService(intent);
+    }
+
     public synchronized void showPlayerProgress(final long timePosition) {
         mSeekBar.setProgress((int) timePosition / 1000);
     }
@@ -353,7 +360,16 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             case PLAYING:
                 mButtonPlayerPause.setEnabled(true);
                 mButtonPlayerPause.setImageResource(R.drawable.ic_pause);
-                sendMessageToService(PLAY_ACTION);
+                if(StaticUtils.isServiceRunning(this, MediaPlayerService.class)){
+                    Timber.d(TAG + " service running ");
+                    sendMessageToService(PLAY_ACTION);
+                } else {
+                    Timber.d(TAG + " service not running, start ");
+                    if(SPlay.init().playingTrack != null) {
+                        startNotificationPlayer(SPlay.init().playingTrack.getArtist().getName(), SPlay.init().playingTrack.getTitle(), true);
+                    }
+                }
+
                 break;
             case PAUSED:
             case PLAYBACK_COMPLETED:
@@ -586,6 +602,8 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             } else if (typeOfAction.equals(NEXT_ACTION)) {
                 onClickButton(mButtonPlayerSkipForward);
             } else if (typeOfAction.equals(STOPFOREGROUND_ACTION)) {
+
+            }  else if (typeOfAction.equals(RESUME_MAIN_ACTION)) {
 
             }
         }

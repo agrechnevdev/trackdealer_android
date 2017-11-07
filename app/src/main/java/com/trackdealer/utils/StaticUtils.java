@@ -1,11 +1,18 @@
 package com.trackdealer.utils;
 
+import android.app.ActivityManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.annotation.DrawableRes;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.JsonUtils;
+import com.trackdealer.helpersUI.BitmapTransform;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.models.User;
 
@@ -96,6 +103,30 @@ public class StaticUtils {
         if (value < 10) {
             builder.insert(0, '0');
         }
+    }
+
+    public static Bitmap cutPicture(Context context, @DrawableRes int draw){
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics);
+        int screenHeight = metrics.heightPixels;
+        int screenWidth = metrics.widthPixels;
+        int resourceStatus = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int statusBarHeight = context.getResources().getDimensionPixelSize(resourceStatus);
+
+        BitmapTransform bitmapTransform = new BitmapTransform(screenWidth, screenHeight, 0 ,screenHeight - statusBarHeight);
+        Bitmap background = BitmapFactory.decodeResource(context.getResources(), draw);
+        return bitmapTransform.transform(background);
+    }
+
+    public static boolean isServiceRunning(Context context, Class<?> serviceClass){
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static Observable<Object> requestFromDeezer(DeezerConnect deezerConnect, DeezerRequest deezerRequest) {

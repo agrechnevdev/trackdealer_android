@@ -1,20 +1,17 @@
 package com.trackdealer.ui.login;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
+import android.text.Html;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
-import com.trackdealer.helpersUI.BitmapTransform;
 import com.trackdealer.utils.Prefs;
+import com.trackdealer.utils.StaticUtils;
 
 import java.util.Set;
 
@@ -33,6 +30,9 @@ public class PreloginActivity extends BaseActivity {
     @Bind(R.id.prelogin_btn_login)
     Button butLogin;
 
+    @Bind(R.id.logo_text)
+    TextView logoText;
+
     @Bind(R.id.prelogin_background)
     ImageView imageViewBackground;
 
@@ -47,17 +47,10 @@ public class PreloginActivity extends BaseActivity {
         setContentView(R.layout.activity_prelogin);
         ButterKnife.bind(this);
 
-        WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics metrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(metrics);
-        int screenHeight = metrics.heightPixels;
-        int screenWidth = metrics.widthPixels;
-        int resourceStatus = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int statusBarHeight = getResources().getDimensionPixelSize(resourceStatus);
+        imageViewBackground.setImageBitmap(StaticUtils.cutPicture(this, R.drawable.prelogin_background));
+        String text = "<b><font color=#007cd0>TRACK</font></b><b><font color=#fd7d20>DEALER</font></b>";
+        logoText.setText(Html.fromHtml(text));
 
-        BitmapTransform bitmapTransform = new BitmapTransform(screenWidth, screenHeight, 0 ,screenHeight - statusBarHeight);
-        Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.prelogin_background);
-        imageViewBackground.setImageBitmap(bitmapTransform.transform(background));
 //        } else {
 //            Intent intent = new Intent(getApplicationContext(), CoreActivity.class);
 //            startActivity(intent);
@@ -68,6 +61,11 @@ public class PreloginActivity extends BaseActivity {
     @OnClick(R.id.prelogin_btn_login)
     public void clickLogin() {
         startActivity(new Intent(this, LoginActivity.class));
+    }
+
+    @OnClick(R.id.prelogin_btn_register)
+    public void clickRegister() {
+        startActivity(new Intent(this, RegisterActivity.class));
     }
 
     @OnClick(R.id.prelogin_show_log)

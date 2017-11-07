@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -41,6 +42,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
@@ -83,6 +86,8 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Bind(R.id.chose_song_fav_song_empty)
     RelativeLayout relLayEmpty;
 
+    @Bind(R.id.chose_song_but_change)
+    Button butChange;
     @Bind(R.id.chose_song_like)
     RelativeLayout relLayPercentLike;
     @Bind(R.id.percent_like_text_like)
@@ -112,13 +117,13 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
         favourPresenter.attachView(this);
         loadFavouriteSongStart();
 
-        relLayFavSong.setVisibility(View.GONE);
+        relLayFavSong.setVisibility(GONE);
         return view;
     }
 
     @Override
     public boolean dispatchTouch() {
-        return progressBar.getVisibility() == View.VISIBLE;
+        return progressBar.getVisibility() == VISIBLE;
     }
 
     @Override
@@ -153,9 +158,9 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     public void setFavouriteSong(TrackInfo trackInfo) {
         if (trackInfo != null) {
             Picasso.with(getContext()).load(trackInfo.getCoverImage()).into(imageViewSong);
-
-            relLayEmpty.setVisibility(View.GONE);
-            relLayFavSong.setVisibility(View.VISIBLE);
+            butChange.setVisibility(VISIBLE);
+            relLayEmpty.setVisibility(GONE);
+            relLayFavSong.setVisibility(VISIBLE);
 
             textSongTitle.setText(trackInfo.getTitle());
             textSongArtist.setText(trackInfo.getArtist());
@@ -167,8 +172,9 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
             seekBarLike.setProgress(progress.intValue());
 
         } else {
-            relLayEmpty.setVisibility(View.VISIBLE);
-            relLayFavSong.setVisibility(View.GONE);
+            butChange.setVisibility(GONE);
+            relLayEmpty.setVisibility(VISIBLE);
+            relLayFavSong.setVisibility(GONE);
         }
     }
 
@@ -250,12 +256,12 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     }
 
     public void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-        relLayAll.setVisibility(View.GONE);
+        progressBar.setVisibility(VISIBLE);
+        relLayAll.setVisibility(GONE);
     }
 
     public void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-        relLayAll.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(GONE);
+        relLayAll.setVisibility(VISIBLE);
     }
 }

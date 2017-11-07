@@ -6,6 +6,12 @@
     android:background="@color/colorBackground">
 
     <ImageView
+        android:id="@+id/start_image_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.2" />
+
+    <ImageView
         android:id="@+id/logo_image_view"
         android:layout_width="300dp"
         android:layout_height="300dp"

@@ -6,6 +6,8 @@
     android:layout_centerVertical="true">
 
     <RelativeLayout
+        android:id="@+id/player_notification_main_lay"
+        android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

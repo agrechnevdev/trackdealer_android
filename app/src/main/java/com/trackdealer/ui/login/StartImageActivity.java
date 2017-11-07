@@ -8,9 +8,12 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import com.trackdealer.R;
+import com.trackdealer.utils.StaticUtils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,12 +28,19 @@ public class StartImageActivity extends AppCompatActivity {
 
     @Bind(R.id.logo_image_view)
     ImageView imageView;
+    @Bind(R.id.start_image_background)
+    ImageView backgroundImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_image);
         ButterKnife.bind(this);
+
+        backgroundImageView.setImageBitmap(StaticUtils.cutPicture(this, R.drawable.prelogin_background));
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.back_image);
+        animation.setDuration(SPLASH_TIME_OUT);
+        backgroundImageView.startAnimation(animation);
 
         new Handler().postDelayed(() -> {
             startActivity(new Intent(StartImageActivity.this, PreloginActivity.class));

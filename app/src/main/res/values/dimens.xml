@@ -37,6 +37,7 @@
     <dimen name="error_margin_bot">12dp</dimen>
     <dimen name="height_1dp">1dp</dimen>
 
+    <dimen name="text_size_very_big">44sp</dimen>
     <dimen name="text_size_big">32sp</dimen>
     <dimen name="text_size_large">24sp</dimen>
     <dimen name="text_size_medium">20sp</dimen>

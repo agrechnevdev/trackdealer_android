@@ -1,5 +1,6 @@
 package com.trackdealer.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.view.MenuItem;
@@ -97,6 +98,14 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         if (playlistDialog != null) {
             playlistDialog.updatePositionIndicator();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
