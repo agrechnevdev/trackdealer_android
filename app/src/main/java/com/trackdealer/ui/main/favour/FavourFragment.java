@@ -118,6 +118,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
         loadFavouriteSongStart();
 
         relLayFavSong.setVisibility(GONE);
+        butChange.setVisibility(GONE);
         return view;
     }
 

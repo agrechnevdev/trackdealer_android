@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 
 public class StartImageActivity extends AppCompatActivity {
 
-    private static int SPLASH_TIME_OUT = 2000;
+    private static int SPLASH_TIME_OUT = 1500;
 
     @Bind(R.id.logo_image_view)
     ImageView imageView;
@@ -38,6 +38,7 @@ public class StartImageActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         backgroundImageView.setImageBitmap(StaticUtils.cutPicture(this, R.drawable.prelogin_background));
+//        backgroundImageView.setImageResource(R.drawable.selector_prelogin_background);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.back_image);
         animation.setDuration(SPLASH_TIME_OUT);
         backgroundImageView.startAnimation(animation);

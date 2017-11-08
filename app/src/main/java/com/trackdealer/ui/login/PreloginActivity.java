@@ -46,7 +46,7 @@ public class PreloginActivity extends BaseActivity {
 //        if (preferences.isEmpty()) {
         setContentView(R.layout.activity_prelogin);
         ButterKnife.bind(this);
-
+//        imageViewBackground.setImageResource(R.drawable.selector_prelogin_background);
         imageViewBackground.setImageBitmap(StaticUtils.cutPicture(this, R.drawable.prelogin_background));
         String text = "<b><font color=#007cd0>TRACK</font></b><b><font color=#fd7d20>DEALER</font></b>";
         logoText.setText(Html.fromHtml(text));
