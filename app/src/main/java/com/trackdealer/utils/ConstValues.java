@@ -6,6 +6,9 @@ package com.trackdealer.utils;
 
 public class ConstValues {
 
+    //    public static final String mainUrl = "http://192.168.199.2:8081";
+    public static final String mainUrl = "http://10.35.28.181:8081";
+
     public static final String SHARED_FILENAME_USER_DATA = "SharedUserData";
     public static final String SHARED_KEY_USER = "SharedUser";
     public static final String SHARED_KEY_PASSWORD = "SharedPassword";
@@ -21,8 +24,6 @@ public class ConstValues {
     public static final String SHARED_KEY_FIRST_TIME = "SharedFirstTime";
 
     public static final String TRACK_LIST = "TrackList";
-
-    public static final String mainUrl = "https://api.deezer.com/";
 
     public static final String TYPE_OF_ACTION = "com.trackdealer.action.typeofaction";
     public static final String MAIN_ACTION = "com.trackdealer.action.main";

@@ -90,9 +90,9 @@ public class ChartShortAdapter extends RecyclerView.Adapter<ChartShortAdapter.Vi
         holder.artist.setText(trackInfo.getArtist());
         holder.duration.setText(" " + trackInfo.getDuration());
 
-        if (trackInfo.getUser() != null) {
+        if (trackInfo.getUserNameLoad() != null) {
             holder.textUsername.setVisibility(View.VISIBLE);
-            holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUser().getUsername());
+            holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUserNameLoad());
         } else {
             holder.textUsername.setVisibility(View.GONE);
         }
@@ -102,14 +102,14 @@ public class ChartShortAdapter extends RecyclerView.Adapter<ChartShortAdapter.Vi
             iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
         });
 
-        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getTrackId()) {
+        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
             Timber.d(TAG + " position VISIBLE " + position);
             holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
         } else {
             holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
         }
 
-        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getTrackId()) {
+        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
                 Timber.d(TAG + " position VISIBLE " + position);
                 holder.indicator.setVisibility(View.VISIBLE);
                 holder.artistImage.setAlpha(0.3f);

@@ -34,7 +34,7 @@ public class FakeRestApi {
             return Observable.just(Response.success(list)).delay(2, TimeUnit.SECONDS);
         else {
             for (TrackInfo trackInfo : list) {
-                if (trackInfo.getGenre() != null && trackInfo.getGenre().getName().equals(genre)) {
+                if (trackInfo.getGenre() != null && trackInfo.getGenre().equals(genre)) {
                     listFiltered.add(trackInfo);
                 }
             }
@@ -76,11 +76,11 @@ public class FakeRestApi {
     public static Observable<Response<ResponseBody>> trackLike(Context context, long trackInfoId, Boolean like) {
         ArrayList<TrackInfo> list = Prefs.getTrackList(context.getApplicationContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
         for (TrackInfo trackInfo : list) {
-            if (trackInfo.getTrackId() == trackInfoId) {
+            if (trackInfo.getDeezerId() == trackInfoId) {
                 if (like)
-                    trackInfo.setLikes(trackInfo.getLikes() + 1);
+                    trackInfo.setCountLike(trackInfo.getCountLike() + 1);
                 else
-                    trackInfo.setDislikes(trackInfo.getDislikes() + 1);
+                    trackInfo.setCountDislike(trackInfo.getCountDislike() + 1);
                 trackInfo.setUserLike(like);
                 Prefs.putTrackList(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, list);
                 break;

@@ -14,7 +14,6 @@ import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.JsonUtils;
 import com.trackdealer.helpersUI.BitmapTransform;
 import com.trackdealer.models.TrackInfo;
-import com.trackdealer.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -39,8 +38,7 @@ public class StaticUtils {
     public static ArrayList<TrackInfo> fromListTracks(List<Track> tracks) {
         ArrayList<TrackInfo> list = new ArrayList<>();
         for (Track track : tracks) {
-            Long id = track.getId();
-            list.add(new TrackInfo(id.intValue(), track.getTitle(), track.getArtist().getName(), track.getDuration(), track.getAlbum().getSmallImageUrl(), track.getAlbum().getId()));
+            list.add(new TrackInfo(track.getId(), track.getTitle(), track.getArtist().getName(), track.getDuration(), track.getAlbum().getSmallImageUrl(), track.getAlbum().getId()));
         }
         return list;
     }
@@ -49,20 +47,20 @@ public class StaticUtils {
         if (Prefs.getTrackList(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST) == null) {
             ArrayList<TrackInfo> tracks = new ArrayList<>();
 
-            User user1 = new User(1, "coolbatch", "TRACKLISTENER");
-            User user2 = new User(2, "vasilii petrovich", "TRACKLISTENER");
-            User user3 = new User(3, "YA NE VALERA!!!", "TRACKLISTENER");
-            User user4 = new User(4, "ZDAROVA", "TRACKLISTENER");
-
-            TrackInfo trackInfo3 = new TrackInfo(356306401, "Perfect Color", "SafetySuit", 234, "http://api.deezer.com/album/40882681/image", 40882681);
-            trackInfo3.setUser(user3);
-            tracks.add(trackInfo3);
-
-            TrackInfo trackInfo4 = new TrackInfo(136059064, "Numbers or Faith", "SafetySuit", 271, "http://api.deezer.com/album/14543916/image", 14543916);
-            trackInfo4.setUser(user4);
-            tracks.add(trackInfo4);
-
-            Prefs.putTrackList(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, tracks);
+//            User user1 = new User(1, "coolbatch", "TRACKLISTENER");
+//            User user2 = new User(2, "vasilii petrovich", "TRACKLISTENER");
+//            User user3 = new User(3, "YA NE VALERA!!!", "TRACKLISTENER");
+//            User user4 = new User(4, "ZDAROVA", "TRACKLISTENER");
+//
+//            TrackInfo trackInfo3 = new TrackInfo(356306401, "Perfect Color", "SafetySuit", 234, "http://api.deezer.com/album/40882681/image", 40882681);
+//            trackInfo3.setUser(user3);
+//            tracks.add(trackInfo3);
+//
+//            TrackInfo trackInfo4 = new TrackInfo(136059064, "Numbers or Faith", "SafetySuit", 271, "http://api.deezer.com/album/14543916/image", 14543916);
+//            trackInfo4.setUser(user4);
+//            tracks.add(trackInfo4);
+//
+//            Prefs.putTrackList(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, tracks);
         }
     }
 

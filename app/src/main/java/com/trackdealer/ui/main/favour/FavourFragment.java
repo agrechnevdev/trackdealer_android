@@ -30,25 +30,22 @@ import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
+import timber.log.Timber;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_LIST;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 /**
  * Created by grechnev-av on 31.08.2017.
@@ -167,11 +164,14 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
             textSongArtist.setText(trackInfo.getArtist());
             textSongDur.setText(trackInfo.getDuration());
             textSongDur.setText(trackInfo.getDuration());
-            textLike.setText(Integer.toString(trackInfo.getLikes()));
-            textDisLike.setText(Integer.toString(trackInfo.getDislikes()));
-            Float progress = (float) trackInfo.getDislikes() / (float) (trackInfo.getDislikes() + trackInfo.getLikes()) * 100;
-            seekBarLike.setProgress(progress.intValue());
-
+            textLike.setText(Long.toString(trackInfo.getCountLike()));
+            textDisLike.setText(Long.toString(trackInfo.getCountDislike()));
+            if(trackInfo.getCountDislike() + trackInfo.getCountLike() != 0) {
+                Long progress = trackInfo.getCountDislike() / (trackInfo.getCountDislike() + trackInfo.getCountLike()) * 100;
+                seekBarLike.setProgress(progress.intValue());
+            } else {
+                seekBarLike.setProgress(0);
+            }
         } else {
             butChange.setVisibility(GONE);
             relLayEmpty.setVisibility(VISIBLE);
@@ -197,45 +197,66 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
 
     @Override
     public void onClickTrack(TrackInfo trackInfo) {
-        if (checkTrackUnique(trackInfo)) {
-            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-                    R.string.chose_song_title, R.string.chose_song_message,
-                    R.string.yes,
-                    (dialog, id) -> {
-                        searchDialogFragment.dismiss();
-                        saveFavSong(trackInfo);
-                    },
-                    R.string.no,
-                    (dialog, id) -> {
-                        dialog.dismiss();
-                        searchDialogFragment.dismiss();
-                    });
-            builder.create().show();
-        } else {
-            ErrorHandler.showSnackbarError(relLayMain, "Песня уже в чарте!");
-        }
+        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
+                R.string.chose_song_title, R.string.chose_song_message,
+                R.string.yes,
+                (dialog, id) -> {
+                    searchDialogFragment.dismiss();
+                    saveFavSong(trackInfo);
+                },
+                R.string.no,
+                (dialog, id) -> {
+                    dialog.dismiss();
+                    searchDialogFragment.dismiss();
+                });
+        builder.create().show();
     }
 
     public void saveFavSong(TrackInfo trackInfo) {
         hideKeyboard();
         showProgressBar();
         DeezerRequest request = DeezerRequestFactory.requestAlbum(trackInfo.getAlbumId());
-        setFavouriteSong(trackInfo);
-        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+        Observable<String> observableGenre = StaticUtils.requestFromDeezer(mDeezerConnect, request)
+                .map(obj -> {
+                    if (!((Album) obj).getGenres().isEmpty())
+                        return ((Album) obj).getGenres().get(0).getName();
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+
+        subscription.add(observableGenre
+                .flatMap(genre -> Observable.create(e ->
+                        {
+                            trackInfo.setGenre(genre);
+                            subscription.add(restapi.changeFavTrack(trackInfo)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe(
+                                            response -> {
+                                                Timber.e(TAG + " changeFavTrack response code: " + response.code());
+                                                if (response.isSuccessful()) {
+                                                    setFavouriteSong(response.body());
+                                                    Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
+                                                    ErrorHandler.showToast(getActivity(), "Ваша новый трек добавлен в чарт!");
+                                                } else {
+                                                    ErrorHandler.showSnackbarError(relLayMain, ErrorHandler.getErrorMessageFromResponse(response));
+                                                }
+                                                hideProgressBar();
+                                            },
+                                            ex -> {
+                                                Timber.e(ex, TAG + " changeFavTrack onError() " + ex.getMessage());
+                                                ErrorHandler.showSnackbarError(relLayMain, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                                hideProgressBar();
+                                            }
+                                    ));
+                            e.onNext(genre);
+                            e.onComplete();
+                        })
+                )
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(obj -> {
-                            if (!((Album) obj).getGenres().isEmpty())
-                                trackInfo.setGenre(((Album) obj).getGenres().get(0));
-
-                            trackInfo.setUser(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER));
-                            Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
-                            ArrayList<TrackInfo> list = Prefs.getTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
-                            list.add(trackInfo);
-                            Prefs.putTrackList(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST, list);
-                            hideProgressBar();
-                        },
-                        ex -> hideProgressBar()));
+                .subscribe());
     }
 
     public void hideKeyboard() {
@@ -244,16 +265,6 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    public boolean checkTrackUnique(TrackInfo trackInfo) {
-        ArrayList<TrackInfo> list = Prefs.getTrackList(getActivity().getApplicationContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_LIST);
-        for (TrackInfo tr : list) {
-            if (tr.getTrackId() == trackInfo.getTrackId()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public void showProgressBar() {

@@ -39,7 +39,7 @@ public class SPlay {
 
     public Integer getPosPlayForPlayList(Long trackId) {
         for (int i = 0; i < playList.size(); i++) {
-            if (trackId != null && trackId == playList.get(i).getTrackId()) {
+            if (trackId != null && trackId == playList.get(i).getDeezerId()) {
                 return i;
             }
         }
@@ -48,7 +48,7 @@ public class SPlay {
 
     public Integer getPosPlayForIndicator(Long trackId) {
         for (int i = 0; i < showList.size(); i++) {
-            if (trackId != null && trackId == showList.get(i).getTrackId()) {
+            if (trackId != null && trackId == showList.get(i).getDeezerId()) {
                 return i;
             }
         }
@@ -57,7 +57,7 @@ public class SPlay {
 
     public TrackInfo getTrackInfoPlaying(){
         for (int i = 0; i < playList.size(); i++) {
-            if (playTrackId != null && playTrackId == playList.get(i).getTrackId()) {
+            if (playTrackId != null && playTrackId == playList.get(i).getDeezerId()) {
                 return playList.get(i);
             }
         }

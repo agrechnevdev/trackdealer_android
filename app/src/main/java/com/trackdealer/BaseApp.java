@@ -18,7 +18,6 @@ import com.trackdealer.module.NetModule;
 import com.trackdealer.net.DaggerNetComponent;
 import com.trackdealer.net.NetComponent;
 import com.trackdealer.utils.ConstValues;
-import com.trackdealer.utils.StaticUtils;
 
 import timber.log.Timber;
 
@@ -30,7 +29,7 @@ public class BaseApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        StaticUtils.putDefaultTracks(getApplicationContext());
+//        StaticUtils.putDefaultTracks(getApplicationContext());
 
         netComponent = DaggerNetComponent.builder()
                 .appModule(new AppModule(this))

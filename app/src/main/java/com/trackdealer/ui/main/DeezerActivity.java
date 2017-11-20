@@ -181,7 +181,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         List<TrackInfo> trackList = SPlay.init().playList;
         if (SPlay.init().playingTrack != null) {
             for (int i = 0; i < trackList.size(); i++) {
-                if (trackList.get(i).getTrackId() == SPlay.init().playingTrack.getId()) {
+                if (trackList.get(i).getDeezerId() == SPlay.init().playingTrack.getId()) {
                     if (i + 1 < trackList.size()) {
                         choseTrackForPlay(trackList.get(i + 1), i + 1);
                         return;
@@ -225,7 +225,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     public void choseTrackForPlay(TrackInfo trackInfo, Integer pos) {
         Track playingTrack = SPlay.init().playingTrack;
         PlayerState playerState = trackPlayer.getPlayerState();
-        if (playingTrack != null && playingTrack.getId() == trackInfo.getTrackId()) {
+        if (playingTrack != null && playingTrack.getId() == trackInfo.getDeezerId()) {
             if (playerState == PlayerState.PLAYING)
                 trackPlayer.pause();
             else if (playerState == PlayerState.PAUSED)
@@ -239,7 +239,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                 startNotificationPlayer(trackInfo.getArtist(), trackInfo.getTitle(), false);
             }
             // меняем позицию индикатора
-            SPlay.init().playTrackId = trackInfo.getTrackId();
+            SPlay.init().playTrackId = trackInfo.getDeezerId();
             EventBus.getDefault().post(SPlay.init().playTrackId);
 
             // отображаем информацию о треке в плеере и кнопки
@@ -253,7 +253,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     public void loadSong(TrackInfo trackInfo) {
 
         if (ConnectionsManager.isConnected(this)) {
-            DeezerRequest request = DeezerRequestFactory.requestTrack(trackInfo.getTrackId());
+            DeezerRequest request = DeezerRequestFactory.requestTrack(trackInfo.getDeezerId());
             subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())

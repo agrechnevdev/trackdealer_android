@@ -1,13 +1,18 @@
 package com.trackdealer.net;
 
-import com.deezer.sdk.model.Genre;
+import com.trackdealer.models.RMessage;
+import com.trackdealer.models.TrackInfo;
+import com.trackdealer.models.User;
 
 import java.util.List;
 
 import io.reactivex.Observable;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Url;
+import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 /**
  * Restful сервис
@@ -16,7 +21,21 @@ import retrofit2.http.Url;
 
 public interface Restapi {
 
-    @GET()
-    Observable<Response<List<Genre>>> getGenres(@Url String url);
+    @POST("/users/register")
+    Observable<Response<RMessage>> register(@Body User user);
 
+    @GET("/users/login")
+    Observable<Response<RMessage>> login(@Query("username") String username, @Query("password") String password);
+
+    @POST("/tracks/change")
+    Observable<Response<TrackInfo>> changeFavTrack(@Body TrackInfo trackInfo);
+
+    @GET("/tracks/favtrack")
+    Observable<Response<TrackInfo>> getFavTrack();
+
+    @GET("/tracks/list")
+    Observable<Response<List<TrackInfo>>> getChartTracks(@Query("lastNum") Integer page, @Query("genre") String genre);
+
+    @GET("/tracks/like")
+    Observable<Response<ResponseBody>> like(@Query("deezerId") Long deezerId, @Query("like") Boolean like);
 }

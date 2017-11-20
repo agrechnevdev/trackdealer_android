@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+
 /**
  * Created by grechnev-av on 06.07.2017.
  */
@@ -125,6 +127,7 @@ public class Prefs {
      */
     public static void clearUserData(Context context) {
         context.getApplicationContext().getSharedPreferences("User-Cookie", Context.MODE_PRIVATE).edit().clear().apply();
+        context.getApplicationContext().getSharedPreferences(SHARED_FILENAME_USER_DATA, Context.MODE_PRIVATE).edit().clear().apply();
     }
 
     /**

@@ -7,6 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.deezer.sdk.network.request.event.DeezerError;
 import com.deezer.sdk.player.exception.DeezerPlayerException;
@@ -34,6 +35,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_LOG_ERROR;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_FORBIDDEN;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
 /**
  * Обработчик ошибок
@@ -101,6 +103,11 @@ public class ErrorHandler {
         snackbar.show();
     }
 
+   public static void showToast(Context context, String message) {
+        Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+        toast.show();
+    }
+
     public static String buildErrorDescription(Throwable throwable) {
         if (throwable instanceof IOException) {
             return DEFAULT_NETWORK_ERROR_MESSAGE;
@@ -127,6 +134,16 @@ public class ErrorHandler {
             case HTTP_FORBIDDEN:
                 element = element + "Доступ ограничен!";
                 return element;
+
+            case HTTP_INTERNAL_ERROR:
+                if(response.errorBody() != null)
+                    try {
+                        String errorMesage = response.errorBody().string();
+                        return errorMesage.replaceAll("[^А-Яа-яЁё ]", "");
+                    } catch (IOException e) {
+                        element = element + DEFAULT_ERROR_MESSAGE_SHORT;
+                        return element;
+                    }
 
             default:
                 try {

@@ -108,9 +108,9 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         holder.artist.setText(trackInfo.getArtist());
         holder.duration.setText(" " + trackInfo.getDuration());
 
-        if (trackInfo.getUser() != null) {
+        if (trackInfo.getUserNameLoad() != null) {
             holder.textUsername.setVisibility(View.VISIBLE);
-            holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUser().getUsername());
+            holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUserNameLoad());
         } else {
             holder.textUsername.setVisibility(View.GONE);
         }
@@ -124,8 +124,8 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
 
         if (!SPlay.init().favSongs) {
             holder.relLayLikeMain.setVisibility(View.VISIBLE);
-            holder.textDislike.setText(trackInfo.getDislikes().toString());
-            holder.textLike.setText(trackInfo.getLikes().toString());
+            holder.textDislike.setText(Long.toString(trackInfo.getCountDislike()));
+            holder.textLike.setText(Long.toString(trackInfo.getCountLike()));
             holder.relLayInfo.setOnLongClickListener(v -> {
                 iLongClickTrack.onLongClickTrack(trackInfos.get(holder.getAdapterPosition()));
                 return true;
@@ -133,18 +133,18 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
             fillNothing(holder);
             if (trackInfo.getUserLike() == null) {
                 holder.relLayLike.setOnClickListener(view -> {
-                    Integer newLike = trackInfo.getLikes() + 1;
-                    holder.textLike.setText(newLike.toString());
+                    Long newLike = trackInfo.getCountLike() + 1;
+                    holder.textLike.setText(Long.toString(newLike));
                     trackInfo.setUserLike(true);
                     fillLikes(holder);
-                    iTrackOperation.trackLike(trackInfo.getTrackId(), true);
+                    iTrackOperation.trackLike(trackInfo.getDeezerId(), true);
                 });
                 holder.relLayDislike.setOnClickListener(view -> {
-                    Integer newLike = trackInfo.getDislikes() + 1;
-                    holder.textDislike.setText(newLike.toString());
+                    Long newLike = trackInfo.getCountDislike() + 1;
+                    holder.textDislike.setText(Long.toString(newLike));
                     trackInfo.setUserLike(false);
                     fillDisLikes(holder);
-                    iTrackOperation.trackLike(trackInfo.getTrackId(), false);
+                    iTrackOperation.trackLike(trackInfo.getDeezerId(), false);
                 });
             } else if (trackInfo.getUserLike()) {
                 fillLikes(holder);
@@ -155,14 +155,14 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
             holder.relLayLikeMain.setVisibility(View.GONE);
         }
 
-        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getTrackId()) {
+        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
             Timber.d(TAG + " position VISIBLE " + position);
             holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
         } else {
             holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
         }
 
-        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getTrackId()) {
+        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
             Timber.d(TAG + " position VISIBLE " + position);
             holder.indicator.setVisibility(View.VISIBLE);
             holder.artistImage.setAlpha(0.3f);

@@ -105,7 +105,7 @@ public class MediaPlayerService extends Service {
         status = new Notification.Builder(this).build();
         status.contentView = views;
         status.flags = Notification.FLAG_AUTO_CANCEL;
-        status.icon = R.drawable.app_logo_2;
+        status.icon = R.drawable.app_logo_bold;
         status.deleteIntent = pendingIntent;
         mNotificationManager.notify(FOREGROUND_SERVICE, status);
     }

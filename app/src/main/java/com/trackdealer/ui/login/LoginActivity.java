@@ -2,17 +2,19 @@ package com.trackdealer.ui.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
+import com.trackdealer.models.RMessage;
 import com.trackdealer.models.User;
-import com.trackdealer.net.FakeRestApi;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.utils.ConnectionsManager;
@@ -26,6 +28,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -33,7 +36,6 @@ import retrofit2.Retrofit;
 import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_PASSWORD;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 public class LoginActivity extends BaseActivity {
@@ -65,38 +67,38 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Set<String> preferences = Prefs.getStringSet(this, "User-Cookie", "Cookies");
-//        if (preferences.isEmpty()) {
-        setContentView(R.layout.activity_login);
-        ((BaseApp) getApplication()).getNetComponent().inject(this);
-        restapi = retrofit.create(Restapi.class);
-        ButterKnife.bind(this);
+        subscription = new CompositeDisposable();
+        if (preferences.isEmpty()) {
+            setContentView(R.layout.activity_login);
+            ((BaseApp) getApplication()).getNetComponent().inject(this);
+            restapi = retrofit.create(Restapi.class);
+            ButterKnife.bind(this);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(R.string.singin);
-        }
-        initSubscribtion();
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(R.string.singin);
+            }
+            initSubscribtion();
 //        getMetrics();
 //        Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.login_background);
 //        imageView.setImageBitmap(bitmapTransform.transform(background));
 
-//        } else {
-//            Intent intent = new Intent(getApplicationContext(), CoreActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
+        } else {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     public void initSubscribtion() {
-        subscription = new CompositeDisposable();
 
-//        subscription.add(Observable.combineLatest(
-//                RxTextView.textChanges(textLogin).observeOn(AndroidSchedulers.mainThread()),
-//                RxTextView.textChanges(textPassword).observeOn(AndroidSchedulers.mainThread()),
-//               (register, pass) -> !TextUtils.isEmpty(register) && !TextUtils.isEmpty(pass))
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribeOn(Schedulers.io())
-//                        .subscribe(this::buttonEnabledState)
-//        );
+        subscription.add(Observable.combineLatest(
+                RxTextView.textChanges(textLogin).observeOn(AndroidSchedulers.mainThread()),
+                RxTextView.textChanges(textPassword).observeOn(AndroidSchedulers.mainThread()),
+                (register, pass) -> !TextUtils.isEmpty(register) && !TextUtils.isEmpty(pass))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::buttonEnabledState)
+        );
     }
 
     public void buttonEnabledState(boolean enabled) {
@@ -119,37 +121,36 @@ public class LoginActivity extends BaseActivity {
     void login() {
 
         if (ConnectionsManager.isOnline(this)) {
-            subscription.add(FakeRestApi.login(this, textLogin.getText().toString(), textPassword.getText().toString())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(response -> {
-                                Timber.e(TAG + " register response code: " + response.code());
-                                if (response.isSuccessful()) {
-                                    loginSuccess();
-                                } else {
-                                    ErrorHandler.showSnackbarError(layMain, ErrorHandler.getErrorMessageFromResponse(response));
-                                    hideProgressBar();
-                                }
-                            },
-                            ex -> {
-                                Timber.e(ex, TAG + " register onError() " + ex.getMessage());
-                                ErrorHandler.showSnackbarError(layMain, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
-                                hideProgressBar();
-                            }
-                    ));
+            subscription.add(
+//                    FakeRestApi.login(this, textLogin.getText().toString(), textPassword.getText().toString())
+                    restapi.login(textLogin.getText().toString(), textPassword.getText().toString())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(response -> {
+                                        Timber.e(TAG + " register response code: " + response.code());
+                                        if (response.isSuccessful()) {
+                                            loginSuccess(response.body());
+                                        } else {
+                                            ErrorHandler.showSnackbarError(layMain, ErrorHandler.getErrorMessageFromResponse(response));
+                                            hideProgressBar();
+                                        }
+                                    },
+                                    ex -> {
+                                        Timber.e(ex, TAG + " register onError() " + ex.getMessage());
+                                        ErrorHandler.showSnackbarError(layMain, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                        hideProgressBar();
+                                    }
+                            ));
         } else {
             hideProgressBar();
             ErrorHandler.showSnackbarError(layMain, ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
         }
     }
 
-    public void loginSuccess() {
+    public void loginSuccess(RMessage rMessage) {
         hideProgressBar();
-        if(textLogin.getText().toString().contains("super"))
-            Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(100, textLogin.getText().toString(), "TRACKDEALER"));
-        else
-            Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(100, textLogin.getText().toString(), "TRACKLISTENER"));
-        Prefs.putString(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_PASSWORD, textPassword.getText().toString());
+        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(textLogin.getText().toString(), null, rMessage.getMessage()));
+//        Prefs.putString(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_PASSWORD, textPassword.getText().toString());
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();

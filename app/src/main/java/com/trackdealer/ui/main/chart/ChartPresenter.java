@@ -3,10 +3,13 @@ package com.trackdealer.ui.main.chart;
 import android.content.Context;
 
 import com.trackdealer.base.BasePresenter;
-import com.trackdealer.net.FakeRestApi;
+import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -43,16 +46,20 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         subscription.dispose();
     }
 
-    void loadTrackList(String genre){
+    void loadTrackList(Integer lastNum, String genre){
         if (ConnectionsManager.isOnline(context)) {
-            subscription.add(FakeRestApi.getChartTrack(context, genre)
+            subscription.add(
+                    restapi.getChartTracks(lastNum, genre)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                             response -> {
                                 Timber.e(TAG + " loadTrackList response code: " + response.code());
                                 if (response.isSuccessful()) {
-                                    chartView.loadTrackListSuccess(response.body());
+                                    List<TrackInfo> list = response.body();
+                                    if(response.body() == null)
+                                        list = new ArrayList<>();
+                                    chartView.loadTrackListSuccess(list);
                                 } else {
                                     chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
                                 }
@@ -69,7 +76,8 @@ public class ChartPresenter extends BasePresenter<ChartView> {
 
     void trackLike(long trackId, Boolean like){
         if (ConnectionsManager.isOnline(context)) {
-            subscription.add(FakeRestApi.trackLike(context, trackId, like)
+            subscription.add(
+                    restapi.like(trackId, like)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(

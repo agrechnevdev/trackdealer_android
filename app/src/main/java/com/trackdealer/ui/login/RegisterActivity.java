@@ -14,13 +14,11 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
-import com.trackdealer.net.FakeRestApi;
+import com.trackdealer.models.RMessage;
+import com.trackdealer.models.User;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
-import com.trackdealer.utils.Prefs;
-
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -77,8 +75,6 @@ public class RegisterActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Set<String> preferences = Prefs.getStringSet(this, "User-Cookie", "Cookies");
-//        if (preferences.isEmpty()) {
         setContentView(R.layout.activity_register);
         ((BaseApp) getApplication()).getNetComponent().inject(this);
         restapi = retrofit.create(Restapi.class);
@@ -87,15 +83,6 @@ public class RegisterActivity extends BaseActivity {
             getSupportActionBar().setTitle(R.string.registration);
         }
         initSubscribtion();
-//        getMetrics();
-//        Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.login_background);
-//        imageView.setImageBitmap(bitmapTransform.transform(background));
-
-//        } else {
-//            Intent intent = new Intent(getApplicationContext(), CoreActivity.class);
-//            startActivity(intent);
-//            finish();
-//        }
     }
 
     public void initSubscribtion() {
@@ -153,14 +140,19 @@ public class RegisterActivity extends BaseActivity {
     void register() {
 
         if (ConnectionsManager.isOnline(this)) {
-            subscription.add(FakeRestApi.register(this, textLogin.getText().toString(), textPassword.getText().toString(),
-                    textName.getText().toString(), textEmail.getText().toString())
+
+            User user = new User(textLogin.getText().toString(),
+                    textPassword.getText().toString(),
+                    textEmail.getText().toString(),
+                    textName.getText().toString());
+            subscription.add(
+                    restapi.register(user)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(response -> {
                                 Timber.e(TAG + " register response code: " + response.code());
                                 if (response.isSuccessful()) {
-                                    registerSuccess();
+                                    registerSuccess(response.body());
                                 } else {
                                     ErrorHandler.showSnackbarError(layMain, ErrorHandler.getErrorMessageFromResponse(response));
                                     hideProgressBar();
@@ -178,7 +170,8 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
-    public void registerSuccess() {
+    public void registerSuccess(RMessage rMessage) {
+        ErrorHandler.showToast(this, rMessage.getMessage());
         hideProgressBar();
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

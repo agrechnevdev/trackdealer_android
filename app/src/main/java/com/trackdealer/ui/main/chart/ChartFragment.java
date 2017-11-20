@@ -191,7 +191,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     public void loadTrackListStart(String genre) {
         swipeLay.setRefreshing(true);
-        chartPresenter.loadTrackList(genre);
+        chartPresenter.loadTrackList(0, genre);
     }
 
     @Override
@@ -207,13 +207,14 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void loadTrackListFailed(String error) {
-
+        ErrorHandler.showToast(getActivity(), error);
+        swipeLay.setRefreshing(false);
     }
 
     @Override
     public void onLongClickTrack(TrackInfo trackInfo) {
         swipeLay.setRefreshing(true);
-        DeezerRequest request = DeezerRequestFactory.requestCurrentUserAddTrack(trackInfo.getTrackId());
+        DeezerRequest request = DeezerRequestFactory.requestCurrentUserAddTrack(trackInfo.getDeezerId());
         subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())

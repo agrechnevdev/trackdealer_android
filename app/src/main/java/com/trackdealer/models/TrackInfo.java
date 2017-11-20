@@ -1,8 +1,6 @@
 package com.trackdealer.models;
 
-import com.deezer.sdk.model.Genre;
-
-import java.util.Random;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by grechnev-av on 29.08.2017.
@@ -10,38 +8,52 @@ import java.util.Random;
 
 public class TrackInfo {
 
-    private long trackId;
+    @SerializedName("id")
+    private Long id;
+    @SerializedName("userLoadId")
+    private Long userLoadId;
+    @SerializedName("deezerId")
+    private Long deezerId;
+    @SerializedName("title")
     private String title;
+    @SerializedName("artist")
     private String artist;
+    @SerializedName("duration")
     private Integer duration;
+    @SerializedName("genre")
+    private String genre;
+    @SerializedName("coverImage")
     private String coverImage;
-
-    private Integer likes;
-    private Integer dislikes;
+    @SerializedName("finished")
+    private Boolean finished;
+    @SerializedName("countLike")
+    private Long countLike;
+    @SerializedName("countDislike")
+    private Long countDislike;
 
     private Boolean userLike;
-
-    private User user;
+    private String userNameLoad;
     private long albumId;
-    private Genre genre;
 
-    public TrackInfo(long trackId, String title, String artist, Integer duration, String coverImage, long albumId) {
-        this.trackId = trackId;
+    public TrackInfo(Long deezerId, String title, String artist, Integer duration, String coverImage, long albumId) {
+        this.deezerId = deezerId;
         this.title = title;
         this.artist = artist;
         this.duration = duration;
         this.coverImage = coverImage;
-        likes = new Random().nextInt(10000);
-        dislikes = new Random().nextInt(10000);
+//        likes = new Random().nextInt(10000);
+//        dislikes = new Random().nextInt(10000);
+        countLike = 0L;
+        countDislike = 0L;
         this.albumId = albumId;
     }
 
-    public long getTrackId() {
-        return trackId;
+    public Long getDeezerId() {
+        return deezerId;
     }
 
-    public void setTrackId(long trackId) {
-        this.trackId = trackId;
+    public void setDeezerId(long deezerId) {
+        this.deezerId = deezerId;
     }
 
     public String getTitle() {
@@ -77,20 +89,28 @@ public class TrackInfo {
         this.duration = duration;
     }
 
-    public Integer getLikes() {
-        return likes;
+    public Long getId() {
+        return id;
     }
 
-    public void setLikes(Integer likes) {
-        this.likes = likes;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Integer getDislikes() {
-        return dislikes;
+    public Long getUserLoadId() {
+        return userLoadId;
     }
 
-    public void setDislikes(Integer dislikes) {
-        this.dislikes = dislikes;
+    public void setUserLoadId(Long userLoadId) {
+        this.userLoadId = userLoadId;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public String getCoverImage() {
@@ -101,12 +121,28 @@ public class TrackInfo {
         this.coverImage = coverImage;
     }
 
-    public User getUser() {
-        return user;
+    public Boolean getFinished() {
+        return finished;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
+    }
+
+    public Long getCountLike() {
+        return countLike;
+    }
+
+    public void setCountLike(Long countLike) {
+        this.countLike = countLike;
+    }
+
+    public Long getCountDislike() {
+        return countDislike;
+    }
+
+    public void setCountDislike(Long countDislike) {
+        this.countDislike = countDislike;
     }
 
     public Boolean getUserLike() {
@@ -117,12 +153,12 @@ public class TrackInfo {
         this.userLike = userLike;
     }
 
-    public Genre getGenre() {
-        return genre;
+    public String getUserNameLoad() {
+        return userNameLoad;
     }
 
-    public void setGenre(Genre genre) {
-        this.genre = genre;
+    public void setUserNameLoad(String userNameLoad) {
+        this.userNameLoad = userNameLoad;
     }
 
     public long getAlbumId() {
@@ -131,5 +167,9 @@ public class TrackInfo {
 
     public void setAlbumId(long albumId) {
         this.albumId = albumId;
+    }
+
+    public void setDeezerId(Long deezerId) {
+        this.deezerId = deezerId;
     }
 }

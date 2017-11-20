@@ -3,7 +3,6 @@ package com.trackdealer.ui.main.favour;
 import android.content.Context;
 
 import com.trackdealer.base.BasePresenter;
-import com.trackdealer.net.FakeRestApi;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
@@ -45,7 +44,8 @@ public class FavourPresenter extends BasePresenter<FavourView> {
 
     void loadFavourTrack(){
         if (ConnectionsManager.isOnline(context)) {
-            subscription.add(FakeRestApi.getFavouriteTrack(context)
+            subscription.add(
+                    restapi.getFavTrack()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(
