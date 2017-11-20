@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ChartView extends BaseView{
 
-    void loadTrackListSuccess(List<TrackInfo> list);
+    void loadTrackListSuccess(int offset, List<TrackInfo> list);
 
     void loadTrackListFailed(String error);
 

@@ -59,7 +59,7 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                                     List<TrackInfo> list = response.body();
                                     if(response.body() == null)
                                         list = new ArrayList<>();
-                                    chartView.loadTrackListSuccess(list);
+                                    chartView.loadTrackListSuccess(lastNum, list);
                                 } else {
                                     chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
                                 }

@@ -34,7 +34,7 @@ public interface Restapi {
     Observable<Response<TrackInfo>> getFavTrack();
 
     @GET("/tracks/list")
-    Observable<Response<List<TrackInfo>>> getChartTracks(@Query("lastNum") Integer page, @Query("genre") String genre);
+    Observable<Response<List<TrackInfo>>> getChartTracks(@Query("lastNum") Integer lastNum, @Query("genre") String genre);
 
     @GET("/tracks/like")
     Observable<Response<ResponseBody>> like(@Query("deezerId") Long deezerId, @Query("like") Boolean like);

@@ -35,6 +35,9 @@ public class TrackInfo {
     private String userNameLoad;
     private long albumId;
 
+    public TrackInfo() {
+    }
+
     public TrackInfo(Long deezerId, String title, String artist, Integer duration, String coverImage, long albumId) {
         this.deezerId = deezerId;
         this.title = title;

@@ -31,7 +31,7 @@ import timber.log.Timber;
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
 
-public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> {
+public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final String TAG = "ChartAdapter ";
     private List<TrackInfo> trackInfos;
@@ -42,7 +42,12 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
     ILongClickTrack iLongClickTrack;
     ITrackOperation iTrackOperation;
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public final int TYPE_TRACK = 0;
+    public final int TYPE_LOAD = 1;
+    OnLoadMoreListener loadMoreListener;
+    boolean isLoading = false, isMoreDataAvailable = true;
+
+    class TrackViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.item_chart_lay_main)
         RelativeLayout relLayMain;
@@ -75,7 +80,15 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         @Bind(R.id.layout_like_text_like)
         TextView textLike;
 
-        ViewHolder(View v) {
+        TrackViewHolder(View v) {
+            super(v);
+            ButterKnife.bind(this, v);
+        }
+    }
+
+    class LoadViewHolder extends RecyclerView.ViewHolder{
+
+        LoadViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
         }
@@ -88,87 +101,109 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         this.iLongClickTrack = iLongClickTrack;
         this.iTrackOperation = iTrackOperation;
         this.chosenTrackInfo = Prefs.getTrackInfo(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE);
-
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public int getItemViewType(int position) {
+        if(trackInfos.get(position).getDeezerId() != null){
+            return TYPE_TRACK;
+        }else{
+            return TYPE_LOAD;
+        }
+    }
+
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Timber.d(TAG + " onCreateViewHolder ");
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_chart, parent, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        if (viewType == TYPE_TRACK) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_chart, parent, false);
+            return new TrackViewHolder(v);
+        } else {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.progressbar, parent, false);
+            return new LoadViewHolder(v);
+        }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Timber.d(TAG + " onBindViewHolder " + position);
-        TrackInfo trackInfo = trackInfos.get(position);
-        holder.title.setText(trackInfo.getTitle());
-        holder.artist.setText(trackInfo.getArtist());
-        holder.duration.setText(" " + trackInfo.getDuration());
-
-        if (trackInfo.getUserNameLoad() != null) {
-            holder.textUsername.setVisibility(View.VISIBLE);
-            holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUserNameLoad());
-        } else {
-            holder.textUsername.setVisibility(View.GONE);
+        if (position >= getItemCount() - 1 && isMoreDataAvailable && !isLoading && loadMoreListener != null) {
+            isLoading = true;
+            loadMoreListener.onLoadMore();
         }
-//        holder.textPosition.setText(Integer.toString(position+1));
-        Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(holder.artistImage);
-        holder.relLayInfo.setOnClickListener(view -> {
-            SPlay.init().playList.clear();
-            SPlay.init().playList.addAll(SPlay.init().showList);
-            iChoseTrack.choseTrackForPlay(trackInfos.get(holder.getAdapterPosition()), holder.getAdapterPosition());
-        });
 
-        if (!SPlay.init().favSongs) {
-            holder.relLayLikeMain.setVisibility(View.VISIBLE);
-            holder.textDislike.setText(Long.toString(trackInfo.getCountDislike()));
-            holder.textLike.setText(Long.toString(trackInfo.getCountLike()));
-            holder.relLayInfo.setOnLongClickListener(v -> {
-                iLongClickTrack.onLongClickTrack(trackInfos.get(holder.getAdapterPosition()));
-                return true;
-            });
-            fillNothing(holder);
-            if (trackInfo.getUserLike() == null) {
-                holder.relLayLike.setOnClickListener(view -> {
-                    Long newLike = trackInfo.getCountLike() + 1;
-                    holder.textLike.setText(Long.toString(newLike));
-                    trackInfo.setUserLike(true);
-                    fillLikes(holder);
-                    iTrackOperation.trackLike(trackInfo.getDeezerId(), true);
-                });
-                holder.relLayDislike.setOnClickListener(view -> {
-                    Long newLike = trackInfo.getCountDislike() + 1;
-                    holder.textDislike.setText(Long.toString(newLike));
-                    trackInfo.setUserLike(false);
-                    fillDisLikes(holder);
-                    iTrackOperation.trackLike(trackInfo.getDeezerId(), false);
-                });
-            } else if (trackInfo.getUserLike()) {
-                fillLikes(holder);
+        if (getItemViewType(position) == TYPE_TRACK) {
+            TrackInfo trackInfo = trackInfos.get(position);
+            TrackViewHolder trackViewHolder = (TrackViewHolder) holder;
+            trackViewHolder.title.setText(trackInfo.getTitle());
+            trackViewHolder.artist.setText(trackInfo.getArtist());
+            trackViewHolder.duration.setText(" " + trackInfo.getDuration());
+
+            if (trackInfo.getUserNameLoad() != null) {
+                trackViewHolder.textUsername.setVisibility(View.VISIBLE);
+                trackViewHolder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUserNameLoad());
             } else {
-                fillDisLikes(holder);
+                trackViewHolder.textUsername.setVisibility(View.GONE);
             }
-        } else {
-            holder.relLayLikeMain.setVisibility(View.GONE);
-        }
+//        holder.textPosition.setText(Integer.toString(position+1));
+            Picasso.with(context).load(trackInfo.getCoverImage()).placeholder(R.drawable.empty_cover).into(trackViewHolder.artistImage);
+            trackViewHolder.relLayInfo.setOnClickListener(view -> {
+                SPlay.init().playList.clear();
+                SPlay.init().playList.addAll(SPlay.init().showList);
+                iChoseTrack.choseTrackForPlay(trackInfos.get(trackViewHolder.getAdapterPosition()), trackViewHolder.getAdapterPosition());
+            });
 
-        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
-            Timber.d(TAG + " position VISIBLE " + position);
-            holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
-        } else {
-            holder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
-        }
+            if (!SPlay.init().favSongs) {
+                trackViewHolder.relLayLikeMain.setVisibility(View.VISIBLE);
+                trackViewHolder.textDislike.setText(Long.toString(trackInfo.getCountDislike()));
+                trackViewHolder.textLike.setText(Long.toString(trackInfo.getCountLike()));
+                trackViewHolder.relLayInfo.setOnLongClickListener(v -> {
+                    iLongClickTrack.onLongClickTrack(trackInfos.get(trackViewHolder.getAdapterPosition()));
+                    return true;
+                });
+                fillNothing(trackViewHolder);
+                if (trackInfo.getUserLike() == null) {
+                    trackViewHolder.relLayLike.setOnClickListener(view -> {
+                        Long newLike = trackInfo.getCountLike() + 1;
+                        trackViewHolder.textLike.setText(Long.toString(newLike));
+                        trackInfo.setUserLike(true);
+                        fillLikes(trackViewHolder);
+                        iTrackOperation.trackLike(trackInfo.getDeezerId(), true);
+                    });
+                    trackViewHolder.relLayDislike.setOnClickListener(view -> {
+                        Long newLike = trackInfo.getCountDislike() + 1;
+                        trackViewHolder.textDislike.setText(Long.toString(newLike));
+                        trackInfo.setUserLike(false);
+                        fillDisLikes(trackViewHolder);
+                        iTrackOperation.trackLike(trackInfo.getDeezerId(), false);
+                    });
+                } else if (trackInfo.getUserLike()) {
+                    fillLikes(trackViewHolder);
+                } else {
+                    fillDisLikes(trackViewHolder);
+                }
+            } else {
+                trackViewHolder.relLayLikeMain.setVisibility(View.GONE);
+            }
 
-        if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
-            Timber.d(TAG + " position VISIBLE " + position);
-            holder.indicator.setVisibility(View.VISIBLE);
-            holder.artistImage.setAlpha(0.3f);
-        } else {
-            holder.indicator.setVisibility(View.GONE);
-            holder.artistImage.setAlpha(1f);
+            if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
+                Timber.d(TAG + " position VISIBLE " + position);
+                trackViewHolder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
+            } else {
+                trackViewHolder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
+            }
+
+            if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
+                Timber.d(TAG + " position VISIBLE " + position);
+                trackViewHolder.indicator.setVisibility(View.VISIBLE);
+                trackViewHolder.artistImage.setAlpha(0.3f);
+            } else {
+                trackViewHolder.indicator.setVisibility(View.GONE);
+                trackViewHolder.artistImage.setAlpha(1f);
+            }
         }
     }
 
@@ -188,21 +223,21 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         return trackInfos.size();
     }
 
-    private void fillLikes(ViewHolder holder) {
+    private void fillLikes(TrackViewHolder holder) {
         int colorOrange = context.getResources().getColor(R.color.colorOrange);
         holder.imageLike.setColorFilter(colorOrange);
         holder.textLike.setTextColor(colorOrange);
         clickableLikes(holder, false);
     }
 
-    private void fillDisLikes(ViewHolder holder) {
+    private void fillDisLikes(TrackViewHolder holder) {
         int colorAccent = context.getResources().getColor(R.color.colorAccent);
         holder.imageDislike.setColorFilter(colorAccent);
         holder.textDislike.setTextColor(colorAccent);
         clickableLikes(holder, false);
     }
 
-    private void fillNothing(ViewHolder holder) {
+    private void fillNothing(TrackViewHolder holder) {
         int color = context.getResources().getColor(R.color.colorGrey);
         holder.imageLike.setColorFilter(color);
         holder.textLike.setTextColor(color);
@@ -212,9 +247,29 @@ public class ChartAdapter extends RecyclerView.Adapter<ChartAdapter.ViewHolder> 
         clickableLikes(holder, true);
     }
 
-    private void clickableLikes(ViewHolder holder, boolean clickable) {
+    private void clickableLikes(TrackViewHolder holder, boolean clickable) {
         holder.relLayLike.setClickable(clickable);
         holder.relLayDislike.setClickable(clickable);
     }
 
+    public void setMoreDataAvailable(boolean moreDataAvailable) {
+        isMoreDataAvailable = moreDataAvailable;
+    }
+
+    /* notifyDataSetChanged is final method so we can't override it
+         call adapter.notifyDataChanged(); after update the list
+         */
+    public void notifyDataChanged(){
+        notifyDataSetChanged();
+        isLoading = false;
+    }
+
+
+    public interface OnLoadMoreListener{
+        void onLoadMore();
+    }
+
+    public void setLoadMoreListener(OnLoadMoreListener loadMoreListener) {
+        this.loadMoreListener = loadMoreListener;
+    }
 }

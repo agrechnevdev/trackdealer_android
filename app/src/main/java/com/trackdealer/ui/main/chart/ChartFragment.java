@@ -101,12 +101,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     DeezerConnect mDeezerConnect = null;
     LinearLayoutManager layoutManager;
 
-    private int previousTotal = 0;
-    private boolean loading = true;
-    private int visibleThreshold = 5;
-    int firstVisibleItem, visibleItemCount, totalItemCount;
-    InfiniteScrollListener infiniteScrollListener;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Timber.d(TAG + "onCreateView()");
@@ -128,23 +122,26 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         } else {
             textFilter.setText(genre);
         }
-        if (SPlay.init().showList == null || SPlay.init().showList.isEmpty()) {
-            loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
-        }
 
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         mTracksAdapter = new ChartAdapter(SPlay.init().showList, getActivity().getApplicationContext(), iChoseTrack, this, this);
-        recyclerView.setAdapter(mTracksAdapter);
-//        recyclerView.addItemDecoration(new SpacesItemDecorator(20));
+        mTracksAdapter.setLoadMoreListener(() -> {
+            recyclerView.post(() -> loadMoreTracks(SPlay.init().showList.size(), genre));
+        });
 
-        infiniteScrollListener = new InfiniteScrollListener();
+        recyclerView.setAdapter(mTracksAdapter);
+
+        loadTrackListStart(SPlay.init().showList.size(), Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+//        if (SPlay.init().showList == null || SPlay.init().showList.isEmpty()) {
+//            loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+//        }
         changeShowListState(SPlay.init().favSongs);
 
         swipeLay.setOnRefreshListener(this);
         swipeLay.setColorSchemeResources(R.color.colorAccent);
 
-        if(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER"))
+        if (Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER"))
             relLayHelpPanel.setVisibility(View.VISIBLE);
         else
             relLayHelpPanel.setVisibility(View.GONE);
@@ -189,20 +186,46 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     }
 
-    public void loadTrackListStart(String genre) {
+    public void loadTrackListStart(int lastNum, String genre) {
         swipeLay.setRefreshing(true);
-        chartPresenter.loadTrackList(0, genre);
+        mTracksAdapter.setMoreDataAvailable(true);
+        if (!SPlay.init().favSongs) {
+            chartPresenter.loadTrackList(lastNum, genre);
+        } else {
+            loadFavSongsStart(lastNum);
+        }
+    }
+
+    public void loadMoreTracks(int lastNum, String genre) {
+        Timber.d(TAG + " loadMoreTracks lastNum = " + lastNum);
+        SPlay.init().showList.add(new TrackInfo());
+        mTracksAdapter.notifyItemInserted(SPlay.init().showList.size() - 1);
+        if (!SPlay.init().favSongs) {
+            chartPresenter.loadTrackList(lastNum, genre);
+        } else {
+            loadFavSongsStart(lastNum);
+        }
     }
 
     @Override
-    public void loadTrackListSuccess(List<TrackInfo> list) {
+    public void loadTrackListSuccess(int lastNum, List<TrackInfo> list) {
+        Timber.d(TAG + " loadTrackListSuccess lastNum = " + lastNum + " listSize = " + list.size());
         swipeLay.setRefreshing(false);
-        SPlay.init().showList = list;
-        SPlay.init().favSongs = false;
-        iProvideTrackList.updatePosIndicator();
-        if (mTracksAdapter != null) {
-            mTracksAdapter.updateAdapter(list);
+
+        if (lastNum == 0) {
+            SPlay.init().showList.clear();
+        } else {
+            SPlay.init().showList.remove(SPlay.init().showList.size() - 1);
         }
+
+        iProvideTrackList.updatePosIndicator();
+        if (list.size() > 0) {
+            SPlay.init().showList.addAll(list);
+        } else {
+            mTracksAdapter.setMoreDataAvailable(false);
+            Toast.makeText(getActivity(), "Крути вверх, здесь всё закончилось", Toast.LENGTH_LONG).show();
+        }
+        mTracksAdapter.notifyDataChanged();
     }
 
     @Override
@@ -236,53 +259,40 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @OnClick(R.id.fragment_chart_but_deezer_fav_tracks_back)
     public void clickDeezerFavTracks() {
-        previousTotal = 0;
-        if (!SPlay.init().favSongs) {
-            changeShowListState(true);
-            loadFavSongsStart("0");
+        SPlay.init().favSongs = !SPlay.init().favSongs;
+        changeShowListState(SPlay.init().favSongs);
+        if (SPlay.init().favSongs) {
+
+            loadFavSongsStart(0);
         } else {
-            changeShowListState(false);
-            loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+            loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
         }
     }
 
-    public void loadFavSongsStart(String index) {
-        Timber.d(TAG + " loadFavSongsStart " + index );
+    public void loadFavSongsStart(Integer index) {
         swipeLay.setRefreshing(true);
-        if(index.equals("0"))
-            SPlay.init().showList.clear();
+        Timber.d(TAG + " loadFavSongsStart " + index);
         DeezerRequest request = DeezerRequestFactory.requestCurrentUserTracks();
         request.addParam("access_token", mDeezerConnect.getAccessToken());
-        request.addParam("index", index);
+        request.addParam("index", index.toString());
         subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(obj -> {
-                            SPlay.init().showList.addAll(StaticUtils.fromListTracks((List<Track>) obj));
-                            SPlay.init().favSongs = true;
-                            if (mTracksAdapter != null) {
-                                mTracksAdapter.updateAdapter(SPlay.init().showList);
-                            }
-                            swipeLay.setRefreshing(false);
-                        },
+                .subscribe(obj -> loadTrackListSuccess(index, StaticUtils.fromListTracks((List<Track>) obj)),
                         ex -> {
                             swipeLay.setRefreshing(false);
-                            changeShowListState(false);
                             ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", (Exception) ex, ((dialog, which) -> loadFavSongsStart(index)));
                         }
                 ));
     }
 
     public void changeShowListState(boolean favSongs) {
-        SPlay.init().favSongs = favSongs;
         if (favSongs) {
             linLayFilter.setVisibility(View.GONE);
             imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorOrange));
-            recyclerView.addOnScrollListener(infiniteScrollListener);
         } else {
             linLayFilter.setVisibility(View.VISIBLE);
             imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorAccent));
-            recyclerView.removeOnScrollListener(infiniteScrollListener);
         }
     }
 
@@ -317,7 +327,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void filterGenreClickStart() {
         String genre = Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER);
         textFilter.setText(genre);
-        loadTrackListStart(genre);
+        loadTrackListStart(0, genre);
     }
 
     @Override
@@ -330,36 +340,9 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        previousTotal = 0;
         if (SPlay.init().favSongs)
-            loadFavSongsStart("0");
+            loadFavSongsStart(0);
         else
-            loadTrackListStart(Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
-    }
-
-    public class InfiniteScrollListener extends RecyclerView.OnScrollListener {
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-
-            visibleItemCount = recyclerView.getChildCount();
-            totalItemCount = layoutManager.getItemCount();
-            firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-
-            if (loading) {
-                if (totalItemCount > previousTotal) {
-                    loading = false;
-                    previousTotal = totalItemCount;
-                }
-            }
-            if (!loading && (totalItemCount - visibleItemCount)
-                    <= (firstVisibleItem + visibleThreshold)) {
-                if(SPlay.init().favSongs && SPlay.init().showList.size() % 25 == 0) {
-                    loadFavSongsStart(String.valueOf(SPlay.init().showList.size()));
-                }
-                loading = true;
-            }
-        }
+            loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
     }
 }
