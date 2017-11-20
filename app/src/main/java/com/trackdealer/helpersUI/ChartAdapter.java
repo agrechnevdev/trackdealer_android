@@ -122,7 +122,7 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return new TrackViewHolder(v);
         } else {
             View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.progressbar, parent, false);
+                    .inflate(R.layout.progress_visible, parent, false);
             return new LoadViewHolder(v);
         }
     }

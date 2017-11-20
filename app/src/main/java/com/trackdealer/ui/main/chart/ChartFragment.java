@@ -262,7 +262,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         SPlay.init().favSongs = !SPlay.init().favSongs;
         changeShowListState(SPlay.init().favSongs);
         if (SPlay.init().favSongs) {
-
             loadFavSongsStart(0);
         } else {
             loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
@@ -340,9 +339,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        if (SPlay.init().favSongs)
-            loadFavSongsStart(0);
-        else
-            loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+        loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
     }
 }
