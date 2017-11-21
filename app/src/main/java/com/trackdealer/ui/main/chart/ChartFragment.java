@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deezer.sdk.model.Genre;
-import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
@@ -93,6 +92,13 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Bind(R.id.fragment_chart_but_deezer_fav_tracks_back)
     ImageView imageViewFavSongsBack;
 
+    @Bind(R.id.empty_recycler)
+    RelativeLayout relLayEmpty;
+
+    @Bind(R.id.empty_recycler_text_empty)
+    TextView textEmpty;
+
+
     ChartAdapter mTracksAdapter;
 
     IChoseTrack iChoseTrack;
@@ -115,7 +121,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
         subscription = new CompositeDisposable();
 
-        String genre = Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER);
+        String genre = Prefs.genre(getContext());
         if (TextUtils.isEmpty(genre)) {
             Prefs.putString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER, "Все");
             textFilter.setText("Все");
@@ -127,12 +133,12 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         recyclerView.setLayoutManager(layoutManager);
         mTracksAdapter = new ChartAdapter(SPlay.init().showList, getActivity().getApplicationContext(), iChoseTrack, this, this);
         mTracksAdapter.setLoadMoreListener(() -> {
-            recyclerView.post(() -> loadMoreTracks(SPlay.init().showList.size(), genre));
+            recyclerView.post(() -> loadMoreTracks(SPlay.init().showList.size(), Prefs.genre(getContext())));
         });
 
         recyclerView.setAdapter(mTracksAdapter);
 
-        loadTrackListStart(SPlay.init().showList.size(), Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+        loadTrackListStart(SPlay.init().showList.size(), Prefs.genre(getContext()));
 //        if (SPlay.init().showList == null || SPlay.init().showList.isEmpty()) {
 //            loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
 //        }
@@ -192,7 +198,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         if (!SPlay.init().favSongs) {
             chartPresenter.loadTrackList(lastNum, genre);
         } else {
-            loadFavSongsStart(lastNum);
+            chartPresenter.loadFavSongs(lastNum, mDeezerConnect);
         }
     }
 
@@ -203,14 +209,13 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         if (!SPlay.init().favSongs) {
             chartPresenter.loadTrackList(lastNum, genre);
         } else {
-            loadFavSongsStart(lastNum);
+            chartPresenter.loadFavSongs(lastNum, mDeezerConnect);
         }
     }
 
     @Override
     public void loadTrackListSuccess(int lastNum, List<TrackInfo> list) {
         Timber.d(TAG + " loadTrackListSuccess lastNum = " + lastNum + " listSize = " + list.size());
-        swipeLay.setRefreshing(false);
 
         if (lastNum == 0) {
             SPlay.init().showList.clear();
@@ -218,20 +223,34 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
             SPlay.init().showList.remove(SPlay.init().showList.size() - 1);
         }
 
-        iProvideTrackList.updatePosIndicator();
-        if (list.size() > 0) {
-            SPlay.init().showList.addAll(list);
-        } else {
+        if (list.isEmpty()) {
             mTracksAdapter.setMoreDataAvailable(false);
-            Toast.makeText(getActivity(), "Крути вверх, здесь всё закончилось", Toast.LENGTH_LONG).show();
+        } else {
+            SPlay.init().showList.addAll(list);
         }
         mTracksAdapter.notifyDataChanged();
+        iProvideTrackList.updatePosIndicator();
+
+        if (SPlay.init().showList.isEmpty()) {
+            relLayEmpty.setVisibility(View.VISIBLE);
+            textEmpty.setText("Список пуст");
+        } else {
+            relLayEmpty.setVisibility(View.GONE);
+        }
+        swipeLay.setRefreshing(false);
     }
 
     @Override
     public void loadTrackListFailed(String error) {
-        ErrorHandler.showToast(getActivity(), error);
         swipeLay.setRefreshing(false);
+        ErrorHandler.showToast(getContext(), error);
+    }
+
+    @Override
+    public void loadTrackListFailed(Exception ex, int lastNum) {
+        if (lastNum == 0)
+            swipeLay.setRefreshing(false);
+        ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", ex, ((dialog, which) -> loadTrackListStart(lastNum, Prefs.genre(getContext()))));
     }
 
     @Override
@@ -261,28 +280,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void clickDeezerFavTracks() {
         SPlay.init().favSongs = !SPlay.init().favSongs;
         changeShowListState(SPlay.init().favSongs);
-        if (SPlay.init().favSongs) {
-            loadFavSongsStart(0);
-        } else {
-            loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
-        }
-    }
-
-    public void loadFavSongsStart(Integer index) {
-        swipeLay.setRefreshing(true);
-        Timber.d(TAG + " loadFavSongsStart " + index);
-        DeezerRequest request = DeezerRequestFactory.requestCurrentUserTracks();
-        request.addParam("access_token", mDeezerConnect.getAccessToken());
-        request.addParam("index", index.toString());
-        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(obj -> loadTrackListSuccess(index, StaticUtils.fromListTracks((List<Track>) obj)),
-                        ex -> {
-                            swipeLay.setRefreshing(false);
-                            ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", (Exception) ex, ((dialog, which) -> loadFavSongsStart(index)));
-                        }
-                ));
+        loadTrackListStart(0, Prefs.genre(getContext()));
     }
 
     public void changeShowListState(boolean favSongs) {
@@ -324,7 +322,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void filterGenreClickStart() {
-        String genre = Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER);
+        String genre = Prefs.genre(getContext());
         textFilter.setText(genre);
         loadTrackListStart(0, genre);
     }
@@ -339,6 +337,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void onRefresh() {
-        loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
+        loadTrackListStart(0, Prefs.genre(getContext()));
     }
 }

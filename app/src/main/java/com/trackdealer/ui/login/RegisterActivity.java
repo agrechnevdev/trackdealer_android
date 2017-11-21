@@ -154,19 +154,19 @@ public class RegisterActivity extends BaseActivity {
                                 if (response.isSuccessful()) {
                                     registerSuccess(response.body());
                                 } else {
-                                    ErrorHandler.showSnackbarError(layMain, ErrorHandler.getErrorMessageFromResponse(response));
+                                    ErrorHandler.showToast(this, ErrorHandler.getErrorMessageFromResponse(response));
                                     hideProgressBar();
                                 }
                             },
                             ex -> {
                                 Timber.e(ex, TAG + " register onError() " + ex.getMessage());
-                                ErrorHandler.showSnackbarError(layMain, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                ErrorHandler.showToast(this, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
                                 hideProgressBar();
                             }
                     ));
         } else {
             hideProgressBar();
-            ErrorHandler.showSnackbarError(layMain, ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            ErrorHandler.showToast(this, ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
         }
     }
 

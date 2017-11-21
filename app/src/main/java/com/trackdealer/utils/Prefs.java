@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_FILTER;
 
 /**
  * Created by grechnev-av on 06.07.2017.
@@ -152,5 +153,9 @@ public class Prefs {
 
     public static void putInt(Context context, String prefName, String key, Integer putString) {
         context.getApplicationContext().getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().putInt(key, putString).apply();
+    }
+
+    public static String genre(Context context){
+        return getString(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER);
     }
 }

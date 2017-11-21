@@ -42,29 +42,26 @@ public class FavourPresenter extends BasePresenter<FavourView> {
         subscription.dispose();
     }
 
-    void loadFavourTrack(){
+    void loadFavourTrack() {
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
                     restapi.getFavTrack()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                            response -> {
-                                Timber.e(TAG + " loadFavourTrack response code: " + response.code());
-                                if (response.isSuccessful()) {
-                                    favourView.loadFavourTrackSuccess(response.body());
-                                } else {
-                                    favourView.loadFavourTrackFailed(ErrorHandler.getErrorMessageFromResponse(response));
-                                }
-                            },
-                            ex -> {
-                                Timber.e(ex, TAG + " loadFavourTrack onError() " + ex.getMessage());
-                                favourView.loadFavourTrackFailed(ErrorHandler.buildErrorDescriptionShort(ex));
-                            },
-                            () -> {
-                                favourView.loadFavourTrackFailed("Требуется загрузить песню");
-                            }
-                    ));
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(
+                                    response -> {
+                                        Timber.e(TAG + " loadFavourTrack response code: " + response.code());
+                                        if (response.isSuccessful()) {
+                                            favourView.loadFavourTrackSuccess(response.body());
+                                        } else {
+                                            favourView.loadFavourTrackFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                        }
+                                    },
+                                    ex -> {
+                                        Timber.e(ex, TAG + " loadFavourTrack onError() " + ex.getMessage());
+                                        favourView.loadFavourTrackFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                    }
+                            ));
         } else {
             favourView.loadFavourTrackFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
         }

@@ -76,6 +76,10 @@
             android:layout_above="@id/player"
             android:layout_below="@id/fragment_chart_lay_help" />
 
+        <include layout="@layout/empty_recycler"
+            android:id="@+id/empty_recycler"
+            android:visibility="gone"/>
+
     </RelativeLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

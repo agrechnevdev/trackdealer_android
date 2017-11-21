@@ -151,6 +151,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Override
     public void loadFavourTrackFailed(String error) {
         hideProgressBar();
+        ErrorHandler.handleError(getContext(), error, new Exception(), ((dialog, which) -> loadFavouriteSongStart()));
     }
 
     public void setFavouriteSong(TrackInfo trackInfo) {
@@ -236,17 +237,17 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
                                             response -> {
                                                 Timber.e(TAG + " changeFavTrack response code: " + response.code());
                                                 if (response.isSuccessful()) {
-                                                    setFavouriteSong(response.body());
+                                                    loadFavouriteSongStart();
                                                     Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
-                                                    ErrorHandler.showToast(getActivity(), "Ваша новый трек добавлен в чарт!");
+                                                    ErrorHandler.showToast(getActivity(), "Ваш новый трек добавлен в чарт!");
                                                 } else {
-                                                    ErrorHandler.showSnackbarError(relLayMain, ErrorHandler.getErrorMessageFromResponse(response));
+                                                    ErrorHandler.showToast(getActivity(), ErrorHandler.getErrorMessageFromResponse(response));
                                                 }
                                                 hideProgressBar();
                                             },
                                             ex -> {
                                                 Timber.e(ex, TAG + " changeFavTrack onError() " + ex.getMessage());
-                                                ErrorHandler.showSnackbarError(relLayMain, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                                ErrorHandler.showToast(getActivity(), ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
                                                 hideProgressBar();
                                             }
                                     ));

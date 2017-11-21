@@ -49,7 +49,7 @@ public class ErrorHandler {
     public static String DEFAULT_ERROR_MESSAGE_SHORT = "В настоящий момент операция невозможна.";
     public static String DEFAULT_ERROR_MESSAGE = "В настоящий момент операция невозможна.\n\nПожалуйста, повторите попытку позднее.\n\nПриносим извинения за неудобства.";
     public static String DEFAULT_NETWORK_ERROR_MESSAGE = "В настоящий момент операция невозможна.\n\nПожалуйста, проверьте соединение с Интернетом или повторите попытку позднее.\n\nПриносим извинения за неудобства.";
-    public static String DEFAULT_SERVER_ERROR_MESSAGE = "Возникла ошибка на сервере";
+    public static String DEFAULT_SERVER_ERROR_MESSAGE = "Возникла ошибка при взаимодействии с сервером";
 
     public static final int DURATION = 5000;
 
@@ -103,7 +103,7 @@ public class ErrorHandler {
         snackbar.show();
     }
 
-   public static void showToast(Context context, String message) {
+    public static void showToast(Context context, String message) {
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
         toast.show();
     }
@@ -136,7 +136,7 @@ public class ErrorHandler {
                 return element;
 
             case HTTP_INTERNAL_ERROR:
-                if(response.errorBody() != null)
+                if (response.errorBody() != null)
                     try {
                         String errorMesage = response.errorBody().string();
                         return errorMesage.replaceAll("[^А-Яа-яЁё ]", "");
