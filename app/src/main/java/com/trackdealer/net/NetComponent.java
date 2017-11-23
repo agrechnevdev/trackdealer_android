@@ -7,6 +7,7 @@ import com.trackdealer.ui.main.chart.ChartFragment;
 import com.trackdealer.ui.main.favour.FavourFragment;
 import com.trackdealer.ui.login.LoginActivity;
 import com.trackdealer.ui.main.MainActivity;
+import com.trackdealer.ui.main.profile.ProfileFragment;
 
 import javax.inject.Singleton;
 
@@ -25,5 +26,7 @@ public interface NetComponent {
     void inject(ChartFragment fragment);
 
     void inject(FavourFragment fragment);
+
+    void inject(ProfileFragment fragment);
 
 }

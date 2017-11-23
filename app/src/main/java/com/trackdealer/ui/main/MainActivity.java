@@ -119,7 +119,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         Prefs.clearUserData(this);
         if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
             trackPlayer.stop();
-        doDestroyPlayer();
         finish();
     }
 

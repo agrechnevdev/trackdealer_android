@@ -155,7 +155,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     }
 
     public void setFavouriteSong(TrackInfo trackInfo) {
-        if (trackInfo != null) {
+        if (trackInfo != null && trackInfo.getId() != -1) {
             Picasso.with(getContext()).load(trackInfo.getCoverImage()).into(imageViewSong);
             butChange.setVisibility(VISIBLE);
             relLayEmpty.setVisibility(GONE);

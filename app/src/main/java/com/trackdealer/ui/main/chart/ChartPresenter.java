@@ -124,4 +124,32 @@ public class ChartPresenter extends BasePresenter<ChartView> {
             chartView.trackLikeFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
         }
     }
+
+    void randomList(String genre) {
+        if (ConnectionsManager.isOnline(context)) {
+            subscription.add(
+                    restapi.randomList(genre)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(
+                                    response -> {
+                                        Timber.e(TAG + " loadTrackList response code: " + response.code());
+                                        if (response.isSuccessful()) {
+                                            List<TrackInfo> list = response.body();
+                                            if (response.body() == null)
+                                                list = new ArrayList<>();
+                                            chartView.loadTrackListSuccess(0, list);
+                                        } else {
+                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                        }
+                                    },
+                                    ex -> {
+                                        Timber.e(ex, TAG + " loadTrackList onError() " + ex.getMessage());
+                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                    }
+                            ));
+        } else {
+            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+        }
+    }
 }

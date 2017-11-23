@@ -138,7 +138,8 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
         recyclerView.setAdapter(mTracksAdapter);
 
-        loadTrackListStart(SPlay.init().showList.size(), Prefs.genre(getContext()));
+        SPlay.init().showList.clear();
+        loadTrackListStart(0, Prefs.genre(getContext()));
 //        if (SPlay.init().showList == null || SPlay.init().showList.isEmpty()) {
 //            loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
 //        }
@@ -273,7 +274,10 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @OnClick(R.id.fragment_chart_but_random)
     public void clickRandomTrack() {
-        iChoseTrack.playRandomTrack();
+//        iChoseTrack.playRandomTrack();
+        swipeLay.setRefreshing(true);
+        mTracksAdapter.setMoreDataAvailable(false);
+        chartPresenter.randomList(Prefs.genre(getActivity()));
     }
 
     @OnClick(R.id.fragment_chart_but_deezer_fav_tracks_back)

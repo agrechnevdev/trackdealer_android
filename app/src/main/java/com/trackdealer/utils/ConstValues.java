@@ -6,8 +6,8 @@ package com.trackdealer.utils;
 
 public class ConstValues {
 
-    //    public static final String mainUrl = "http://192.168.199.2:8081";
-    public static final String mainUrl = "http://10.35.28.181:8081";
+    public static final String mainUrl = "http://192.168.199.2:8081";
+//    public static final String mainUrl = "http://10.35.28.181:8081";
 
     public static final String SHARED_FILENAME_USER_DATA = "SharedUserData";
     public static final String SHARED_KEY_USER = "SharedUser";

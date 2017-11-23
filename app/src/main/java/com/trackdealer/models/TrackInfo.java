@@ -10,8 +10,6 @@ public class TrackInfo {
 
     @SerializedName("id")
     private Long id;
-    @SerializedName("userLoadId")
-    private Long userLoadId;
     @SerializedName("deezerId")
     private Long deezerId;
     @SerializedName("title")
@@ -31,8 +29,11 @@ public class TrackInfo {
     @SerializedName("countDislike")
     private Long countDislike;
 
+    @SerializedName("userLike")
     private Boolean userLike;
+    @SerializedName("userNameLoad")
     private String userNameLoad;
+
     private long albumId;
 
     public TrackInfo() {
@@ -100,13 +101,6 @@ public class TrackInfo {
         this.id = id;
     }
 
-    public Long getUserLoadId() {
-        return userLoadId;
-    }
-
-    public void setUserLoadId(Long userLoadId) {
-        this.userLoadId = userLoadId;
-    }
 
     public String getGenre() {
         return genre;

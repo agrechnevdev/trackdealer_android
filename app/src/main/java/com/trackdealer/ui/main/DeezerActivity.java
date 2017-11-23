@@ -169,8 +169,10 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     protected void onDestroy() {
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
-        mDeezerConnect.logout(this);
-        mDeezerConnect = null;
+        if (mDeezerConnect != null) {
+            mDeezerConnect.logout(this);
+            mDeezerConnect = null;
+        }
         trackPlayer.removePlayerListener(this);
         doDestroyPlayer();
         subscription.dispose();

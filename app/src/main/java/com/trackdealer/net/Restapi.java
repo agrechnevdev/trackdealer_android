@@ -27,6 +27,9 @@ public interface Restapi {
     @GET("/users/login")
     Observable<Response<RMessage>> login(@Query("username") String username, @Query("password") String password);
 
+    @GET("/users/logout")
+    Observable<Response<ResponseBody>> logout();
+
     @POST("/tracks/change")
     Observable<Response<TrackInfo>> changeFavTrack(@Body TrackInfo trackInfo);
 
@@ -35,6 +38,9 @@ public interface Restapi {
 
     @GET("/tracks/list")
     Observable<Response<List<TrackInfo>>> getChartTracks(@Query("lastNum") Integer lastNum, @Query("genre") String genre);
+
+    @GET("/tracks/randomlist")
+    Observable<Response<List<TrackInfo>>> randomList(@Query("genre") String genre);
 
     @GET("/tracks/like")
     Observable<Response<ResponseBody>> like(@Query("deezerId") Long deezerId, @Query("like") Boolean like);
