@@ -29,9 +29,9 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
  * Created by grechnev-av on 11.10.2017.
  */
 
-public class ChartShortAdapter extends RecyclerView.Adapter<ChartShortAdapter.ViewHolder> {
+public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.ViewHolder> {
 
-    private final String TAG = "ChartShortAdapter ";
+    private final String TAG = "PlayListAdapter ";
     private List<TrackInfo> trackInfos;
     private Context context;
     private RecyclerView recyclerView;
@@ -65,7 +65,7 @@ public class ChartShortAdapter extends RecyclerView.Adapter<ChartShortAdapter.Vi
         }
     }
 
-    public ChartShortAdapter(List<TrackInfo> trackInfos, Context context, IChoseTrack iChoseTrack) {
+    public PlayListAdapter(List<TrackInfo> trackInfos, Context context, IChoseTrack iChoseTrack) {
         this.trackInfos = trackInfos;
         this.context = context;
         this.iChoseTrack = iChoseTrack;
@@ -74,16 +74,15 @@ public class ChartShortAdapter extends RecyclerView.Adapter<ChartShortAdapter.Vi
     }
 
     @Override
-    public ChartShortAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlayListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 //        Timber.d(TAG + " onCreateViewHolder ");
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_chart_short, parent, false);
-        ChartShortAdapter.ViewHolder vh = new ChartShortAdapter.ViewHolder(v);
-        return vh;
+        return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ChartShortAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(PlayListAdapter.ViewHolder holder, int position) {
 //        Timber.d(TAG + " onBindViewHolder " + position);
         TrackInfo trackInfo = trackInfos.get(position);
         holder.title.setText(trackInfo.getTitle());

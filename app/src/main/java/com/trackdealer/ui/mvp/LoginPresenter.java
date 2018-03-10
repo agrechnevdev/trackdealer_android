@@ -1,4 +1,4 @@
-package com.trackdealer.ui.main.favour;
+package com.trackdealer.ui.mvp;
 
 import android.content.Context;
 
@@ -13,58 +13,61 @@ import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
- * Created by grechnev-av on 27.09.2017.
+ * Created by anton on 03.12.2017.
  */
 
-public class FavourPresenter extends BasePresenter<FavourView> {
+public class LoginPresenter extends BasePresenter<LoginView> {
 
-    private final String TAG = "FavourPresenter ";
+    private final String TAG = "LoginPresenter ";
 
     private CompositeDisposable subscription;
-    private FavourView favourView;
+    private LoginView loginView;
     private final Restapi restapi;
     private Context context;
 
-    FavourPresenter(Restapi restapi, Context context) {
+    public LoginPresenter(Restapi restapi, Context context) {
         subscription = new CompositeDisposable();
         this.context = context;
         this.restapi = restapi;
     }
 
     @Override
-    public void attachView(FavourView favourView) {
-        this.favourView = favourView;
+    public void attachView(LoginView loginView) {
+        this.loginView = loginView;
     }
 
     @Override
     public void detachView() {
-        favourView = null;
+        loginView = null;
         subscription.dispose();
     }
 
-    void loadFavourTrack() {
+    public void login(String login, String password) {
+
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
-                    restapi.getFavTrack()
+//                    FakeRestApi.login(this, textLogin.getText().toString(), textPassword.getText().toString())
+                    restapi.login(login, password)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
-                            .subscribe(
-                                    response -> {
-                                        Timber.e(TAG + " loadFavourTrack response code: " + response.code());
+                            .subscribe(response -> {
+                                        Timber.e(TAG + " register response code: " + response.code());
                                         if (response.isSuccessful()) {
-                                            favourView.loadFavourTrackSuccess(response.body());
+                                            loginView.loginSuccess();
                                         } else {
-                                            favourView.loadFavourTrackFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            loginView.loginFailed(ErrorHandler.getErrorMessageFromResponse(response));
                                         }
                                     },
                                     ex -> {
-                                        Timber.e(ex, TAG + " loadFavourTrack onError() " + ex.getMessage());
-                                        favourView.loadFavourTrackFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        Timber.e(ex, TAG + " register onError() " + ex.getMessage());
+                                        loginView.loginFailed(ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
                                     }
                             ));
         } else {
-            favourView.loadFavourTrackFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            loginView.loginFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
         }
     }
+
+
 
 }

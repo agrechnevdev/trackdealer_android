@@ -24,6 +24,7 @@ public class ConstValues {
     public static final String SHARED_KEY_FIRST_TIME = "SharedFirstTime";
 
     public static final String TRACK_LIST = "TrackList";
+    public static final String TITLE = "title";
 
     public static final String TYPE_OF_ACTION = "com.trackdealer.action.typeofaction";
     public static final String MAIN_ACTION = "com.trackdealer.action.main";

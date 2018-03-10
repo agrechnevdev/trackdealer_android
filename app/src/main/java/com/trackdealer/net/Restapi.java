@@ -3,6 +3,7 @@ package com.trackdealer.net;
 import com.trackdealer.models.RMessage;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.models.User;
+import com.trackdealer.models.UserSettings;
 
 import java.util.List;
 
@@ -22,10 +23,13 @@ import retrofit2.http.Query;
 public interface Restapi {
 
     @POST("/users/register")
-    Observable<Response<RMessage>> register(@Body User user);
+    Observable<Response<ResponseBody>> register(@Body User user);
 
     @GET("/users/login")
-    Observable<Response<RMessage>> login(@Query("username") String username, @Query("password") String password);
+    Observable<Response<ResponseBody>> login(@Query("username") String username, @Query("password") String password);
+
+    @GET("/users/settings")
+    Observable<Response<UserSettings>> getUserSettings();
 
     @GET("/users/logout")
     Observable<Response<ResponseBody>> logout();
@@ -39,8 +43,17 @@ public interface Restapi {
     @GET("/tracks/list")
     Observable<Response<List<TrackInfo>>> getChartTracks(@Query("lastNum") Integer lastNum, @Query("genre") String genre);
 
+//    @GET("/tracks/lastperiodlist")
+//    Observable<Response<List<TrackInfo>>> getLastPeriodTracks();
+
+    @GET("/tracks/periodsList")
+    Observable<Response<List<TrackInfo>>> getPeriodsTracks(@Query("date") String date);
+
     @GET("/tracks/randomlist")
     Observable<Response<List<TrackInfo>>> randomList(@Query("genre") String genre);
+
+    @GET("/tracks/userlist")
+    Observable<Response<List<TrackInfo>>> userList(@Query("username") String username);
 
     @GET("/tracks/like")
     Observable<Response<ResponseBody>> like(@Query("deezerId") Long deezerId, @Query("like") Boolean like);

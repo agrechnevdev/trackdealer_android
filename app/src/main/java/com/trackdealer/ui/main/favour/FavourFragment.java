@@ -26,6 +26,8 @@ import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.DeezerActivity;
+import com.trackdealer.ui.mvp.FavourPresenter;
+import com.trackdealer.ui.mvp.FavourView;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
@@ -145,6 +147,12 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Override
     public void loadFavourTrackSuccess(TrackInfo trackInfo) {
         hideProgressBar();
+        if(trackInfo.getFinished() != null && trackInfo.getFinished()) {
+            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
+                    0, R.string.congratulations_track_likes,
+                    R.string.ok, (dialog, id) -> {});
+            builder.create().show();
+        }
         setFavouriteSong(trackInfo);
     }
 
@@ -181,20 +189,20 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     }
 
 
-    @OnClick(R.id.chose_song_song_empty)
+    @OnClick({R.id.chose_song_song_empty,R.id.chose_song_but_change})
     public void clickChoseSong() {
         searchDialogFragment = new SearchDialogFragment();
         searchDialogFragment.show(FavourFragment.this.getChildFragmentManager(), "search");
     }
 
-    @OnClick(R.id.chose_song_but_change)
-    public void clickReChoseSong() {
-        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-                R.string.chose_song_title, R.string.rechose_song_message,
-                R.string.yes, (dialog, id) -> clickChoseSong(),
-                R.string.no, (dialog, id) -> dialog.dismiss());
-        builder.create().show();
-    }
+//    @OnClick(R.id.chose_song_but_change)
+//    public void clickReChoseSong() {
+//        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
+//                R.string.chose_song_title, R.string.rechose_song_message,
+//                R.string.yes, (dialog, id) -> clickChoseSong(),
+//                R.string.no, (dialog, id) -> dialog.dismiss());
+//        builder.create().show();
+//    }
 
     @Override
     public void onClickTrack(TrackInfo trackInfo) {

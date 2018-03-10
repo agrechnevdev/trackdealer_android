@@ -14,11 +14,15 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
-import com.trackdealer.models.RMessage;
 import com.trackdealer.models.User;
+import com.trackdealer.models.UserSettings;
 import com.trackdealer.net.Restapi;
+import com.trackdealer.ui.main.MainActivity;
+import com.trackdealer.ui.mvp.UserSettingsPresenter;
+import com.trackdealer.ui.mvp.UserSettingsView;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
+import com.trackdealer.utils.Prefs;
 
 import javax.inject.Inject;
 
@@ -32,11 +36,14 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
+
 /**
  * Created by grechnev-av on 07.11.2017.
  */
 
-public class RegisterActivity extends BaseActivity {
+public class RegisterActivity extends BaseActivity implements UserSettingsView {
 
     private final String TAG = "RegisterActivity";
 
@@ -72,6 +79,8 @@ public class RegisterActivity extends BaseActivity {
     @Bind(R.id.progressbar)
     ProgressBar progressBar;
 
+    UserSettingsPresenter userSettingsPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +92,10 @@ public class RegisterActivity extends BaseActivity {
             getSupportActionBar().setTitle(R.string.registration);
         }
         initSubscribtion();
+
+        userSettingsPresenter = new UserSettingsPresenter(restapi, this);
+        userSettingsPresenter.attachView(this);
+
     }
 
     public void initSubscribtion() {
@@ -92,33 +105,49 @@ public class RegisterActivity extends BaseActivity {
         Observable<CharSequence> observablePass2 = RxTextView.textChanges(textPassword2).skip(1);
 
         subscription.add(Observable.combineLatest(
-                observablePass, observablePass2, (pass, pass2) ->
-                        pass.toString().equals(pass2.toString()))
+                observablePass, observablePass2,
+                (pass, pass2) -> {
+                    CheckPass checkPass = new CheckPass();
+                    checkPass.passValid = pass.length() > 3;
+                    checkPass.pass2Valid = pass2.length() > 3;
+                    checkPass.passSame = pass.toString().equals(pass2.toString());
+                    return checkPass;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(ebable -> {
-                    if(ebable){
-                        textLayPassword2.setErrorEnabled(false);
+                .subscribe(checkPass -> {
+                    if (checkPass.passValid) {
+                        textLayPassword.setErrorEnabled(false);
                     } else {
-                        textLayPassword2.setError("Пароли не совпадают!");
+                        textLayPassword.setError(getString(R.string.error_length_4));
                     }
 
+                    if (checkPass.pass2Valid) {
+                        textLayPassword2.setErrorEnabled(false);
+                    } else {
+                        textLayPassword2.setError(getString(R.string.error_length_4));
+                    }
+
+                    if (checkPass.pass2Valid && checkPass.passValid && !checkPass.passSame) {
+                        textLayPassword2.setError(getString(R.string.error_pass_not_same));
+                    }
                 })
         );
 
         subscription.add(Observable.combineLatest(
                 RxTextView.textChanges(textLogin), observablePass,
-                observablePass2 , RxTextView.textChanges(textName),
+                observablePass2, RxTextView.textChanges(textName),
                 RxTextView.textChanges(textEmail),
                 (login, pass, pass2, name, email) -> !TextUtils.isEmpty(login) && !TextUtils.isEmpty(pass) &&
                         !TextUtils.isEmpty(pass2) && !TextUtils.isEmpty(name) &&
                         pass.length() > 3 && pass2.length() > 3
                         && pass.toString().equals(pass2.toString()))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(this::buttonEnabledState)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(this::buttonEnabledState)
         );
     }
+
 
     public void buttonEnabledState(boolean enabled) {
         butContinue.setEnabled(enabled);
@@ -140,42 +169,53 @@ public class RegisterActivity extends BaseActivity {
     void register() {
 
         if (ConnectionsManager.isOnline(this)) {
-
             User user = new User(textLogin.getText().toString(),
                     textPassword.getText().toString(),
                     textEmail.getText().toString(),
                     textName.getText().toString());
             subscription.add(
                     restapi.register(user)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(response -> {
-                                Timber.e(TAG + " register response code: " + response.code());
-                                if (response.isSuccessful()) {
-                                    registerSuccess(response.body());
-                                } else {
-                                    ErrorHandler.showToast(this, ErrorHandler.getErrorMessageFromResponse(response));
-                                    hideProgressBar();
-                                }
-                            },
-                            ex -> {
-                                Timber.e(ex, TAG + " register onError() " + ex.getMessage());
-                                ErrorHandler.showToast(this, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
-                                hideProgressBar();
-                            }
-                    ));
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(response -> {
+                                        Timber.e(TAG + " register response code: " + response.code());
+                                        if (response.isSuccessful()) {
+                                            registerSuccess();
+                                        } else {
+                                            ErrorHandler.showToast(this, ErrorHandler.getErrorMessageFromResponse(response));
+                                            hideProgressBar();
+                                        }
+                                    },
+                                    ex -> {
+                                        Timber.e(ex, TAG + " register onError() " + ex.getMessage());
+                                        ErrorHandler.showToast(this, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                        hideProgressBar();
+                                    }
+                            ));
         } else {
             hideProgressBar();
             ErrorHandler.showToast(this, ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
         }
     }
 
-    public void registerSuccess(RMessage rMessage) {
-        ErrorHandler.showToast(this, rMessage.getMessage());
+    public void registerSuccess() {
+        userSettingsPresenter.getUserSeettings(0);
+    }
+
+    @Override
+    public void getUserSettingsSuccess(UserSettings userSettings) {
         hideProgressBar();
-        Intent intent = new Intent(this, LoginActivity.class);
+        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(textLogin.getText().toString(), userSettings.getName(), userSettings.getStatus()));
+        ErrorHandler.showToast(this, getString(R.string.register_success));
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void getUserSettingsFailed(String error) {
+        hideProgressBar();
+        ErrorHandler.showToast(this, error);
     }
 
     protected void showProgressBar() {
@@ -187,4 +227,9 @@ public class RegisterActivity extends BaseActivity {
     }
 
 
+    class CheckPass {
+        Boolean passValid;
+        Boolean pass2Valid;
+        Boolean passSame;
+    }
 }

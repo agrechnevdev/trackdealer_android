@@ -40,17 +40,17 @@ public class BaseApp extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
 
-//            ExcludedRefs excludedRefs = AndroidExcludedRefs.createAppDefaults()
-//                    .instanceField("android.view.inputmethod.InputMethodManager", "sInstance")
-//                    .instanceField("android.view.inputmethod.InputMethodManager", "mLastSrvView")
-//                    .instanceField("com.android.internal.policy.PhoneWindow$DecorView", "mContext")
-//                    .instanceField("android.support.v7.widget.SearchView$SearchAutoComplete", "mContext")
-//                    .build();
-//
-//            LeakCanary.refWatcher(this)
-//                    .listenerServiceClass(DisplayLeakService.class)
-//                    .excludedRefs(excludedRefs)
-//                    .buildAndInstall();
+            ExcludedRefs excludedRefs = AndroidExcludedRefs.createAppDefaults()
+                    .instanceField("android.view.inputmethod.InputMethodManager", "sInstance")
+                    .instanceField("android.view.inputmethod.InputMethodManager", "mLastSrvView")
+                    .instanceField("com.android.internal.policy.PhoneWindow$DecorView", "mContext")
+                    .instanceField("android.support.v7.widget.SearchView$SearchAutoComplete", "mContext")
+                    .build();
+
+            LeakCanary.refWatcher(this)
+                    .listenerServiceClass(DisplayLeakService.class)
+                    .excludedRefs(excludedRefs)
+                    .buildAndInstall();
         }
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);

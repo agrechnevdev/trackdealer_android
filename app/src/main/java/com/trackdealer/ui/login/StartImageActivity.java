@@ -12,17 +12,33 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.trackdealer.BaseApp;
 import com.trackdealer.R;
+import com.trackdealer.models.User;
+import com.trackdealer.models.UserSettings;
+import com.trackdealer.net.Restapi;
+import com.trackdealer.ui.main.MainActivity;
+import com.trackdealer.ui.mvp.UserSettingsPresenter;
+import com.trackdealer.ui.mvp.UserSettingsView;
+import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
+
+import java.util.Set;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit2.Retrofit;
+
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 /**
  * Created by grechnev-av on 01.09.2017.
  */
 
-public class StartImageActivity extends AppCompatActivity {
+public class StartImageActivity extends AppCompatActivity implements UserSettingsView {
 
     private static int SPLASH_TIME_OUT = 1500;
 
@@ -31,11 +47,23 @@ public class StartImageActivity extends AppCompatActivity {
     @Bind(R.id.start_image_background)
     ImageView backgroundImageView;
 
+    @Inject
+    Retrofit retrofit;
+    private Restapi restapi;
+
+    UserSettingsPresenter userSettingsPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_image);
         ButterKnife.bind(this);
+
+        ((BaseApp) getApplication()).getNetComponent().inject(this);
+        restapi = retrofit.create(Restapi.class);
+
+        userSettingsPresenter = new UserSettingsPresenter(restapi, this);
+        userSettingsPresenter.attachView(this);
 
         backgroundImageView.setImageBitmap(StaticUtils.cutPicture(this, R.drawable.prelogin_background));
 //        backgroundImageView.setImageResource(R.drawable.selector_prelogin_background);
@@ -43,11 +71,39 @@ public class StartImageActivity extends AppCompatActivity {
         animation.setDuration(SPLASH_TIME_OUT);
         backgroundImageView.startAnimation(animation);
 
-        new Handler().postDelayed(() -> {
-            startActivity(new Intent(StartImageActivity.this, PreloginActivity.class));
-            overridePendingTransition(0, 0);
-            finish();
-        }, SPLASH_TIME_OUT);
+        Set<String> preferences = Prefs.getStringSet(this, "User-Cookie", "Cookies");
+        if (preferences.isEmpty()) {
+            new Handler().postDelayed(() -> {
+                startActivity(new Intent(StartImageActivity.this, PreloginActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
+            }, SPLASH_TIME_OUT);
+        } else {
+            userSettingsPresenter.getUserSeettings(SPLASH_TIME_OUT);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        userSettingsPresenter.detachView();
+    }
+
+    @Override
+    public void getUserSettingsSuccess(UserSettings userSettings) {
+        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(userSettings.getUsername(), userSettings.getName(), userSettings.getStatus()));
+        startMainActivity();
+    }
+
+    @Override
+    public void getUserSettingsFailed(String error) {
+        startMainActivity();
+    }
+
+    public void startMainActivity() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -59,9 +115,9 @@ public class StartImageActivity extends AppCompatActivity {
         }
     }
 
-    public void createAnim(){
+    public void createAnim() {
         final float[] from = new float[3],
-                to =   new float[3];
+                to = new float[3];
 
         Color.colorToHSV(Color.parseColor("#FFFFFFFF"), from);   // from white
         Color.colorToHSV(Color.parseColor("#FF007cd0"), to);     // to red
@@ -69,13 +125,14 @@ public class StartImageActivity extends AppCompatActivity {
         ValueAnimator anim = ValueAnimator.ofFloat(0, 1);   // animate from 0 to 1
         anim.setDuration(SPLASH_TIME_OUT);                              // for 300 ms
 
-        final float[] hsv  = new float[3];                  // transition color
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener(){
-            @Override public void onAnimationUpdate(ValueAnimator animation) {
+        final float[] hsv = new float[3];                  // transition color
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
                 // Transition along each axis of HSV (hue, saturation, value)
-                hsv[0] = from[0] + (to[0] - from[0])*animation.getAnimatedFraction();
-                hsv[1] = from[1] + (to[1] - from[1])*animation.getAnimatedFraction();
-                hsv[2] = from[2] + (to[2] - from[2])*animation.getAnimatedFraction();
+                hsv[0] = from[0] + (to[0] - from[0]) * animation.getAnimatedFraction();
+                hsv[1] = from[1] + (to[1] - from[1]) * animation.getAnimatedFraction();
+                hsv[2] = from[2] + (to[2] - from[2]) * animation.getAnimatedFraction();
 
                 imageView.setColorFilter(Color.HSVToColor(hsv));
             }

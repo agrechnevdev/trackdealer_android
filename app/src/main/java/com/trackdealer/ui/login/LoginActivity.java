@@ -13,15 +13,16 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
-import com.trackdealer.models.RMessage;
 import com.trackdealer.models.User;
+import com.trackdealer.models.UserSettings;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.MainActivity;
-import com.trackdealer.utils.ConnectionsManager;
+import com.trackdealer.ui.mvp.LoginPresenter;
+import com.trackdealer.ui.mvp.LoginView;
+import com.trackdealer.ui.mvp.UserSettingsPresenter;
+import com.trackdealer.ui.mvp.UserSettingsView;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
-
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -33,12 +34,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
-import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
-public class LoginActivity extends BaseActivity {
+public class LoginActivity extends BaseActivity implements LoginView, UserSettingsView {
 
     private final String TAG = "LoginActivity";
 
@@ -63,30 +63,32 @@ public class LoginActivity extends BaseActivity {
     @Bind(R.id.progressbar)
     ProgressBar progressBar;
 
+    LoginPresenter loginPresenter;
+    UserSettingsPresenter userSettingsPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Set<String> preferences = Prefs.getStringSet(this, "User-Cookie", "Cookies");
-        subscription = new CompositeDisposable();
-        if (preferences.isEmpty()) {
-            setContentView(R.layout.activity_login);
-            ((BaseApp) getApplication()).getNetComponent().inject(this);
-            restapi = retrofit.create(Restapi.class);
-            ButterKnife.bind(this);
 
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setTitle(R.string.singin);
-            }
-            initSubscribtion();
-//        getMetrics();
-//        Bitmap background = BitmapFactory.decodeResource(getResources(), R.drawable.login_background);
-//        imageView.setImageBitmap(bitmapTransform.transform(background));
+        ((BaseApp) getApplication()).getNetComponent().inject(this);
+        restapi = retrofit.create(Restapi.class);
 
-        } else {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
+        setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.singin);
         }
+
+        subscription = new CompositeDisposable();
+        initSubscribtion();
+
+        loginPresenter = new LoginPresenter(restapi, this);
+        loginPresenter.attachView(this);
+
+        userSettingsPresenter = new UserSettingsPresenter(restapi, this);
+        userSettingsPresenter.attachView(this);
+
     }
 
     public void initSubscribtion() {
@@ -108,53 +110,42 @@ public class LoginActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (loginPresenter != null)
+            loginPresenter.detachView();
+        if (userSettingsPresenter != null)
+            userSettingsPresenter.detachView();
         subscription.dispose();
     }
 
     @OnClick(R.id.login_btn_login)
     public void clickLogin() {
         showProgressBar();
-        login();
-//        loginSuccess(new RMessage("TRACKDEALER"));
+        loginPresenter.login(textLogin.getText().toString(), textPassword.getText().toString());
     }
 
-
-    void login() {
-
-        if (ConnectionsManager.isOnline(this)) {
-            subscription.add(
-//                    FakeRestApi.login(this, textLogin.getText().toString(), textPassword.getText().toString())
-                    restapi.login(textLogin.getText().toString(), textPassword.getText().toString())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeOn(Schedulers.io())
-                            .subscribe(response -> {
-                                        Timber.e(TAG + " register response code: " + response.code());
-                                        if (response.isSuccessful()) {
-                                            loginSuccess(response.body());
-                                        } else {
-                                            ErrorHandler.showToast(this, ErrorHandler.getErrorMessageFromResponse(response));
-                                            hideProgressBar();
-                                        }
-                                    },
-                                    ex -> {
-                                        Timber.e(ex, TAG + " register onError() " + ex.getMessage());
-                                        ErrorHandler.showToast(this, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
-                                        hideProgressBar();
-                                    }
-                            ));
-        } else {
-            hideProgressBar();
-            ErrorHandler.showToast(this, ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
-        }
-    }
-
-    public void loginSuccess(RMessage rMessage) {
+    @Override
+    public void loginFailed(String error) {
         hideProgressBar();
-        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(textLogin.getText().toString(), null, rMessage.getMessage()));
-//        Prefs.putString(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_PASSWORD, textPassword.getText().toString());
+        ErrorHandler.showToast(this, error);
+    }
+
+    public void loginSuccess() {
+        userSettingsPresenter.getUserSeettings(0);
+    }
+
+    @Override
+    public void getUserSettingsSuccess(UserSettings userSettings) {
+        hideProgressBar();
+        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(userSettings.getUsername(), userSettings.getName(), userSettings.getStatus()));
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void getUserSettingsFailed(String error) {
+        hideProgressBar();
+        ErrorHandler.showToast(this, error);
     }
 
     protected void showProgressBar() {

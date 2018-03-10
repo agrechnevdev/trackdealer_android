@@ -1,4 +1,4 @@
-package com.trackdealer.ui.main.favour;
+package com.trackdealer.ui.mvp;
 
 import com.trackdealer.base.BaseView;
 import com.trackdealer.models.TrackInfo;

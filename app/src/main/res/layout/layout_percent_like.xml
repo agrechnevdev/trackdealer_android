@@ -60,6 +60,7 @@
         android:id="@+id/percent_like_seekbar"
         android:layout_width="match_parent"
         android:layout_height="5dp"
+        android:enabled="false"
         android:layout_marginRight="@dimen/dp10"
         android:layout_marginLeft="@dimen/dp10"
         android:layout_toRightOf="@id/percent_like_lay_dislike"

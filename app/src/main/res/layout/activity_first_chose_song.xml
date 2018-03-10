@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/first_chose_song_text_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp4"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:text="@string/fav_song_first_chose_1"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_size_medium" />
+
+    <RelativeLayout
+        android:id="@+id/first_chose_song_fav_song"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/first_chose_song_text_1"
+        android:layout_marginBottom="@dimen/vertical_margin"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/first_chose_song_btn_chose"
+            style="@style/ButtonColoredAccent"
+            android:layout_width="250dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:padding="12dp"
+            android:text="@string/chose" />
+
+        <RelativeLayout
+            android:id="@+id/first_chose_song_lay_fav_song_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/first_chose_song_heart"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:id="@+id/first_chose_song_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="3:00"
+                android:textColor="@color/textColorPrimary" />
+
+            <TextView
+                android:id="@+id/first_chose_song_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp4"
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginRight="@dimen/dp10"
+                android:layout_toLeftOf="@id/first_chose_song_duration"
+                android:layout_toRightOf="@id/first_chose_song_heart"
+                android:maxLines="2"
+                android:text="Название"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/text_size_medium" />
+
+            <TextView
+                android:id="@+id/first_chose_song_artist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/first_chose_song_title"
+                android:layout_marginLeft="@dimen/dp10"
+                android:layout_marginRight="@dimen/dp10"
+                android:layout_toLeftOf="@id/first_chose_song_duration"
+                android:layout_toRightOf="@id/first_chose_song_heart"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Артист"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="@dimen/text_size_main" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/first_chose_song_text_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/first_chose_song_fav_song"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:text="@string/fav_song_first_chose_2"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_size_medium" />
+
+    <RelativeLayout
+        android:id="@+id/first_chose_song_lay_user_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/first_chose_song_text_2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/vertical_margin"
+        android:layout_marginTop="@dimen/vertical_margin">
+
+        <RelativeLayout
+            android:id="@+id/first_chose_song_lay_dislike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/first_chose_song_image_dislike"
+                android:layout_width="@dimen/dp25"
+                android:layout_height="@dimen/dp25"
+                android:layout_centerVertical="true"
+                android:tint="@color/colorBlue"
+                app:srcCompat="@drawable/ic_dislike" />
+
+            <TextView
+                android:id="@+id/first_chose_song_text_dislike"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp4"
+                android:layout_toRightOf="@id/first_chose_song_image_dislike"
+                android:text="123"
+                android:textColor="@color/colorBlue"
+                android:textSize="@dimen/text_size_main" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/first_chose_song_lay_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/first_chose_song_lay_dislike">
+
+            <ImageView
+                android:id="@+id/first_chose_song_image_like"
+                android:layout_width="@dimen/dp25"
+                android:layout_height="@dimen/dp25"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp10"
+                android:tint="@color/colorOrange"
+                app:srcCompat="@drawable/ic_like" />
+
+            <TextView
+                android:id="@+id/first_chose_song_text_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp4"
+                android:layout_toRightOf="@id/first_chose_song_image_like"
+                android:text="1234"
+                android:textColor="@color/colorOrange"
+                android:textSize="@dimen/text_size_main" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/first_chose_song_text_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/first_chose_song_lay_user_likes"
+        android:layout_marginBottom="@dimen/dp4"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:text="@string/fav_song_first_chose_3"
+        android:textAlignment="center"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/text_size_medium" />
+
+    <ImageView
+        android:id="@+id/first_chose_song_image_best"
+        android:layout_width="@dimen/dp40"
+        android:layout_height="@dimen/dp40"
+        android:layout_below="@id/first_chose_song_text_3"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:tint="@color/colorOrange"
+        app:srcCompat="@drawable/ic_finished_tracks" />
+
+    <include layout="@layout/progressbar" />
+
+</RelativeLayout>

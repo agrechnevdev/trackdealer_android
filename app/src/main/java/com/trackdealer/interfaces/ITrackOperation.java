@@ -7,4 +7,6 @@ package com.trackdealer.interfaces;
 public interface ITrackOperation {
 
     void trackLike(long trackId, Boolean like);
+
+    void clickUser(String username);
 }

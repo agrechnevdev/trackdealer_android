@@ -1,4 +1,4 @@
-package com.trackdealer.ui.main.chart;
+package com.trackdealer.ui.mvp;
 
 import android.content.Context;
 
@@ -13,8 +13,11 @@ import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.StaticUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -34,7 +37,7 @@ public class ChartPresenter extends BasePresenter<ChartView> {
     private final Restapi restapi;
     private Context context;
 
-    ChartPresenter(Restapi restapi, Context context) {
+    public ChartPresenter(Restapi restapi, Context context) {
         subscription = new CompositeDisposable();
         this.context = context;
         this.restapi = restapi;
@@ -51,7 +54,7 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         subscription.dispose();
     }
 
-    void loadTrackList(Integer lastNum, String genre) {
+    public void loadTrackList(Integer lastNum, String genre) {
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
                     restapi.getChartTracks(lastNum, genre)
@@ -100,7 +103,7 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         }
     }
 
-    void trackLike(long trackId, Boolean like) {
+    public void trackLike(long trackId, Boolean like) {
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
                     restapi.like(trackId, like)
@@ -125,15 +128,43 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         }
     }
 
-    void randomList(String genre) {
+//    public void loadLastPeriodTrackList() {
+//        if (ConnectionsManager.isOnline(context)) {
+//            subscription.add(
+//                    restapi.getLastPeriodTracks()
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .subscribeOn(Schedulers.io())
+//                            .subscribe(
+//                                    response -> {
+//                                        Timber.e(TAG + " loadLastPeriodTrackList response code: " + response.code());
+//                                        if (response.isSuccessful()) {
+//                                            List<TrackInfo> list = response.body();
+//                                            if (response.body() == null)
+//                                                list = new ArrayList<>();
+//                                            chartView.loadTrackListSuccess(0, list);
+//                                        } else {
+//                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
+//                                        }
+//                                    },
+//                                    ex -> {
+//                                        Timber.e(ex, TAG + " loadLastPeriodTrackList onError() " + ex.getMessage());
+//                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+//                                    }
+//                            ));
+//        } else {
+//            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+//        }
+//    }
+
+    public void getPeriodsTracks(String date) {
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
-                    restapi.randomList(genre)
+                    restapi.getPeriodsTracks(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date))
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe(
                                     response -> {
-                                        Timber.e(TAG + " loadTrackList response code: " + response.code());
+                                        Timber.e(TAG + " loadLastPeriodTrackList response code: " + response.code());
                                         if (response.isSuccessful()) {
                                             List<TrackInfo> list = response.body();
                                             if (response.body() == null)
@@ -144,7 +175,63 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                                         }
                                     },
                                     ex -> {
-                                        Timber.e(ex, TAG + " loadTrackList onError() " + ex.getMessage());
+                                        Timber.e(ex, TAG + " loadLastPeriodTrackList onError() " + ex.getMessage());
+                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                    }
+                            ));
+        } else {
+            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+        }
+    }
+
+    public  void randomList(String genre) {
+        if (ConnectionsManager.isOnline(context)) {
+            subscription.add(
+                    restapi.randomList(genre)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(
+                                    response -> {
+                                        Timber.e(TAG + " randomList response code: " + response.code());
+                                        if (response.isSuccessful()) {
+                                            List<TrackInfo> list = response.body();
+                                            if (response.body() == null)
+                                                list = new ArrayList<>();
+                                            chartView.loadTrackListSuccess(0, list);
+                                        } else {
+                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                        }
+                                    },
+                                    ex -> {
+                                        Timber.e(ex, TAG + " randomList onError() " + ex.getMessage());
+                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                    }
+                            ));
+        } else {
+            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+        }
+    }
+
+    public void userList(String username) {
+        if (ConnectionsManager.isOnline(context)) {
+            subscription.add(
+                    restapi.userList(username)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(
+                                    response -> {
+                                        Timber.e(TAG + " randomList response code: " + response.code());
+                                        if (response.isSuccessful()) {
+                                            List<TrackInfo> list = response.body();
+                                            if (response.body() == null)
+                                                list = new ArrayList<>();
+                                            chartView.loadUserListSuccess(0, list, username);
+                                        } else {
+                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                        }
+                                    },
+                                    ex -> {
+                                        Timber.e(ex, TAG + " randomList onError() " + ex.getMessage());
                                         chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
                                     }
                             ));

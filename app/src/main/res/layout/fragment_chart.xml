@@ -9,76 +9,148 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/fragment_chart_help_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp10"
+            android:textSize="18dp"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:textColor="@color/colorAccent" />
+
         <RelativeLayout
             android:id="@+id/fragment_chart_lay_help"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorLightOrange"
+            android:gravity="center"
             android:paddingLeft="@dimen/horizontal_margin"
             android:paddingRight="@dimen/horizontal_margin">
 
-            <ImageView
-                android:id="@+id/fragment_chart_but_deezer_fav_tracks_back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:padding="@dimen/dp4"
-                android:clickable="false"
-                app:srcCompat="@drawable/deezer_logo_circle" />
-
-            <ImageView
-                android:id="@+id/fragment_chart_but_deezer_fav_tracks"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:padding="@dimen/dp4"
-                android:clickable="false"
-                android:layout_alignParentLeft="true"
-                app:srcCompat="@drawable/ic_deezer_fav_songs" />
-
-            <ImageView
-                android:id="@+id/fragment_chart_but_random"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_random_cube" />
-
-            <LinearLayout
-                android:id="@+id/fragment_chart_lay_filter"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/horizontal_margin"
-                android:layout_marginRight="@dimen/horizontal_margin"
-                android:layout_toLeftOf="@id/fragment_chart_but_random"
-                android:layout_toRightOf="@id/fragment_chart_but_deezer_fav_tracks_back"
-                android:background="@drawable/selectable_item_background">
+                android:layout_centerInParent="true"
+                android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/fragment_chart_but_filter"
+                    android:id="@+id/fragment_chart_but_tracks_main"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    app:srcCompat="@drawable/ic_filter_list" />
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:clickable="false"
+                    android:tint="@color/colorAccent"
+                    app:srcCompat="@drawable/app_logo_2" />
 
-                <TextView
-                    android:id="@+id/fragment_chart_text_filter"
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/fragment_chart_but_deezer"
+                    android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:gravity="center_vertical"
-                    android:maxLines="2"
-                    android:text=""
-                    android:textColor="@color/colorAccent" />
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toRightOf="@id/fragment_chart_but_tracks_main"
+                    android:clickable="false"
+                    android:padding="@dimen/dp4"
+                    app:srcCompat="@drawable/ic_deezer_fav_songs" />
 
-            </LinearLayout>
+                <ImageView
+                    android:id="@+id/fragment_chart_but_deezer_fav_tracks"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_toRightOf="@id/fragment_chart_but_tracks_main"
+                    android:clickable="false"
+                    android:padding="@dimen/dp4"
+                    app:srcCompat="@drawable/deezer_logo_circle" />
+
+                <ImageView
+                    android:id="@+id/fragment_chart_but_user_songs"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toRightOf="@id/fragment_chart_but_deezer"
+                    app:srcCompat="@drawable/ic_user_playlist" />
+
+                <ImageView
+                    android:id="@+id/fragment_chart_but_finished"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toRightOf="@id/fragment_chart_but_user_songs"
+                    android:clickable="false"
+                    android:tint="@color/colorAccent"
+                    app:srcCompat="@drawable/ic_finished_tracks" />
+
+                <ImageView
+                    android:id="@+id/fragment_chart_but_random"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toRightOf="@id/fragment_chart_but_finished"
+                    app:srcCompat="@drawable/ic_random_cube" />
+
+
+
+                <LinearLayout
+                    android:id="@+id/fragment_chart_lay_filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/horizontal_margin"
+                    android:layout_marginRight="@dimen/horizontal_margin"
+                    android:layout_toLeftOf="@id/fragment_chart_but_random"
+                    android:layout_toRightOf="@id/fragment_chart_but_deezer"
+                    android:background="@drawable/selectable_item_background"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/fragment_chart_but_filter"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:srcCompat="@drawable/ic_filter_list" />
+
+                    <TextView
+                        android:id="@+id/fragment_chart_text_filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        android:text=""
+                        android:textColor="@color/colorAccent" />
+
+                </LinearLayout>
+            </RelativeLayout>
         </RelativeLayout>
+
+        <TextView
+            android:id="@+id/fragment_chart_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/fragment_chart_lay_help"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginBottom="@dimen/dp4"
+            android:textColor="@color/colorAccent" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_chart_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/player"
-            android:layout_below="@id/fragment_chart_lay_help" />
+            android:layout_below="@id/fragment_chart_username" />
 
-        <include layout="@layout/empty_recycler"
+        <include
             android:id="@+id/empty_recycler"
-            android:visibility="gone"/>
+            layout="@layout/empty_recycler"
+            android:visibility="gone" />
 
     </RelativeLayout>
 

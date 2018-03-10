@@ -10,6 +10,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,9 +23,12 @@ import com.deezer.sdk.model.Genre;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.ChartAdapter;
+import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
+import com.trackdealer.helpersUI.PlaylistType;
 import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IDispatchTouch;
@@ -32,11 +38,17 @@ import com.trackdealer.interfaces.ITrackOperation;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.DeezerActivity;
+import com.trackdealer.ui.main.MainActivity;
+import com.trackdealer.ui.mvp.ChartPresenter;
+import com.trackdealer.ui.mvp.ChartView;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -74,9 +86,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Bind(R.id.fragment_chart_swipe_lay_main)
     SwipeRefreshLayout swipeLay;
 
-    @Bind(R.id.fragment_chart_lay_help)
-    RelativeLayout relLayHelpPanel;
-
     @Bind(R.id.fragment_chart_recycler_view)
     RecyclerView recyclerView;
 
@@ -86,18 +95,28 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Bind(R.id.fragment_chart_lay_filter)
     LinearLayout linLayFilter;
 
-    @Bind(R.id.fragment_chart_but_deezer_fav_tracks)
-    ImageView imageViewFavSongs;
-
-    @Bind(R.id.fragment_chart_but_deezer_fav_tracks_back)
-    ImageView imageViewFavSongsBack;
+    @Bind(R.id.fragment_chart_lay_help)
+    RelativeLayout relLayHelpPanel;
+    @Bind(R.id.fragment_chart_help_title)
+    TextView textHelpTitle;
+    @Bind(R.id.fragment_chart_but_tracks_main)
+    ImageView imageViewTracksMain;
+    @Bind(R.id.fragment_chart_but_deezer)
+    ImageView imageViewDeezer;
+    @Bind(R.id.fragment_chart_but_finished)
+    ImageView imageViewFinished;
+    @Bind(R.id.fragment_chart_but_random)
+    ImageView imageViewRandom;
+    @Bind(R.id.fragment_chart_but_user_songs)
+    ImageView imageViewuUserSong;
 
     @Bind(R.id.empty_recycler)
     RelativeLayout relLayEmpty;
 
     @Bind(R.id.empty_recycler_text_empty)
     TextView textEmpty;
-
+    @Bind(R.id.fragment_chart_username)
+    TextView textUserName;
 
     ChartAdapter mTracksAdapter;
 
@@ -106,6 +125,9 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     DeezerConnect mDeezerConnect = null;
     LinearLayoutManager layoutManager;
+
+    boolean block = true;
+    String username;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -129,6 +151,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
             textFilter.setText(genre);
         }
 
+
         layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(layoutManager);
         mTracksAdapter = new ChartAdapter(SPlay.init().showList, getActivity().getApplicationContext(), iChoseTrack, this, this);
@@ -139,21 +162,27 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         recyclerView.setAdapter(mTracksAdapter);
 
         SPlay.init().showList.clear();
+
+        username = Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getUsername();
+
         loadTrackListStart(0, Prefs.genre(getContext()));
-//        if (SPlay.init().showList == null || SPlay.init().showList.isEmpty()) {
-//            loadTrackListStart(0, Prefs.getString(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_FILTER));
-//        }
-        changeShowListState(SPlay.init().favSongs);
+        changeShowListState();
 
         swipeLay.setOnRefreshListener(this);
         swipeLay.setColorSchemeResources(R.color.colorAccent);
 
-        if (Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER"))
-            relLayHelpPanel.setVisibility(View.VISIBLE);
-        else
-            relLayHelpPanel.setVisibility(View.GONE);
+        block = !Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER");
+        checkUserStatus();
+
         return view;
     }
+
+    public void checkUserStatus() {
+        int color = block ? R.color.colorGrey : R.color.colorAccent;
+        imageViewFinished.setColorFilter(getResources().getColor(color));
+        imageViewRandom.setColorFilter(getResources().getColor(color));
+    }
+
 
     @Override
     public void onResume() {
@@ -195,11 +224,26 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     public void loadTrackListStart(int lastNum, String genre) {
         swipeLay.setRefreshing(true);
-        mTracksAdapter.setMoreDataAvailable(true);
-        if (!SPlay.init().favSongs) {
-            chartPresenter.loadTrackList(lastNum, genre);
-        } else {
-            chartPresenter.loadFavSongs(lastNum, mDeezerConnect);
+        switch (SPlay.init().playlistType) {
+            case MAIN:
+                chartPresenter.loadTrackList(lastNum, genre);
+                break;
+
+            case DEEZER:
+                chartPresenter.loadFavSongs(lastNum, mDeezerConnect);
+                break;
+
+            case FINISHED:
+                chartPresenter.getPeriodsTracks(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
+                break;
+
+            case RANDOM:
+                chartPresenter.randomList(genre);
+                break;
+
+            case USER:
+                chartPresenter.userList(username);
+                break;
         }
     }
 
@@ -207,18 +251,33 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         Timber.d(TAG + " loadMoreTracks lastNum = " + lastNum);
         SPlay.init().showList.add(new TrackInfo());
         mTracksAdapter.notifyItemInserted(SPlay.init().showList.size() - 1);
-        if (!SPlay.init().favSongs) {
-            chartPresenter.loadTrackList(lastNum, genre);
-        } else {
-            chartPresenter.loadFavSongs(lastNum, mDeezerConnect);
+        switch (SPlay.init().playlistType) {
+            case MAIN:
+                chartPresenter.loadTrackList(lastNum, genre);
+                break;
+
+            case DEEZER:
+                chartPresenter.loadFavSongs(lastNum, mDeezerConnect);
+                break;
+
+            case FINISHED:
+                chartPresenter.getPeriodsTracks(SPlay.init().showList.get(SPlay.init().showList.size() - 2).getFinishDate());
+                break;
         }
     }
 
     @Override
-    public void loadTrackListSuccess(int lastNum, List<TrackInfo> list) {
-        Timber.d(TAG + " loadTrackListSuccess lastNum = " + lastNum + " listSize = " + list.size());
+    public void loadUserListSuccess(int offset, List<TrackInfo> list, String username) {
+        textUserName.setVisibility(View.VISIBLE);
+        textUserName.setText(getString(R.string.user_tracklist) + " " + username);
+        loadTrackListSuccess(offset, list);
+    }
 
-        if (lastNum == 0) {
+    @Override
+    public void loadTrackListSuccess(int offset, List<TrackInfo> list) {
+        Timber.d(TAG + " loadTrackListSuccess lastNum = " + offset + " listSize = " + list.size());
+
+        if (offset == 0) {
             SPlay.init().showList.clear();
         } else {
             SPlay.init().showList.remove(SPlay.init().showList.size() - 1);
@@ -255,6 +314,15 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     }
 
     @Override
+    public void clickUser(String username) {
+        SPlay.init().playlistType = PlaylistType.USER;
+        this.username = username;
+        changeShowListState();
+        loadTrackListStart(0, Prefs.genre(getContext()));
+
+    }
+
+    @Override
     public void onLongClickTrack(TrackInfo trackInfo) {
         swipeLay.setRefreshing(true);
         DeezerRequest request = DeezerRequestFactory.requestCurrentUserAddTrack(trackInfo.getDeezerId());
@@ -266,35 +334,124 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                             swipeLay.setRefreshing(false);
                         },
                         ex -> {
-                            ErrorHandler.handleError(getContext(), "Не удалось добавить песню.", (Exception) ex, null);
+                            ErrorHandler.handleError(getContext(), "Не удалось добавить песню.", (Exception) ex, (dialog, which) -> onLongClickTrack(trackInfo));
                             swipeLay.setRefreshing(false);
                         }
                 ));
     }
 
-    @OnClick(R.id.fragment_chart_but_random)
-    public void clickRandomTrack() {
-//        iChoseTrack.playRandomTrack();
-        swipeLay.setRefreshing(true);
-        mTracksAdapter.setMoreDataAvailable(false);
-        chartPresenter.randomList(Prefs.genre(getActivity()));
+    @OnClick({R.id.fragment_chart_but_finished, R.id.fragment_chart_but_random})
+    public void clickBlockBut(View view) {
+        if (block) {
+
+            int message = R.string.finish_but_denied;
+            switch (view.getId()) {
+                case R.id.fragment_chart_but_finished:
+                    loadHelpAnim(PlaylistType.FINISHED.getTitle());
+                    message = R.string.finish_but_denied;
+                    break;
+                case R.id.fragment_chart_but_random:
+                    loadHelpAnim(PlaylistType.RANDOM.getTitle());
+                    message = R.string.random_but_denied;
+                    break;
+            }
+
+            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
+                    0, message,
+                    R.string.ok, (dialog, id) -> {
+            });
+            builder.create().show();
+        } else {
+            clickBut(view);
+        }
     }
 
-    @OnClick(R.id.fragment_chart_but_deezer_fav_tracks_back)
-    public void clickDeezerFavTracks() {
-        SPlay.init().favSongs = !SPlay.init().favSongs;
-        changeShowListState(SPlay.init().favSongs);
+    @OnClick({R.id.fragment_chart_but_tracks_main, R.id.fragment_chart_but_deezer, R.id.fragment_chart_but_user_songs})
+    public void clickBut(View view) {
+
+        switch (view.getId()) {
+            case R.id.fragment_chart_but_tracks_main:
+                SPlay.init().playlistType = PlaylistType.MAIN;
+                mTracksAdapter.setMoreDataAvailable(true);
+                break;
+            case R.id.fragment_chart_but_deezer:
+                SPlay.init().playlistType = PlaylistType.DEEZER;
+                mTracksAdapter.setMoreDataAvailable(true);
+                break;
+            case R.id.fragment_chart_but_finished:
+                SPlay.init().playlistType = PlaylistType.FINISHED;
+                mTracksAdapter.setMoreDataAvailable(true);
+                break;
+            case R.id.fragment_chart_but_random:
+                SPlay.init().playlistType = PlaylistType.RANDOM;
+                mTracksAdapter.setMoreDataAvailable(false);
+                break;
+
+            case R.id.fragment_chart_but_user_songs:
+                SPlay.init().playlistType = PlaylistType.USER;
+                mTracksAdapter.setMoreDataAvailable(false);
+                break;
+        }
+        changeShowListState();
+        loadHelpAnim(SPlay.init().playlistType.getTitle());
         loadTrackListStart(0, Prefs.genre(getContext()));
     }
 
-    public void changeShowListState(boolean favSongs) {
-        if (favSongs) {
-            linLayFilter.setVisibility(View.GONE);
-            imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorOrange));
-        } else {
-            linLayFilter.setVisibility(View.VISIBLE);
-            imageViewFavSongs.setColorFilter(getResources().getColor(R.color.colorAccent));
+    public void changeShowListState() {
+        linLayFilter.setVisibility(View.GONE);
+        int color = block ? R.color.colorGrey : R.color.colorAccent;
+        imageViewTracksMain.setColorFilter(getResources().getColor(R.color.colorAccent));
+        imageViewDeezer.setColorFilter(getResources().getColor(R.color.colorAccent));
+        imageViewFinished.setColorFilter(getResources().getColor(color));
+        imageViewRandom.setColorFilter(getResources().getColor(color));
+        imageViewuUserSong.setColorFilter(getResources().getColor(R.color.colorAccent));
+        textUserName.setVisibility(View.GONE);
+
+        switch (SPlay.init().playlistType) {
+            case MAIN:
+                imageViewTracksMain.setColorFilter(getResources().getColor(R.color.colorOrange));
+                mTracksAdapter.setMoreDataAvailable(true);
+                break;
+
+            case DEEZER:
+                imageViewDeezer.setColorFilter(getResources().getColor(R.color.colorOrange));
+                mTracksAdapter.setMoreDataAvailable(true);
+                break;
+
+            case RANDOM:
+                imageViewRandom.setColorFilter(getResources().getColor(R.color.colorOrange));
+                mTracksAdapter.setMoreDataAvailable(false);
+                break;
+
+            case FINISHED:
+                imageViewFinished.setColorFilter(getResources().getColor(R.color.colorOrange));
+                mTracksAdapter.setMoreDataAvailable(true);
+                break;
+
+            case USER:
+                textUserName.setVisibility(View.VISIBLE);
+                imageViewuUserSong.setColorFilter(getResources().getColor(R.color.colorOrange));
+                mTracksAdapter.setMoreDataAvailable(false);
+                break;
         }
+    }
+
+    public void loadHelpAnim(int typeTitle) {
+        Animation in;
+        Animation out;
+        in = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_in_left);
+        out = AnimationUtils.loadAnimation(getContext(), android.R.anim.slide_out_right);
+        out.setStartOffset(2000);
+
+        AlphaAnimation alpha = new AlphaAnimation(0.2F, 0.2F);
+        alpha.setDuration(2000);
+        alpha.setFillAfter(false);
+
+        textHelpTitle.setText(getString(typeTitle));
+        relLayHelpPanel.startAnimation(alpha);
+        textHelpTitle.startAnimation(in);
+        textHelpTitle.startAnimation(out);
+        textHelpTitle.setVisibility(View.INVISIBLE);
     }
 
     @OnClick(R.id.fragment_chart_lay_filter)
@@ -343,4 +500,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void onRefresh() {
         loadTrackListStart(0, Prefs.genre(getContext()));
     }
+
+
 }

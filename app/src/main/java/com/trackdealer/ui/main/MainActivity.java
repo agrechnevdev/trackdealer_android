@@ -1,10 +1,17 @@
 package com.trackdealer.ui.main;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.Toast;
 
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.player.event.PlayerState;
@@ -18,6 +25,7 @@ import com.trackdealer.interfaces.ILogout;
 import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.models.ShowPlaylist;
 import com.trackdealer.net.Restapi;
+import com.trackdealer.ui.login.PreloginActivity;
 import com.trackdealer.ui.main.chart.ChartFragment;
 import com.trackdealer.ui.main.chart.PlaylistDialog;
 import com.trackdealer.ui.main.favour.FavourFragment;
@@ -59,6 +67,10 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     IConnected iConnected;
     IDispatchTouch iDispatchTouch;
 
+    HeadSetReceiver headSetReceiver;
+    TelephonyManager telephonyManager;
+    CallStateListener callStateListener;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,9 +94,14 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         iConnected = profileFragment;
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
         iDispatchTouch = chartFragment;
-//        if(Prefs.getString(this, SHARED_FILENAME_TRACK, SHARED_KEY_FIRST_TIME).equals("")) {
-//          startActivity(new Intent(this, TutorialActivity.class));
-//        }
+
+        headSetReceiver = new HeadSetReceiver();
+        IntentFilter filter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(headSetReceiver, filter);
+
+        telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        callStateListener = new CallStateListener();
+        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -110,7 +127,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ShowPlaylist showPlaylist) {
-        playlistDialog = new PlaylistDialog();
+        playlistDialog = PlaylistDialog.newInstance("Список воспроизведения");
         playlistDialog.show(getSupportFragmentManager(), "playlist");
     }
 
@@ -119,11 +136,13 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         Prefs.clearUserData(this);
         if (trackPlayer.getPlayerState() == PlayerState.PLAYING)
             trackPlayer.stop();
+        startActivity(new Intent(this, PreloginActivity.class));
         finish();
     }
 
     @Override
     protected void onResume() {
+
         super.onResume();
         Timber.d(TAG + " onResume() ");
     }
@@ -138,7 +157,9 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     protected void onDestroy() {
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
+        telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_NONE);
         compositeDisposable.dispose();
+        unregisterReceiver(headSetReceiver);
     }
 
     @Override
@@ -176,5 +197,45 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         setPlayerVisible(false);
         setButtonEnabled(mButtonPlayerSkipBackward, false);
         setButtonEnabled(mButtonPlayerStop, false);
+    }
+
+    private class HeadSetReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_HEADSET_PLUG)) {
+                int state = intent.getIntExtra("state", -1);
+                switch (state) {
+                    case 0:
+                        pausePlayer();
+                        break;
+                    case 1:
+                        Log.d(TAG, "Headset plugged");
+                        break;
+                }
+            }
+        }
+    }
+
+    private class CallStateListener extends PhoneStateListener {
+        @Override
+        public void onCallStateChanged(int state, String incomingNumber) {
+            switch (state) {
+                case TelephonyManager.CALL_STATE_RINGING:
+                    // called when someone is ringing to this phone
+                    pausePlayer();
+                    break;
+            }
+        }
+    }
+
+    public void pausePlayer(){
+        if (trackPlayer != null && trackPlayer.getPlayerState() == PlayerState.PLAYING) {
+            trackPlayer.pause();
+        }
+    }
+
+
+    public void changeToolbar(){
+
     }
 }

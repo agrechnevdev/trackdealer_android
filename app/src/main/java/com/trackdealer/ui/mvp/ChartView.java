@@ -1,4 +1,4 @@
-package com.trackdealer.ui.main.chart;
+package com.trackdealer.ui.mvp;
 
 import com.trackdealer.base.BaseView;
 import com.trackdealer.models.TrackInfo;
@@ -12,6 +12,8 @@ import java.util.List;
 public interface ChartView extends BaseView{
 
     void loadTrackListSuccess(int offset, List<TrackInfo> list);
+
+    void loadUserListSuccess(int offset, List<TrackInfo> list, String username);
 
     void loadTrackListFailed(String error);
 

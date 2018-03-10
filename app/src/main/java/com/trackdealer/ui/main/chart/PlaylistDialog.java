@@ -12,12 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.trackdealer.R;
-import com.trackdealer.helpersUI.ChartShortAdapter;
+import com.trackdealer.helpersUI.PlayListAdapter;
 import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IChoseTrack;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.trackdealer.utils.ConstValues.TITLE;
 
 /**
  * Created by grechnev-av on 11.10.2017.
@@ -30,8 +32,16 @@ public class PlaylistDialog extends DialogFragment {
     @Bind(R.id.list_recycler)
     RecyclerView recyclerView;
 
-    ChartShortAdapter adapter;
+    PlayListAdapter adapter;
     private IChoseTrack iChoseTrack;
+
+    public static PlaylistDialog newInstance(String title) {
+        PlaylistDialog dialogFragment = new PlaylistDialog();
+        Bundle bundle = new Bundle();
+        bundle.putString(TITLE, title);
+        dialogFragment.setArguments(bundle);
+        return dialogFragment;
+    }
 
     @NonNull
     @Override
@@ -39,7 +49,8 @@ public class PlaylistDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setNegativeButton(R.string.close, null);
-        builder.setTitle("Список вопроизведения");
+        String title = getArguments().getString(TITLE);
+        builder.setTitle(title);
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.list_recycler, null);
         builder.setView(view);
@@ -47,7 +58,7 @@ public class PlaylistDialog extends DialogFragment {
 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
         recyclerView.setLayoutManager(llm);
-        adapter = new ChartShortAdapter(SPlay.init().playList, getContext(), iChoseTrack);
+        adapter = new PlayListAdapter(SPlay.init().playList, getContext(), iChoseTrack);
         recyclerView.setAdapter(adapter);
         builder.setCancelable(false);
         return builder.create();

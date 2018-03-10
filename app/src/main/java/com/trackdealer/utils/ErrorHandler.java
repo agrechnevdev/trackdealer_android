@@ -19,6 +19,9 @@ import com.deezer.sdk.player.exception.TooManyPlayersExceptions;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -122,11 +125,19 @@ public class ErrorHandler {
         return DEFAULT_ERROR_MESSAGE_SHORT;
     }
 
-    public static String getErrorMessageFromResponse(Response response) {
+public static String getErrorMessageFromResponse(Response response) {
         String element = "Ошибка! ";
 
         int code = response.code();
         switch (code) {
+            case 600:
+                try {
+                    JSONObject jObjError = new JSONObject (response.errorBody().string());
+                    return (String) jObjError.get("message");
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
+                }
+
             case HTTP_BAD_REQUEST:
                 element = element + "Неверно введены данные!";
                 return element;

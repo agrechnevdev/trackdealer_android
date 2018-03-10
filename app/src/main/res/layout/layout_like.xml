@@ -23,7 +23,8 @@
                 android:layout_width="@dimen/dp25"
                 android:layout_height="@dimen/dp25"
                 android:layout_centerVertical="true"
-                app:srcCompat="@drawable/ic_dislike" />
+                app:srcCompat="@drawable/ic_dislike"
+                android:tint="@color/colorBlue"/>
 
             <TextView
                 android:id="@+id/layout_like_text_dislike"
@@ -33,7 +34,7 @@
                 android:layout_marginLeft="@dimen/dp4"
                 android:layout_toRightOf="@id/layout_like_image_dislike"
                 android:text="1000"
-                android:textColor="@color/colorGrey"
+                android:textColor="@color/colorBlue"
                 android:textSize="@dimen/text_size_main" />
         </RelativeLayout>
 
@@ -50,7 +51,8 @@
                 android:layout_height="@dimen/dp25"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dp10"
-                app:srcCompat="@drawable/ic_like" />
+                app:srcCompat="@drawable/ic_like"
+                android:tint="@color/colorLightOrange"/>
 
             <TextView
                 android:id="@+id/layout_like_text_like"
@@ -60,7 +62,7 @@
                 android:layout_marginLeft="@dimen/dp4"
                 android:layout_toRightOf="@id/layout_like_image_like"
                 android:text="1000"
-                android:textColor="@color/colorGrey"
+                android:textColor="@color/colorLightOrange"
                 android:textSize="@dimen/text_size_main" />
         </RelativeLayout>
 

@@ -143,44 +143,6 @@
                 android:textSize="@dimen/text_size_medium" />
 
         </RelativeLayout>
-
-        <!--<RelativeLayout-->
-        <!--android:id="@+id/chose_song_lay_search"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/chose_song_fav_song">-->
-
-        <!--<EditText-->
-        <!--android:id="@+id/chose_song_search"-->
-        <!--style="@style/EditTextStyle"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginLeft="@dimen/horizontal_margin"-->
-        <!--android:layout_marginRight="@dimen/horizontal_margin"-->
-        <!--android:layout_marginTop="@dimen/vertical_margin"-->
-        <!--android:hint="@string/chose_song" />-->
-
-        <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/chose_song_search"-->
-        <!--android:layout_marginTop="@dimen/vertical_margin">-->
-
-        <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/chose_song_recycler_view"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
-
-        <!--<ProgressBar-->
-        <!--android:id="@+id/search_progressbar"-->
-        <!--style="?android:attr/progressBarStyleLarge"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="@dimen/vertical_margin_x2"-->
-        <!--android:indeterminate="true"-->
-        <!--android:visibility="gone" />-->
-        <!--</RelativeLayout>-->
-        <!--</RelativeLayout>-->
     </RelativeLayout>
 
     <include layout="@layout/progressbar" />

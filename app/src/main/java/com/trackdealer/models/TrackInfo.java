@@ -28,6 +28,8 @@ public class TrackInfo {
     private Long countLike;
     @SerializedName("countDislike")
     private Long countDislike;
+    @SerializedName("finishDate")
+    private String finishDate;
 
     @SerializedName("userLike")
     private Boolean userLike;
@@ -168,5 +170,13 @@ public class TrackInfo {
 
     public void setDeezerId(Long deezerId) {
         this.deezerId = deezerId;
+    }
+
+    public String getFinishDate() {
+        return finishDate;
+    }
+
+    public void setFinishDate(String finishDate) {
+        this.finishDate = finishDate;
     }
 }

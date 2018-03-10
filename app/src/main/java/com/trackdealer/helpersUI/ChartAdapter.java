@@ -86,7 +86,7 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
-    class LoadViewHolder extends RecyclerView.ViewHolder{
+    class LoadViewHolder extends RecyclerView.ViewHolder {
 
         LoadViewHolder(View v) {
             super(v);
@@ -105,9 +105,9 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if(trackInfos.get(position).getDeezerId() != null){
+        if (trackInfos.get(position).getDeezerId() != null) {
             return TYPE_TRACK;
-        }else{
+        } else {
             return TYPE_LOAD;
         }
     }
@@ -144,7 +144,8 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             if (trackInfo.getUserNameLoad() != null) {
                 trackViewHolder.textUsername.setVisibility(View.VISIBLE);
-                trackViewHolder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUserNameLoad());
+                trackViewHolder.textUsername.setText(trackInfo.getUserNameLoad());
+                trackViewHolder.textUsername.setOnClickListener(view -> iTrackOperation.clickUser(trackViewHolder.textUsername.getText().toString()));
             } else {
                 trackViewHolder.textUsername.setVisibility(View.GONE);
             }
@@ -156,7 +157,7 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 iChoseTrack.choseTrackForPlay(trackInfos.get(trackViewHolder.getAdapterPosition()), trackViewHolder.getAdapterPosition());
             });
 
-            if (!SPlay.init().favSongs) {
+            if (SPlay.init().playlistType == PlaylistType.MAIN || SPlay.init().playlistType == PlaylistType.RANDOM || SPlay.init().playlistType == PlaylistType.FINISHED) {
                 trackViewHolder.relLayLikeMain.setVisibility(View.VISIBLE);
                 trackViewHolder.textDislike.setText(Long.toString(trackInfo.getCountDislike()));
                 trackViewHolder.textLike.setText(Long.toString(trackInfo.getCountLike()));
@@ -185,6 +186,22 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 } else {
                     fillDisLikes(trackViewHolder);
                 }
+                if (trackInfo.getFinished()) {
+                    fillLikes(trackViewHolder);
+                    fillDisLikes(trackViewHolder);
+                    clickableLikes(trackViewHolder, false);
+                }
+
+            } else if (SPlay.init().playlistType == PlaylistType.USER) {
+                trackViewHolder.relLayLikeMain.setVisibility(View.VISIBLE);
+                trackViewHolder.textDislike.setText(Long.toString(trackInfo.getCountDislike()));
+                trackViewHolder.textLike.setText(Long.toString(trackInfo.getCountLike()));
+                trackViewHolder.relLayLike.setOnClickListener(null);
+                trackViewHolder.relLayDislike.setOnClickListener(null);
+                fillLikes(trackViewHolder);
+                fillDisLikes(trackViewHolder);
+                clickableLikes(trackViewHolder, false);
+                trackViewHolder.textUsername.setVisibility(View.GONE);
             } else {
                 trackViewHolder.relLayLikeMain.setVisibility(View.GONE);
             }
@@ -238,12 +255,13 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private void fillNothing(TrackViewHolder holder) {
-        int color = context.getResources().getColor(R.color.colorGrey);
-        holder.imageLike.setColorFilter(color);
-        holder.textLike.setTextColor(color);
+        int colorLightOrange = context.getResources().getColor(R.color.colorLightOrange);
+        holder.imageLike.setColorFilter(colorLightOrange);
+        holder.textLike.setTextColor(colorLightOrange);
         clickableLikes(holder, true);
-        holder.imageDislike.setColorFilter(color);
-        holder.textDislike.setTextColor(color);
+        int colorBlue = context.getResources().getColor(R.color.colorBlue);
+        holder.imageDislike.setColorFilter(colorBlue);
+        holder.textDislike.setTextColor(colorBlue);
         clickableLikes(holder, true);
     }
 
@@ -259,13 +277,13 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     /* notifyDataSetChanged is final method so we can't override it
          call adapter.notifyDataChanged(); after update the list
          */
-    public void notifyDataChanged(){
+    public void notifyDataChanged() {
         notifyDataSetChanged();
         isLoading = false;
     }
 
 
-    public interface OnLoadMoreListener{
+    public interface OnLoadMoreListener {
         void onLoadMore();
     }
 
