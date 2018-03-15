@@ -20,8 +20,13 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import io.reactivex.Observable;
@@ -103,7 +108,7 @@ public class StaticUtils {
         }
     }
 
-    public static Bitmap cutPicture(Context context, @DrawableRes int draw){
+    public static Bitmap cutPicture(Context context, @DrawableRes int draw) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metrics);
@@ -112,12 +117,12 @@ public class StaticUtils {
         int resourceStatus = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         int statusBarHeight = context.getResources().getDimensionPixelSize(resourceStatus);
 
-        BitmapTransform bitmapTransform = new BitmapTransform(screenWidth, screenHeight, 0 ,screenHeight - statusBarHeight);
+        BitmapTransform bitmapTransform = new BitmapTransform(screenWidth, screenHeight, 0, screenHeight - statusBarHeight);
         Bitmap background = BitmapFactory.decodeResource(context.getResources(), draw);
         return bitmapTransform.transform(background);
     }
 
-    public static boolean isServiceRunning(Context context, Class<?> serviceClass){
+    public static boolean isServiceRunning(Context context, Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
             if (serviceClass.getName().equals(service.service.getClassName())) {
@@ -155,5 +160,17 @@ public class StaticUtils {
             e.printStackTrace();
         }
         return uuid;
+    }
+
+    public static String dateFormat(String oldDateString) {
+        try {
+            DateFormat oldFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
+            Date oldDate = oldFormat.parse(oldDateString);
+            DateFormat newFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+            return newFormat.format(oldDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

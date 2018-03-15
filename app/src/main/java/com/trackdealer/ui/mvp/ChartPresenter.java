@@ -128,38 +128,10 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         }
     }
 
-//    public void loadLastPeriodTrackList() {
-//        if (ConnectionsManager.isOnline(context)) {
-//            subscription.add(
-//                    restapi.getLastPeriodTracks()
-//                            .observeOn(AndroidSchedulers.mainThread())
-//                            .subscribeOn(Schedulers.io())
-//                            .subscribe(
-//                                    response -> {
-//                                        Timber.e(TAG + " loadLastPeriodTrackList response code: " + response.code());
-//                                        if (response.isSuccessful()) {
-//                                            List<TrackInfo> list = response.body();
-//                                            if (response.body() == null)
-//                                                list = new ArrayList<>();
-//                                            chartView.loadTrackListSuccess(0, list);
-//                                        } else {
-//                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
-//                                        }
-//                                    },
-//                                    ex -> {
-//                                        Timber.e(ex, TAG + " loadLastPeriodTrackList onError() " + ex.getMessage());
-//                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
-//                                    }
-//                            ));
-//        } else {
-//            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
-//        }
-//    }
-
-    public void getPeriodsTracks(String date) {
+    public void getPeriodsTracks(Integer index, String date) {
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
-                    restapi.getPeriodsTracks(new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date))
+                    restapi.getPeriodsTracks(date)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe(
@@ -169,7 +141,7 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                                             List<TrackInfo> list = response.body();
                                             if (response.body() == null)
                                                 list = new ArrayList<>();
-                                            chartView.loadTrackListSuccess(0, list);
+                                            chartView.loadTrackListSuccess(index, list);
                                         } else {
                                             chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
                                         }

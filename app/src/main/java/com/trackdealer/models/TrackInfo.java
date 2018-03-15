@@ -30,6 +30,8 @@ public class TrackInfo {
     private Long countDislike;
     @SerializedName("finishDate")
     private String finishDate;
+    @SerializedName("first")
+    private Boolean first;
 
     @SerializedName("userLike")
     private Boolean userLike;
@@ -178,5 +180,13 @@ public class TrackInfo {
 
     public void setFinishDate(String finishDate) {
         this.finishDate = finishDate;
+    }
+
+    public Boolean getFirst() {
+        return first;
+    }
+
+    public void setFirst(Boolean first) {
+        this.first = first;
     }
 }

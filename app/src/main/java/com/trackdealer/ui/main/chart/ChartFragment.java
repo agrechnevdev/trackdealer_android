@@ -178,9 +178,10 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     }
 
     public void checkUserStatus() {
-        int color = block ? R.color.colorGrey : R.color.colorAccent;
-        imageViewFinished.setColorFilter(getResources().getColor(color));
-        imageViewRandom.setColorFilter(getResources().getColor(color));
+        if(block){
+            imageViewFinished.setColorFilter(getResources().getColor(R.color.colorGrey));
+            imageViewRandom.setColorFilter(getResources().getColor(R.color.colorGrey));
+        }
     }
 
 
@@ -234,7 +235,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 break;
 
             case FINISHED:
-                chartPresenter.getPeriodsTracks(new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
+                chartPresenter.getPeriodsTracks(0, new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault()).format(new Date()));
                 break;
 
             case RANDOM:
@@ -261,7 +262,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 break;
 
             case FINISHED:
-                chartPresenter.getPeriodsTracks(SPlay.init().showList.get(SPlay.init().showList.size() - 2).getFinishDate());
+                chartPresenter.getPeriodsTracks(lastNum, SPlay.init().showList.get(SPlay.init().showList.size() - 2).getFinishDate());
                 break;
         }
     }
@@ -499,6 +500,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @Override
     public void onRefresh() {
         loadTrackListStart(0, Prefs.genre(getContext()));
+        changeShowListState();
     }
 
 

@@ -36,7 +36,7 @@
     <string name="random_chart_text">Случайный выбор треков</string>
     <string name="user_chart_text">Треки пользователя</string>
 
-
+    <string name="period_top_date_text">Лучшие песни от</string>
     <string name="your_chose">Твой выбор на этой неделе:</string>
     <string name="change">Изменить</string>
     <string name="fav_song_empty_message">Еще не выбрал любимую песню? Кликай сюда!</string>

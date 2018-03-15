@@ -21,6 +21,7 @@ import com.trackdealer.interfaces.ILongClickTrack;
 import com.trackdealer.interfaces.ITrackOperation;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.utils.Prefs;
+import com.trackdealer.utils.StaticUtils;
 
 import java.util.List;
 
@@ -79,6 +80,10 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView textDislike;
         @Bind(R.id.layout_like_text_like)
         TextView textLike;
+        @Bind(R.id.item_chart_text_finish_date)
+        TextView textFinishDate;
+        @Bind(R.id.item_chart_lay_finish_date)
+        RelativeLayout relLayFinishDate;
 
         TrackViewHolder(View v) {
             super(v);
@@ -220,6 +225,13 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             } else {
                 trackViewHolder.indicator.setVisibility(View.GONE);
                 trackViewHolder.artistImage.setAlpha(1f);
+            }
+
+            if (SPlay.init().playlistType == PlaylistType.FINISHED && trackInfos.get(position).getFirst()) {
+                trackViewHolder.textFinishDate.setText(context.getString(R.string.period_top_date_text) + " " + StaticUtils.dateFormat(trackInfos.get(position).getFinishDate()));
+                trackViewHolder.relLayFinishDate.setVisibility(View.VISIBLE);
+            } else {
+                trackViewHolder.relLayFinishDate.setVisibility(View.GONE);
             }
         }
     }

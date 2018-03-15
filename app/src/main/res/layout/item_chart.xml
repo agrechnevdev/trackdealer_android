@@ -14,11 +14,40 @@
         android:layout_marginRight="@dimen/horizontal_margin">
 
         <RelativeLayout
+            android:id="@+id/item_chart_lay_finish_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorYellow"
+            android:layout_marginBottom="@dimen/dp10">
+
+            <TextView
+                android:id="@+id/item_chart_text_finish_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="@dimen/dp4"
+                android:text="@string/period_top_date_text"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_main" />
+
+            <View
+                android:id="@+id/item_chart_finish_date_divider"
+                android:background="@color/colorDivider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_1dp"
+                android:layout_below="@id/item_chart_text_finish_date"
+                android:layout_marginTop="@dimen/dp4" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:id="@+id/item_chart_lay_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            android:background="@drawable/selectable_item_background">
+            android:layout_below="@id/item_chart_lay_finish_date"
+            android:background="@drawable/selectable_item_background"
+            android:clickable="true">
 
             <TextView
                 android:id="@+id/item_chart_text_position"
@@ -98,14 +127,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/item_chart_artist"
-                android:layout_marginTop="@dimen/dp10"
                 android:layout_marginLeft="50dp"
-                android:gravity="center_vertical"
-                android:text="coool"
+                android:layout_marginTop="@dimen/dp10"
                 android:drawableLeft="@drawable/ic_user_playlist"
                 android:drawablePadding="@dimen/dp4"
+                android:gravity="center_vertical"
+                android:text="coool"
                 android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_size_main"/>
+                android:textSize="@dimen/text_size_main" />
         </RelativeLayout>
 
         <include
