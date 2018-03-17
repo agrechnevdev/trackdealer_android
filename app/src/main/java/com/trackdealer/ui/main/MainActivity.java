@@ -92,7 +92,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         setupPlayerUI();
 
         chartFragment = new ChartFragment();
-        favourFragment = new FavourFragment();
+        favourFragment = FavourFragment.newInstance(true);
         profileFragment = new ProfileFragment();
         iConnected = profileFragment;
         getSupportFragmentManager().beginTransaction().replace(R.id.main_fragment, chartFragment).commit();
@@ -106,10 +106,6 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         callStateListener = new CallStateListener();
         telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
-
-        if(!Prefs.getBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START)){
-            startActivity(new Intent(this, FirstChoseSongActivity.class));
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -150,8 +146,10 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Override
     protected void onResume() {
-
         super.onResume();
+        if(!Prefs.getBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START)){
+            startActivity(new Intent(this, FirstChoseSongActivity.class));
+        }
         Timber.d(TAG + " onResume() ");
     }
 

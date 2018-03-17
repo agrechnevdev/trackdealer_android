@@ -29,7 +29,7 @@ public interface Restapi {
     Observable<Response<ResponseBody>> login(@Query("username") String username, @Query("password") String password);
 
     @GET("/users/settings")
-    Observable<Response<UserSettings>> getUserSettings();
+    Observable<Response<UserSettings>> getUserSettings(@Query("version") String version);
 
     @GET("/users/logout")
     Observable<Response<ResponseBody>> logout();

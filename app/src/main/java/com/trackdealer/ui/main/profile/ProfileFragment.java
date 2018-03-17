@@ -15,6 +15,7 @@ import com.squareup.picasso.Picasso;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
+import com.trackdealer.helpersUI.DeezerHelper;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.interfaces.ILogout;
@@ -51,7 +52,6 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
     private Restapi restapi;
     ProfilePresenter profilePresenter;
 
-    DeezerConnect mDeezerConnect = null;
     IConnectDeezer iConnectDeezer;
     ILogout iLogout;
 
@@ -102,18 +102,18 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
     public void initFields() {
         textUsername.setText(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getUsername());
         textStatus.setText(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus());
-        if (!mDeezerConnect.isSessionValid()) {
+        if (!DeezerHelper.init().mDeezerConnect.isSessionValid()) {
             relLayDeezerLogin.setVisibility(View.VISIBLE);
             relLayDeezerLogout.setVisibility(View.GONE);
             relLayDeezerAccount.setVisibility(View.GONE);
-        } else if (mDeezerConnect.getCurrentUser() != null) {
+        } else if (DeezerHelper.init().mDeezerConnect.getCurrentUser() != null) {
             relLayDeezerLogin.setVisibility(View.GONE);
             relLayDeezerLogout.setVisibility(View.VISIBLE);
             relLayDeezerAccount.setVisibility(View.VISIBLE);
-            textDeeAccountName.setText(mDeezerConnect.getCurrentUser().getName());
+            textDeeAccountName.setText(DeezerHelper.init().mDeezerConnect.getCurrentUser().getName());
             String status = null;
             String statusInfo = null;
-            switch (mDeezerConnect.getCurrentUser().getStatus()) {
+            switch (DeezerHelper.init().mDeezerConnect.getCurrentUser().getStatus()) {
                 case STATUS_FREEMIUM:
                     status = "Deezer Freemium";
                     statusInfo = getString(R.string.deezer_freemium_account);
@@ -129,14 +129,13 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
             }
             textDeeAccountStatus.setText(status);
             textDeeStatusInfo.setText(statusInfo);
-            Picasso.with(getContext()).load(mDeezerConnect.getCurrentUser().getSmallImageUrl()).into(imageDeeLogo);
+            Picasso.with(getContext()).load(DeezerHelper.init().mDeezerConnect.getCurrentUser().getSmallImageUrl()).into(imageDeeLogo);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
         iConnectDeezer = ((DeezerActivity) context);
         iLogout = ((MainActivity) context);
     }
@@ -149,7 +148,7 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
 
     @Override
     public void logoutSuccess() {
-        iConnectDeezer.disconnectFromDeezer();
+        DeezerHelper.init().disconnectFromDeezer(getActivity());
         iLogout.logout();
     }
 
@@ -177,7 +176,7 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
         CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                 R.string.exit, R.string.deezer_account_logout,
                 R.string.yes, (dialog, id) -> {
-            iConnectDeezer.disconnectFromDeezer();
+            DeezerHelper.init().disconnectFromDeezer(getActivity());
             initFields();
         }, R.string.no, null);
         builder.create().show();
@@ -197,7 +196,7 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
 
     @Override
     public void connectSuccess(DeezerConnect deezerConnect) {
-        mDeezerConnect = deezerConnect;
+        DeezerHelper.init().mDeezerConnect = deezerConnect;
         initFields();
     }
 }

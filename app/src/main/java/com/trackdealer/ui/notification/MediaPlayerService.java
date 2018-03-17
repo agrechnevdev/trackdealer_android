@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.os.IBinder;
 import android.widget.RemoteViews;
 
+import com.squareup.picasso.Picasso;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.NotificationDismissedReceiver;
 import com.trackdealer.ui.main.MainActivity;
@@ -31,6 +32,7 @@ import static com.trackdealer.utils.ConstValues.PLAY_ACTION;
 import static com.trackdealer.utils.ConstValues.PREV_ACTION;
 import static com.trackdealer.utils.ConstValues.STARTFOREGROUND_ACTION;
 import static com.trackdealer.utils.ConstValues.STOPFOREGROUND_ACTION;
+import static com.trackdealer.utils.ConstValues.TRACK_COVER_IMAGE;
 import static com.trackdealer.utils.ConstValues.TRACK_NAME;
 import static com.trackdealer.utils.ConstValues.TYPE_OF_ACTION;
 
@@ -127,6 +129,9 @@ public class MediaPlayerService extends Service {
                 case (CHANGE_INFO_ACTION):
                     status.contentView.setTextViewText(R.id.text_artist, intent.getExtras().getString(ARTIST));
                     status.contentView.setTextViewText(R.id.text_track, intent.getExtras().getString(TRACK_NAME));
+                    Picasso.with(MediaPlayerService.this)
+                            .load(intent.getExtras().getString(TRACK_COVER_IMAGE))
+                            .into(status.contentView, R.id.image_play, FOREGROUND_SERVICE, status);
                     mNotificationManager.notify(FOREGROUND_SERVICE, status);
                     break;
                 case (PLAY_ACTION):

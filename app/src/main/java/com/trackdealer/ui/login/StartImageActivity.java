@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
@@ -20,6 +21,7 @@ import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.ui.mvp.UserSettingsPresenter;
 import com.trackdealer.ui.mvp.UserSettingsView;
+import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
 
@@ -97,7 +99,9 @@ public class StartImageActivity extends AppCompatActivity implements UserSetting
 
     @Override
     public void getUserSettingsFailed(String error) {
-        startMainActivity();
+        ErrorHandler.showToast(this, error);
+        startActivity(new Intent(StartImageActivity.this, PreloginActivity.class));
+        finish();
     }
 
     public void startMainActivity() {

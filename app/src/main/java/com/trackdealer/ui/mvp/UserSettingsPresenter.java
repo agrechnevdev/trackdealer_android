@@ -2,6 +2,7 @@ package com.trackdealer.ui.mvp;
 
 import android.content.Context;
 
+import com.trackdealer.BuildConfig;
 import com.trackdealer.base.BasePresenter;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
@@ -49,7 +50,7 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsView> {
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
 //                    FakeRestApi.login(this, textLogin.getText().toString(), textPassword.getText().toString())
-                    restapi.getUserSettings()
+                    restapi.getUserSettings(BuildConfig.VERSION_NAME)
                             .delay(delay, TimeUnit.MILLISECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())

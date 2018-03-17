@@ -7,6 +7,4 @@ package com.trackdealer.interfaces;
 public interface IConnectDeezer {
 
     void connectToDeezer();
-
-    void disconnectFromDeezer();
 }

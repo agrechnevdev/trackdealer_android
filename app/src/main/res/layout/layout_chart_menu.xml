@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:layout_centerInParent="true"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+
+    <ImageView
+        android:clickable="false"
+        android:id="@+id/fragment_chart_but_tracks_main"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
+        android:layout_width="40dp"
+        android:tint="@color/colorAccent"
+        app:srcCompat="@drawable/app_logo_2" />
+
+    <ImageView
+        android:clickable="false"
+        android:id="@+id/fragment_chart_but_deezer"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
+        android:layout_toRightOf="@id/fragment_chart_but_tracks_main"
+        android:layout_width="40dp"
+        android:padding="@dimen/dp4"
+        app:srcCompat="@drawable/ic_deezer_fav_songs" />
+
+    <ImageView
+        android:clickable="false"
+        android:id="@+id/fragment_chart_but_deezer_fav_tracks"
+        android:layout_height="25dp"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_toRightOf="@id/fragment_chart_but_tracks_main"
+        android:layout_width="25dp"
+        android:padding="@dimen/dp4"
+        app:srcCompat="@drawable/deezer_logo_circle" />
+
+    <ImageView
+        android:id="@+id/fragment_chart_but_user_songs"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
+        android:layout_toRightOf="@id/fragment_chart_but_deezer"
+        android:layout_width="40dp"
+        app:srcCompat="@drawable/ic_user_playlist" />
+
+    <ImageView
+        android:clickable="false"
+        android:id="@+id/fragment_chart_but_finished"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
+        android:layout_toRightOf="@id/fragment_chart_but_user_songs"
+        android:layout_width="40dp"
+        android:tint="@color/colorAccent"
+        app:srcCompat="@drawable/ic_finished_tracks" />
+
+    <ImageView
+        android:id="@+id/fragment_chart_but_random"
+        android:layout_height="40dp"
+        android:layout_marginLeft="@dimen/dp10"
+        android:layout_marginRight="@dimen/dp10"
+        android:layout_toRightOf="@id/fragment_chart_but_finished"
+        android:layout_width="40dp"
+        app:srcCompat="@drawable/ic_random_cube" />
+</RelativeLayout>

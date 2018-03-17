@@ -98,6 +98,4 @@
             android:layout_margin="@dimen/dp10"
             android:src="@drawable/deezer_logo_circle" />
     </LinearLayout>
-
-    <include layout="@layout/progressbar" />
 </RelativeLayout>

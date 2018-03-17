@@ -22,6 +22,7 @@ import com.deezer.sdk.network.request.DeezerRequestFactory;
 import com.deezer.sdk.network.request.SearchResultOrder;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.R;
+import com.trackdealer.helpersUI.DeezerHelper;
 import com.trackdealer.helpersUI.SearchTracksAdapter;
 import com.trackdealer.interfaces.IClickTrack;
 import com.trackdealer.models.TrackInfo;
@@ -60,7 +61,7 @@ public class SearchDialogFragment  extends DialogFragment implements IClickTrack
     CompositeDisposable subscription;
 
     List<TrackInfo> trackList = new ArrayList<>();
-    DeezerConnect mDeezerConnect;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class SearchDialogFragment  extends DialogFragment implements IClickTrack
     public void startSearch(String search) {
         showProgressBar();
         DeezerRequest request = DeezerRequestFactory.requestSearchTracks(search, SearchResultOrder.Ranking);
-        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+        subscription.add(StaticUtils.requestFromDeezer(DeezerHelper.init().mDeezerConnect, request)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(obj -> {
@@ -110,7 +111,6 @@ public class SearchDialogFragment  extends DialogFragment implements IClickTrack
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
     }
 
 

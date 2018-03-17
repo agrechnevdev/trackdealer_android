@@ -4,43 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chose_song_lay_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/chose_song_lay_all"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:id="@+id/chose_song_lay_your_chose"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/horizontal_margin"
-            android:layout_marginTop="@dimen/horizontal_margin">
-
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/chose_song_but_change"
-                style="@style/ButtonColoredAccent"
-                android:layout_width="@dimen/button_small_width"
-                android:layout_height="@dimen/button_small_height"
-                android:layout_marginRight="@dimen/dp4"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:text="@string/change"
-                android:textSize="@dimen/text_size_small_10" />
-
-            <TextView
-                android:id="@+id/chose_song_text_your_chose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:text="@string/your_chose"
-                android:layout_toLeftOf="@id/chose_song_but_change"
-                android:textColor="@color/textColorPrimary" />
-
-
-        </RelativeLayout>
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:id="@+id/chose_song_fav_song"
@@ -102,12 +76,25 @@
                     android:textSize="@dimen/text_size_main" />
             </RelativeLayout>
 
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/chose_song_but_change"
+                style="@style/ButtonColoredAccent"
+                android:layout_width="@dimen/button_main_width"
+                android:layout_height="@dimen/button_main_height"
+                android:layout_marginRight="@dimen/dp4"
+                android:layout_centerHorizontal="true"
+                android:text="@string/change"
+                android:layout_below="@id/chose_song_lay_fav_song_info"
+                android:layout_marginLeft="@dimen/horizontal_margin"
+                android:layout_marginTop="@dimen/horizontal_margin"
+                android:textSize="@dimen/text_size_small_10" />
+
             <include
                 android:id="@+id/chose_song_like"
                 layout="@layout/layout_percent_like"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/chose_song_lay_fav_song_info"
+                android:layout_below="@id/chose_song_but_change"
                 android:layout_marginTop="@dimen/vertical_margin" />
 
         </RelativeLayout>
@@ -117,34 +104,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/chose_song_lay_your_chose"
+            android:layout_centerHorizontal="true"
             android:layout_marginLeft="@dimen/horizontal_margin"
             android:layout_marginRight="@dimen/horizontal_margin"
-            android:layout_marginTop="@dimen/horizontal_margin">
-
-            <ImageView
-                android:id="@+id/chose_song_image_empty"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_centerVertical="true"
-                app:srcCompat="@drawable/ic_love_music" />
+            android:layout_marginTop="@dimen/horizontal_margin"
+            android:layout_marginBottom="@dimen/horizontal_margin">
 
             <TextView
                 android:id="@+id/chose_song_song_empty"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp4"
                 android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
-                android:layout_toRightOf="@id/chose_song_image_empty"
                 android:clickable="true"
+                android:textAlignment="center"
                 android:maxLines="2"
+                android:drawableLeft="@drawable/ic_love_music"
+                android:drawablePadding="@dimen/dp10"
                 android:text="@string/fav_song_empty_message"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/text_size_medium" />
 
         </RelativeLayout>
+
+
     </RelativeLayout>
 
-    <include layout="@layout/progressbar" />
+    <include layout="@layout/progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

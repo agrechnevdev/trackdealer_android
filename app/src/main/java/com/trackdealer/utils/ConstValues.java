@@ -42,6 +42,7 @@ public class ConstValues {
     public static final String ACTION_TO_ACTIVITY = "com.trackdealer.action.actiontoactivity";
     public static final String ARTIST = "com.trackdealer.action.artist";
     public static final String TRACK_NAME = "com.trackdealer.action.trackname";
+    public static final String TRACK_COVER_IMAGE = "com.trackdealer.action.trackcoverimage";
     public static final String BUTTON_PLAY = "com.trackdealer.action.buttonplay";
     public static int FOREGROUND_SERVICE = 101;
 

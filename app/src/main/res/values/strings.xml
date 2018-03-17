@@ -23,8 +23,13 @@
     <string name="email_info">Адрес почты нужен исключительно для обратной связи (никаких писем рекламного характера или спама)</string>
     <string name="enter">Войти</string>
 
+    <string name="permisstion_needed_title">Разрешение</string>
+    <string name="permisstion_needed_text">Чтобы приложение работало корректно, требуется дать разрешение. Дать разрешение?</string>
+    <string name="permisstion_needed_change_permission">Да</string>
+    <string name="permisstion_needed_dont_change_permission">Нет</string>
+
     <string name="chart">Плейлист</string>
-    <string name="chose_fav_song">Твой выбор</string>
+    <string name="chose_fav_song">Твой трек</string>
     <string name="profile">Профиль</string>
 
     <string name="chosed_by">Выбрал</string>
@@ -36,26 +41,26 @@
     <string name="random_chart_text">Случайный выбор треков</string>
     <string name="user_chart_text">Треки пользователя</string>
 
-    <string name="period_top_date_text">Лучшие песни от</string>
+    <string name="period_top_date_text">Лучшие треки от</string>
     <string name="your_chose">Твой выбор на этой неделе:</string>
     <string name="change">Изменить</string>
-    <string name="fav_song_empty_message">Еще не выбрал любимую песню? Кликай сюда!</string>
-    <string name="chose_song">Введите название песни</string>
+    <string name="fav_song_empty_message">Еще не выбрал свой трек? Жми сюда!</string>
+    <string name="chose_song">Введите название трека</string>
     <string name="chose_song_title">Подтверждение выбора</string>
-    <string name="chose_song_message">Вы точно хотите выбрать эту песню любимой?\n\nПредыдущая песня будет удалена из чарта, и информация по ней будет утеряна</string>
+    <string name="chose_song_message">Вы точно хотите выбрать этот трек?\n\nПредыдущий выбранный трек будет удалена из чарта, и информация по нему будет утеряна</string>
 
-    <string name="fav_song_first_chose_1">1. Выбери свой любимый трек.</string>
-    <string name="fav_song_first_chose_2">2. Получай лайки от других пользователей.</string>
+    <string name="fav_song_first_chose_1">1. Выбери любимый трек</string>
+    <string name="fav_song_first_chose_2">2. Получай лайки от других пользователей и ставь сам</string>
     <string name="fav_song_first_chose_3">3. Твой трек собрал больше всех лайков? Тебе доступны новые возможности приложения!</string>
-    <string name="fav_song_first_chose_4">4. Ищи новые любимые треки с TRACKDEALER</string>
-    <string name="rechose_song_message">Хотите выбрать другую песню?</string>
+    <string name="fav_song_first_chose_4">4. Ищи новые треки с TRACKDEALER</string>
+    <string name="song_not_chosen">Чтобы продолжить выберите трек</string>
     <string name="chose">Выбрать</string>
 
     <string name="deezer_account_login">Подключить аккаунт Deezer</string>
     <string name="deezer_account_info">Подключение к Deezer позволит добавлять треки в плейлист "Любимые треки", а c аккаунтом PREMIUM или PREMIUM+ позволит Вам прослушивать треки полностью</string>
     <string name="deezer_already_login">Аккаунт Deezer подключен!</string>
     <string name="deezer_premium_account">Доступно прослушивание полных песен и добавление в плейлист "Любимые треки"</string>
-    <string name="deezer_freemium_account">Можно добавлять песни в плейлист "Любимые треки", но недоступны для прослушивания полные треки (требуется статус PREMIUM или PREMIUM+)</string>
+    <string name="deezer_freemium_account">Можно добавлять треки в плейлист "Любимые треки", но недоступны для прослушивания полные треки (требуется статус PREMIUM или PREMIUM+)</string>
     <string name="deezer_account_logout">Действительно отключить аккаунт Deezer?</string>
 
     <string name="congratulations_upate_status">Поздравляем! Твой трек набрал большое количество лайков, а ты получил статус: TRACKDEALER! Для тебя теперь доступны новые возможности плейлиста.</string>
@@ -76,6 +81,7 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="exit">Выход</string>
+    <string name="cont">Продолжить ></string>
 
     <string name="back">Назад</string>
     <string name="repeat">Повторить</string>

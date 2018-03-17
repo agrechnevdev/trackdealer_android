@@ -20,13 +20,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.deezer.sdk.model.Genre;
-import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.ChartAdapter;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
+import com.trackdealer.helpersUI.DeezerHelper;
 import com.trackdealer.helpersUI.PlaylistType;
 import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IChoseTrack;
@@ -36,7 +36,6 @@ import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.interfaces.ITrackOperation;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
-import com.trackdealer.ui.main.DeezerActivity;
 import com.trackdealer.ui.mvp.ChartPresenter;
 import com.trackdealer.ui.mvp.ChartView;
 import com.trackdealer.utils.ErrorHandler;
@@ -121,7 +120,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     IChoseTrack iChoseTrack;
     ITrackListState iProvideTrackList;
 
-    DeezerConnect mDeezerConnect = null;
     LinearLayoutManager layoutManager;
 
     boolean block = true;
@@ -163,14 +161,24 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
         username = Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getUsername();
 
+        checkUserStatus();
         loadTrackListStart(0, Prefs.genre(getContext()));
-        changeShowListState();
+        setChosenListState();
 
         swipeLay.setOnRefreshListener(this);
         swipeLay.setColorSchemeResources(R.color.colorAccent);
-
-        block = !Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER");
         return view;
+    }
+
+    public void checkUserStatus(){
+        block = !Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER");
+        if(block){
+            imageViewFinished.setColorFilter(getResources().getColor(R.color.colorGrey));
+            imageViewRandom.setColorFilter(getResources().getColor(R.color.colorGrey));
+        } else {
+            imageViewFinished.setColorFilter(getResources().getColor(R.color.colorAccent));
+            imageViewRandom.setColorFilter(getResources().getColor(R.color.colorAccent));
+        }
     }
 
     @Override
@@ -229,7 +237,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 break;
 
             case DEEZER:
-                chartPresenter.loadFavSongs(lastNum, mDeezerConnect);
+                chartPresenter.loadFavSongs(lastNum, DeezerHelper.init().mDeezerConnect);
                 break;
 
             case FINISHED:
@@ -256,7 +264,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 break;
 
             case DEEZER:
-                chartPresenter.loadFavSongs(lastNum, mDeezerConnect);
+                chartPresenter.loadFavSongs(lastNum, DeezerHelper.init().mDeezerConnect);
                 break;
 
             case FINISHED:
@@ -317,7 +325,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         SPlay.init().playlistType = PlaylistType.USER;
         this.username = username;
         initIconColor();
-        changeShowListState();
+        setChosenListState();
         loadTrackListStart(0, Prefs.genre(getContext()));
 
     }
@@ -326,7 +334,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void onLongClickTrack(TrackInfo trackInfo) {
         swipeLay.setRefreshing(true);
         DeezerRequest request = DeezerRequestFactory.requestCurrentUserAddTrack(trackInfo.getDeezerId());
-        subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+        subscription.add(StaticUtils.requestFromDeezer(DeezerHelper.init().mDeezerConnect, request)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(obj -> {
@@ -343,7 +351,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     @OnClick({R.id.fragment_chart_but_finished, R.id.fragment_chart_but_random})
     public void clickBlockBut(View view) {
         if (block) {
-
             int message = R.string.finish_but_denied;
             switch (view.getId()) {
                 case R.id.fragment_chart_but_finished:
@@ -393,7 +400,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 break;
         }
         initIconColor();
-        changeShowListState();
+        setChosenListState();
         loadHelpAnim(SPlay.init().playlistType.getTitle());
         loadTrackListStart(0, Prefs.genre(getContext()));
     }
@@ -406,7 +413,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         imageViewuUserSong.setColorFilter(getResources().getColor(R.color.colorAccent));
     }
 
-    public void changeShowListState() {
+    public void setChosenListState() {
         textUserName.setVisibility(View.GONE);
 
         switch (SPlay.init().playlistType) {
@@ -421,18 +428,12 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 break;
 
             case RANDOM:
-                int colorRandom =  R.color.colorOrange;
-                if(block)
-                    colorRandom = R.color.colorGrey;
-                imageViewRandom.setColorFilter(getResources().getColor(colorRandom));
+                imageViewRandom.setColorFilter(getResources().getColor(R.color.colorOrange));
                 mTracksAdapter.setMoreDataAvailable(false);
                 break;
 
             case FINISHED:
-                int colorFinished =  R.color.colorOrange;
-                if(block)
-                    colorFinished = R.color.colorGrey;
-                imageViewFinished.setColorFilter(getResources().getColor(colorFinished));
+                imageViewFinished.setColorFilter(getResources().getColor(R.color.colorOrange));
                 mTracksAdapter.setMoreDataAvailable(true);
                 break;
 
@@ -468,7 +469,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         if (genres == null) {
             swipeLay.setRefreshing(true);
             DeezerRequest request = DeezerRequestFactory.requestGenres();
-            subscription.add(StaticUtils.requestFromDeezer(mDeezerConnect, request)
+            subscription.add(StaticUtils.requestFromDeezer(DeezerHelper.init().mDeezerConnect, request)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe(obj -> {
@@ -501,13 +502,12 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         super.onAttach(context);
         iChoseTrack = (IChoseTrack) context;
         iProvideTrackList = (ITrackListState) context;
-        mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
     }
 
     @Override
     public void onRefresh() {
         loadTrackListStart(0, Prefs.genre(getContext()));
-        changeShowListState();
+        setChosenListState();
     }
 
 

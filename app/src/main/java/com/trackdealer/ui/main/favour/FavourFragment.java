@@ -22,6 +22,7 @@ import com.squareup.picasso.Picasso;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
+import com.trackdealer.helpersUI.DeezerHelper;
 import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
@@ -96,12 +97,20 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Bind(R.id.percent_like_seekbar)
     SeekBar seekBarLike;
 
+
+
     @Bind(R.id.progressbar)
     ProgressBar progressBar;
 
-    DeezerConnect mDeezerConnect = null;
-
     SearchDialogFragment searchDialogFragment;
+
+    public static FavourFragment newInstance(boolean showLike){
+        FavourFragment favourFragment = new FavourFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("showLike", showLike);
+        favourFragment.setArguments(bundle);
+        return favourFragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -118,6 +127,12 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
 
         relLayFavSong.setVisibility(GONE);
         butChange.setVisibility(GONE);
+
+        boolean showLike = getArguments().getBoolean("showLike");
+        if(showLike)
+            relLayPercentLike.setVisibility(VISIBLE);
+        else
+            relLayPercentLike.setVisibility(GONE);
         return view;
     }
 
@@ -129,8 +144,6 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof DeezerActivity)
-            mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
     }
 
     @Override
@@ -148,10 +161,11 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Override
     public void loadFavourTrackSuccess(TrackInfo trackInfo) {
         hideProgressBar();
-        if(trackInfo.getFinishDate() != null) {
+        if (trackInfo.getFinishDate() != null) {
             CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                     0, R.string.congratulations_track_likes,
-                    R.string.ok, (dialog, id) -> {});
+                    R.string.ok, (dialog, id) -> {
+            });
             builder.create().show();
         }
         setFavouriteSong(trackInfo);
@@ -176,7 +190,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
             textSongDur.setText(trackInfo.getDuration());
             textLike.setText(Long.toString(trackInfo.getCountLike()));
             textDisLike.setText(Long.toString(trackInfo.getCountDislike()));
-            if(trackInfo.getCountDislike() + trackInfo.getCountLike() != 0) {
+            if (trackInfo.getCountDislike() + trackInfo.getCountLike() != 0) {
                 Long progress = trackInfo.getCountDislike() / (trackInfo.getCountDislike() + trackInfo.getCountLike()) * 100;
                 seekBarLike.setProgress(progress.intValue());
             } else {
@@ -189,21 +203,16 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
         }
     }
 
+    public boolean songChosen(){
+        return relLayEmpty.getVisibility() != VISIBLE;
+    }
 
-    @OnClick({R.id.chose_song_song_empty,R.id.chose_song_but_change})
+
+    @OnClick({R.id.chose_song_song_empty, R.id.chose_song_but_change})
     public void clickChoseSong() {
         searchDialogFragment = new SearchDialogFragment();
         searchDialogFragment.show(FavourFragment.this.getChildFragmentManager(), "search");
     }
-
-//    @OnClick(R.id.chose_song_but_change)
-//    public void clickReChoseSong() {
-//        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-//                R.string.chose_song_title, R.string.rechose_song_message,
-//                R.string.yes, (dialog, id) -> clickChoseSong(),
-//                R.string.no, (dialog, id) -> dialog.dismiss());
-//        builder.create().show();
-//    }
 
     @Override
     public void onClickTrack(TrackInfo trackInfo) {
@@ -226,7 +235,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
         hideKeyboard();
         showProgressBar();
         DeezerRequest request = DeezerRequestFactory.requestAlbum(trackInfo.getAlbumId());
-        Observable<String> observableGenre = StaticUtils.requestFromDeezer(mDeezerConnect, request)
+        Observable<String> observableGenre = StaticUtils.requestFromDeezer(DeezerHelper.init().mDeezerConnect, request)
                 .map(obj -> {
                     if (!((Album) obj).getGenres().isEmpty())
                         return ((Album) obj).getGenres().get(0).getName();

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
+import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.models.User;
 import com.trackdealer.models.UserSettings;
 import com.trackdealer.net.Restapi;
@@ -54,9 +56,6 @@ public class PreloginActivity extends BaseActivity {
     @Bind(R.id.prelogin_background)
     ImageView imageViewBackground;
 
-    @Bind(R.id.progressbar)
-    ProgressBar progressBar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +67,25 @@ public class PreloginActivity extends BaseActivity {
         logoText.setText(Html.fromHtml(text));
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 201: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(this, 0, R.string.permisstion_needed_text,
+                            R.string.permisstion_needed_change_permission, (dialog, id) ->
+                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201)
+                            ,
+                            R.string.permisstion_needed_dont_change_permission, (dialog, id) -> {
+                    });
+                    builder.create().show();
+                }
+            }
         }
     }
 
@@ -86,11 +104,4 @@ public class PreloginActivity extends BaseActivity {
         startActivity(new Intent(this, LogActivity.class));
     }
 
-    protected void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    protected void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-    }
 }
