@@ -40,7 +40,7 @@
     <string name="your_chose">Твой выбор на этой неделе:</string>
     <string name="change">Изменить</string>
     <string name="fav_song_empty_message">Еще не выбрал любимую песню? Кликай сюда!</string>
-    <string name="chose_song">Введите низвание песни</string>
+    <string name="chose_song">Введите название песни</string>
     <string name="chose_song_title">Подтверждение выбора</string>
     <string name="chose_song_message">Вы точно хотите выбрать эту песню любимой?\n\nПредыдущая песня будет удалена из чарта, и информация по ней будет утеряна</string>
 
@@ -64,8 +64,8 @@
     <string name="username">Пользователь: </string>
     <string name="user_status">Статус: </string>
     <string name="user_status_info_header">Информация</string>
-    <string name="user_status_info">Статус TRACKLISTENER:\nбазовый статус для всех пользователей.\n\nСтатус TRACKDEALER:\nпозволит открыть дополнительные возможности:\n - узнать лучшие треки прошлой недели.
-        \n - получить случайный набор треков и услышать что-то новое.\n\nПолучить статус TRACKDEALER просто - твой трек должен хотя бы раз попасть в число лучших.</string>
+    <string name="user_status_info">Статус TRACKLISTENER:\nбазовый статус для всех пользователей.\n\nСтатус TRACKDEALER:\nпозволит открыть дополнительные возможности:\n - слушать лучшие треки за всё время.
+        \n - выбрать случайный набор треков и услышать что-то новое.\n\nПолучить статус TRACKDEALER просто - твой трек должен хотя бы раз попасть в число лучших.</string>
 
     <string name="account_logout_header">Подтверждение выхода</string>
     <string name="account_logout">Вы действительно хотите выйти из TrackDealer?\n\nПри выходе автоматически будет совершен выход из Deezer-аккаунта.</string>

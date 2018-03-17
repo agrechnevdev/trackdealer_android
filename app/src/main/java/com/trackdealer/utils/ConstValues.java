@@ -15,6 +15,7 @@ public class ConstValues {
     public static final String SHARED_KEY_USERNAME = "SharedUsername";
     public static final String SHARED_KEY_LOG_ERROR = "SharedLogErrors";
     public static final String SHARED_KEY_FILTER = "SharedFilter";
+    public static final String SHARED_KEY_NOT_FIRST_START = "SharedNotFirstStart";
 
 
     public static final String SHARED_FILENAME_TRACK = "SharedTrack";

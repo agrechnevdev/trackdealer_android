@@ -11,7 +11,6 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.player.event.PlayerState;
@@ -25,6 +24,7 @@ import com.trackdealer.interfaces.ILogout;
 import com.trackdealer.interfaces.ITrackListState;
 import com.trackdealer.models.ShowPlaylist;
 import com.trackdealer.net.Restapi;
+import com.trackdealer.ui.login.FirstChoseSongActivity;
 import com.trackdealer.ui.login.PreloginActivity;
 import com.trackdealer.ui.main.chart.ChartFragment;
 import com.trackdealer.ui.main.chart.PlaylistDialog;
@@ -42,6 +42,9 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 import retrofit2.Retrofit;
 import timber.log.Timber;
+
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_NOT_FIRST_START;
 
 /**
  * Created by grechnev-av on 31.08.2017.
@@ -102,6 +105,11 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         callStateListener = new CallStateListener();
         telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+
+
+        if(!Prefs.getBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START)){
+            startActivity(new Intent(this, FirstChoseSongActivity.class));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -158,6 +166,8 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
         telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_NONE);
+        callStateListener = null;
+        telephonyManager = null;
         compositeDisposable.dispose();
         unregisterReceiver(headSetReceiver);
     }

@@ -13,15 +13,15 @@ import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.StaticUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -41,6 +41,12 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         subscription = new CompositeDisposable();
         this.context = context;
         this.restapi = restapi;
+    }
+
+    public enum TypeLike {
+        ADDLIKE,
+        UPDATELIKE,
+        DELETELIKE;
     }
 
     @Override
@@ -103,30 +109,44 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         }
     }
 
-    public void trackLike(long trackId, Boolean like) {
+    public void operTrackLike(TypeLike typeLike, long trackId, Boolean like) {
+        Observable<Response<ResponseBody>> observable = restapi.like(trackId, like);
+        switch (typeLike) {
+            case ADDLIKE:
+                observable = restapi.like(trackId, like);
+                break;
+            case UPDATELIKE:
+                observable = restapi.updateLike(trackId, like);
+                break;
+            case DELETELIKE:
+                observable = restapi.deleteLike(trackId, like);
+                break;
+        }
+
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
-                    restapi.like(trackId, like)
+                    observable
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
                             .subscribe(
                                     response -> {
-                                        Timber.e(TAG + " trackLike response code: " + response.code());
+                                        Timber.e(TAG + " operTrackLike " + typeLike.name() + "response code: " + response.code() );
                                         if (response.isSuccessful()) {
-                                            chartView.trackLikeSuccess();
+                                            chartView.operLikeSuccess();
                                         } else {
-                                            chartView.trackLikeFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            chartView.operLikeFailed(ErrorHandler.getErrorMessageFromResponse(response));
                                         }
                                     },
                                     ex -> {
-                                        Timber.e(ex, TAG + " trackLike onError() " + ex.getMessage());
-                                        chartView.trackLikeFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        Timber.e(ex, TAG + " operTrackLike " + typeLike.name() + " onError() " + ex.getMessage()  );
+                                        chartView.operLikeFailed(ErrorHandler.buildErrorDescriptionShort(ex));
                                     }
                             ));
         } else {
-            chartView.trackLikeFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            chartView.operLikeFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
         }
     }
+
 
     public void getPeriodsTracks(Integer index, String date) {
         if (ConnectionsManager.isOnline(context)) {
@@ -156,7 +176,7 @@ public class ChartPresenter extends BasePresenter<ChartView> {
         }
     }
 
-    public  void randomList(String genre) {
+    public void randomList(String genre) {
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
                     restapi.randomList(genre)

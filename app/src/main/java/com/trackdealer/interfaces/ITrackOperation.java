@@ -8,5 +8,9 @@ public interface ITrackOperation {
 
     void trackLike(long trackId, Boolean like);
 
+    void updateLike(long trackId, Boolean like);
+
+    void delteLike(long trackId, Boolean like);
+
     void clickUser(String username);
 }

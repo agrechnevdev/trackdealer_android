@@ -19,8 +19,8 @@ public interface ChartView extends BaseView{
 
     void loadTrackListFailed(Exception ex, int lastNum);
 
-    void trackLikeSuccess();
+    void operLikeSuccess();
 
-    void trackLikeFailed(String error);
+    void operLikeFailed(String error);
 
 }

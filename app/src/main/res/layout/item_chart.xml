@@ -4,154 +4,161 @@
     android:id="@+id/item_chart_lay_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="@dimen/vertical_margin">
+    android:orientation="vertical">
+
 
     <RelativeLayout
+        android:id="@+id/item_chart_lay_finish_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/horizontal_margin"
-        android:layout_marginRight="@dimen/horizontal_margin">
+        android:background="@color/colorAccent">
 
-        <RelativeLayout
-            android:id="@+id/item_chart_lay_finish_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorYellow"
-            android:layout_marginBottom="@dimen/dp10">
-
-            <TextView
-                android:id="@+id/item_chart_text_finish_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginRight="@dimen/dp4"
-                android:text="@string/period_top_date_text"
-                android:layout_centerVertical="true"
-                android:textColor="@color/colorPrimaryDark"
-                android:textSize="@dimen/text_size_main" />
-
-            <View
-                android:id="@+id/item_chart_finish_date_divider"
-                android:background="@color/colorDivider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/height_1dp"
-                android:layout_below="@id/item_chart_text_finish_date"
-                android:layout_marginTop="@dimen/dp4" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/item_chart_lay_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/item_chart_lay_finish_date"
-            android:background="@drawable/selectable_item_background"
-            android:clickable="true">
-
-            <TextView
-                android:id="@+id/item_chart_text_position"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginRight="@dimen/dp4"
-                android:text="1"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="@dimen/text_size_large"
-                android:visibility="gone" />
-
-            <RelativeLayout
-                android:id="@+id/item_chart_lay_image_play"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/item_chart_text_position">
-
-                <ImageView
-                    android:id="@+id/item_chart_image_play"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/subbuffer" />
-
-                <com.taishi.library.Indicator
-                    android:id="@+id/item_chart_play_indicator"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_centerInParent="true"
-                    android:padding="10dp"
-                    android:visibility="gone"
-                    app:bar_color="@color/colorAccent"
-                    app:bar_num="3"
-                    app:duration="3000"
-                    app:step_num="10" />
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/item_chart_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:drawableLeft="@drawable/ic_access_time"
-                android:text=" 3:00"
-                android:textColor="@color/textColorPrimary" />
-
-            <TextView
-                android:id="@+id/item_chart_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp4"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
-                android:layout_toLeftOf="@id/item_chart_duration"
-                android:layout_toRightOf="@id/item_chart_lay_image_play"
-                android:text="Название"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_size_main" />
-
-            <TextView
-                android:id="@+id/item_chart_artist"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_chart_title"
-                android:layout_marginLeft="@dimen/dp10"
-                android:layout_marginRight="@dimen/dp10"
-                android:layout_toLeftOf="@id/item_chart_duration"
-                android:layout_toRightOf="@id/item_chart_lay_image_play"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="Артист"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="@dimen/text_size_small_14" />
-
-            <TextView
-                android:id="@+id/item_chart_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/item_chart_artist"
-                android:layout_marginLeft="50dp"
-                android:layout_marginTop="@dimen/dp10"
-                android:drawableLeft="@drawable/ic_user_playlist"
-                android:drawablePadding="@dimen/dp4"
-                android:gravity="center_vertical"
-                android:text="coool"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/text_size_main" />
-        </RelativeLayout>
-
-        <include
-            android:id="@+id/layout_like"
-            layout="@layout/layout_like"
+        <TextView
+            android:id="@+id/item_chart_text_finish_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/item_chart_lay_info" />
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp4"
+            android:text="@string/period_top_date_text"
+            android:textColor="@color/colorAlmostWhite"
+            android:textSize="@dimen/text_size_main" />
 
-        <include
-            android:id="@+id/item_chart_divider"
-            layout="@layout/divider"
+        <View
+            android:id="@+id/item_chart_finish_date_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_1dp"
-            android:layout_below="@id/layout_like"
-            android:layout_marginTop="@dimen/dp4" />
+            android:layout_below="@id/item_chart_text_finish_date"
+            android:layout_marginTop="@dimen/dp4"
+            android:background="@color/colorDivider" />
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/item_chart_lay_main_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp10"
+        android:layout_below="@id/item_chart_lay_finish_date">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/horizontal_margin"
+            android:layout_marginRight="@dimen/horizontal_margin">
+
+            <RelativeLayout
+                android:id="@+id/item_chart_lay_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/selectable_item_background"
+                android:clickable="true">
+
+                <TextView
+                    android:id="@+id/item_chart_text_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginRight="@dimen/dp4"
+                    android:text="1"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="@dimen/text_size_large"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/item_chart_lay_image_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/item_chart_text_position">
+
+                    <ImageView
+                        android:id="@+id/item_chart_image_play"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/subbuffer" />
+
+                    <com.taishi.library.Indicator
+                        android:id="@+id/item_chart_play_indicator"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerInParent="true"
+                        android:padding="10dp"
+                        android:visibility="gone"
+                        app:bar_color="@color/colorAccent"
+                        app:bar_num="3"
+                        app:duration="3000"
+                        app:step_num="10" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/item_chart_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:drawableLeft="@drawable/ic_access_time"
+                    android:text=" 3:00"
+                    android:textColor="@color/textColorPrimary" />
+
+                <TextView
+                    android:id="@+id/item_chart_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp4"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toLeftOf="@id/item_chart_duration"
+                    android:layout_toRightOf="@id/item_chart_lay_image_play"
+                    android:text="Название"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_size_main" />
+
+                <TextView
+                    android:id="@+id/item_chart_artist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/item_chart_title"
+                    android:layout_marginLeft="@dimen/dp10"
+                    android:layout_marginRight="@dimen/dp10"
+                    android:layout_toLeftOf="@id/item_chart_duration"
+                    android:layout_toRightOf="@id/item_chart_lay_image_play"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="Артист"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="@dimen/text_size_small_14" />
+
+                <TextView
+                    android:id="@+id/item_chart_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/item_chart_artist"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="@dimen/dp10"
+                    android:drawableLeft="@drawable/ic_user_playlist"
+                    android:drawablePadding="@dimen/dp4"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/dp4"
+                    android:background="@drawable/selectable_item_background"
+                    android:text="coool"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/text_size_main" />
+            </RelativeLayout>
+
+            <include
+                android:id="@+id/layout_like"
+                layout="@layout/layout_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/item_chart_lay_info" />
+
+            <include
+                android:id="@+id/item_chart_divider"
+                layout="@layout/divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_1dp"
+                android:layout_below="@id/layout_like"
+                android:layout_marginTop="@dimen/dp4" />
+
+        </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

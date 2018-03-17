@@ -129,7 +129,8 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
+        if(context instanceof DeezerActivity)
+            mDeezerConnect = ((DeezerActivity) context).getmDeezerConnect();
     }
 
     @Override
@@ -147,7 +148,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Override
     public void loadFavourTrackSuccess(TrackInfo trackInfo) {
         hideProgressBar();
-        if(trackInfo.getFinished() != null && trackInfo.getFinished()) {
+        if(trackInfo.getFinishDate() != null) {
             CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                     0, R.string.congratulations_track_likes,
                     R.string.ok, (dialog, id) -> {});
@@ -159,7 +160,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     @Override
     public void loadFavourTrackFailed(String error) {
         hideProgressBar();
-        ErrorHandler.handleError(getContext(), error, new Exception(), ((dialog, which) -> loadFavouriteSongStart()));
+        ErrorHandler.handleError(getActivity(), error, new Exception(), ((dialog, which) -> loadFavouriteSongStart()));
     }
 
     public void setFavouriteSong(TrackInfo trackInfo) {

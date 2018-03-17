@@ -23,7 +23,6 @@ import com.deezer.sdk.model.Genre;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
-import com.jakewharton.rxbinding2.view.RxView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.ChartAdapter;
@@ -38,7 +37,6 @@ import com.trackdealer.interfaces.ITrackOperation;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.DeezerActivity;
-import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.ui.mvp.ChartPresenter;
 import com.trackdealer.ui.mvp.ChartView;
 import com.trackdealer.utils.ErrorHandler;
@@ -172,18 +170,8 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         swipeLay.setColorSchemeResources(R.color.colorAccent);
 
         block = !Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER");
-        checkUserStatus();
-
         return view;
     }
-
-    public void checkUserStatus() {
-        if(block){
-            imageViewFinished.setColorFilter(getResources().getColor(R.color.colorGrey));
-            imageViewRandom.setColorFilter(getResources().getColor(R.color.colorGrey));
-        }
-    }
-
 
     @Override
     public void onResume() {
@@ -210,16 +198,26 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @Override
     public void trackLike(long trackId, Boolean like) {
-        chartPresenter.trackLike(trackId, like);
+        chartPresenter.operTrackLike(ChartPresenter.TypeLike.ADDLIKE, trackId, like);
     }
 
     @Override
-    public void trackLikeSuccess() {
+    public void updateLike(long trackId, Boolean like) {
+        chartPresenter.operTrackLike(ChartPresenter.TypeLike.UPDATELIKE, trackId, like);
+    }
+
+    @Override
+    public void delteLike(long trackId, Boolean like) {
+        chartPresenter.operTrackLike(ChartPresenter.TypeLike.DELETELIKE, trackId, like);
+    }
+
+    @Override
+    public void operLikeSuccess() {
 
     }
 
     @Override
-    public void trackLikeFailed(String error) {
+    public void operLikeFailed(String error) {
 
     }
 
@@ -311,13 +309,14 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void loadTrackListFailed(Exception ex, int lastNum) {
         if (lastNum == 0)
             swipeLay.setRefreshing(false);
-        ErrorHandler.handleError(getContext(), "Не получить список любимых песен.", ex, ((dialog, which) -> loadTrackListStart(lastNum, Prefs.genre(getContext()))));
+        ErrorHandler.handleError(getActivity(), "Не получить список любимых песен.", ex, ((dialog, which) -> loadTrackListStart(lastNum, Prefs.genre(getContext()))));
     }
 
     @Override
     public void clickUser(String username) {
         SPlay.init().playlistType = PlaylistType.USER;
         this.username = username;
+        initIconColor();
         changeShowListState();
         loadTrackListStart(0, Prefs.genre(getContext()));
 
@@ -335,7 +334,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                             swipeLay.setRefreshing(false);
                         },
                         ex -> {
-                            ErrorHandler.handleError(getContext(), "Не удалось добавить песню.", (Exception) ex, (dialog, which) -> onLongClickTrack(trackInfo));
+                            ErrorHandler.handleError(getActivity(), "Не удалось добавить песню.", (Exception) ex, (dialog, which) -> onLongClickTrack(trackInfo));
                             swipeLay.setRefreshing(false);
                         }
                 ));
@@ -393,19 +392,21 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 mTracksAdapter.setMoreDataAvailable(false);
                 break;
         }
+        initIconColor();
         changeShowListState();
         loadHelpAnim(SPlay.init().playlistType.getTitle());
         loadTrackListStart(0, Prefs.genre(getContext()));
     }
 
-    public void changeShowListState() {
-        linLayFilter.setVisibility(View.GONE);
-        int color = block ? R.color.colorGrey : R.color.colorAccent;
+    public void initIconColor(){
         imageViewTracksMain.setColorFilter(getResources().getColor(R.color.colorAccent));
         imageViewDeezer.setColorFilter(getResources().getColor(R.color.colorAccent));
-        imageViewFinished.setColorFilter(getResources().getColor(color));
-        imageViewRandom.setColorFilter(getResources().getColor(color));
+        imageViewFinished.setColorFilter(getResources().getColor(R.color.colorAccent));
+        imageViewRandom.setColorFilter(getResources().getColor(R.color.colorAccent));
         imageViewuUserSong.setColorFilter(getResources().getColor(R.color.colorAccent));
+    }
+
+    public void changeShowListState() {
         textUserName.setVisibility(View.GONE);
 
         switch (SPlay.init().playlistType) {
@@ -420,12 +421,18 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 break;
 
             case RANDOM:
-                imageViewRandom.setColorFilter(getResources().getColor(R.color.colorOrange));
+                int colorRandom =  R.color.colorOrange;
+                if(block)
+                    colorRandom = R.color.colorGrey;
+                imageViewRandom.setColorFilter(getResources().getColor(colorRandom));
                 mTracksAdapter.setMoreDataAvailable(false);
                 break;
 
             case FINISHED:
-                imageViewFinished.setColorFilter(getResources().getColor(R.color.colorOrange));
+                int colorFinished =  R.color.colorOrange;
+                if(block)
+                    colorFinished = R.color.colorGrey;
+                imageViewFinished.setColorFilter(getResources().getColor(colorFinished));
                 mTracksAdapter.setMoreDataAvailable(true);
                 break;
 

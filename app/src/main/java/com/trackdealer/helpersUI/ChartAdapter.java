@@ -50,8 +50,8 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     class TrackViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.item_chart_lay_main)
-        RelativeLayout relLayMain;
+        @Bind(R.id.item_chart_lay_main_info)
+        RelativeLayout relLayMainInfo;
         @Bind(R.id.layout_like)
         RelativeLayout relLayLikeMain;
         @Bind(R.id.layout_like_lay_like)
@@ -149,8 +149,8 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             if (trackInfo.getUserNameLoad() != null) {
                 trackViewHolder.textUsername.setVisibility(View.VISIBLE);
-                trackViewHolder.textUsername.setText(trackInfo.getUserNameLoad());
-                trackViewHolder.textUsername.setOnClickListener(view -> iTrackOperation.clickUser(trackViewHolder.textUsername.getText().toString()));
+                trackViewHolder.textUsername.setText(trackInfo.getUserNameLoad() + " >");
+                trackViewHolder.textUsername.setOnClickListener(view -> iTrackOperation.clickUser(trackInfo.getUserNameLoad()));
             } else {
                 trackViewHolder.textUsername.setVisibility(View.GONE);
             }
@@ -170,28 +170,85 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     iLongClickTrack.onLongClickTrack(trackInfos.get(trackViewHolder.getAdapterPosition()));
                     return true;
                 });
+
                 fillNothing(trackViewHolder);
-                if (trackInfo.getUserLike() == null) {
-                    trackViewHolder.relLayLike.setOnClickListener(view -> {
+                if (trackInfo.getUserLike() != null) {
+                    if (trackInfo.getUserLike()) {
+                        fillLikes(trackViewHolder);
+                    } else {
+                        fillDisLikes(trackViewHolder);
+                    }
+                }
+
+                trackViewHolder.relLayLike.setOnClickListener(view -> {
+                    if(trackInfo.getUserLike() == null){
+                        // add Userlike
                         Long newLike = trackInfo.getCountLike() + 1;
                         trackViewHolder.textLike.setText(Long.toString(newLike));
+                        trackInfo.setCountLike(newLike);
                         trackInfo.setUserLike(true);
                         fillLikes(trackViewHolder);
                         iTrackOperation.trackLike(trackInfo.getDeezerId(), true);
-                    });
-                    trackViewHolder.relLayDislike.setOnClickListener(view -> {
-                        Long newLike = trackInfo.getCountDislike() + 1;
-                        trackViewHolder.textDislike.setText(Long.toString(newLike));
+                    } else {
+                        if(trackInfo.getUserLike()){
+                            // delete Userlike
+                            Long newLike = trackInfo.getCountLike() - 1;
+                            trackViewHolder.textLike.setText(Long.toString(newLike));
+                            trackInfo.setCountLike(newLike);
+                            trackInfo.setUserLike(null);
+                            fillNothing(trackViewHolder);
+                            iTrackOperation.delteLike(trackInfo.getDeezerId(), true);
+                        } else {
+                            // update Userlike to dislike
+                            Long newLike = trackInfo.getCountLike() + 1;
+                            trackViewHolder.textLike.setText(Long.toString(newLike));
+                            trackInfo.setCountLike(newLike);
+                            Long newDisLike = trackInfo.getCountDislike() - 1;
+                            trackViewHolder.textDislike.setText(Long.toString(newDisLike));
+                            trackInfo.setCountDislike(newDisLike);
+                            fillNothing(trackViewHolder);
+                            fillLikes(trackViewHolder);
+                            trackInfo.setUserLike(true);
+                            iTrackOperation.updateLike(trackInfo.getDeezerId(), true);
+                        }
+                    }
+                });
+
+                trackViewHolder.relLayDislike.setOnClickListener(view -> {
+                    if(trackInfo.getUserLike() == null){
+                        // add UserDislike
+                        Long newDislike = trackInfo.getCountDislike() + 1;
+                        trackViewHolder.textDislike.setText(Long.toString(newDislike));
+                        trackInfo.setCountDislike(newDislike);
                         trackInfo.setUserLike(false);
                         fillDisLikes(trackViewHolder);
                         iTrackOperation.trackLike(trackInfo.getDeezerId(), false);
-                    });
-                } else if (trackInfo.getUserLike()) {
-                    fillLikes(trackViewHolder);
-                } else {
-                    fillDisLikes(trackViewHolder);
-                }
-                if (trackInfo.getFinished()) {
+                    } else {
+                        if(!trackInfo.getUserLike()){
+                            // delete UserDislike
+                            Long newDislike = trackInfo.getCountDislike() - 1;
+                            trackViewHolder.textDislike.setText(Long.toString(newDislike));
+                            trackInfo.setCountDislike(newDislike);
+                            trackInfo.setUserLike(null);
+                            fillNothing(trackViewHolder);
+                            iTrackOperation.delteLike(trackInfo.getDeezerId(), false);
+                        } else {
+                            // update UserDislike ti like
+                            Long newDislike = trackInfo.getCountDislike() + 1;
+                            trackViewHolder.textDislike.setText(Long.toString(newDislike));
+                            trackInfo.setCountDislike(newDislike);
+                            Long newLike = trackInfo.getCountLike() - 1;
+                            trackViewHolder.textLike.setText(Long.toString(newLike));
+                            trackInfo.setCountLike(newLike);
+                            fillNothing(trackViewHolder);
+                            fillDisLikes(trackViewHolder);
+                            trackInfo.setUserLike(false);
+                            iTrackOperation.updateLike(trackInfo.getDeezerId(), false);
+                        }
+                    }
+                });
+
+                if (trackInfo.getFinishDate() != null) {
                     fillLikes(trackViewHolder);
                     fillDisLikes(trackViewHolder);
                     clickableLikes(trackViewHolder, false);
@@ -213,9 +270,9 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
                 Timber.d(TAG + " position VISIBLE " + position);
-                trackViewHolder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
+                trackViewHolder.relLayMainInfo.setBackgroundColor(context.getResources().getColor(R.color.colorLightBlue));
             } else {
-                trackViewHolder.relLayMain.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
+                trackViewHolder.relLayMainInfo.setBackgroundColor(context.getResources().getColor(R.color.colorBackgroundTransparent));
             }
 
             if (SPlay.init().playTrackId != null && SPlay.init().playTrackId == trackInfos.get(position).getDeezerId()) {
@@ -256,25 +313,21 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         int colorOrange = context.getResources().getColor(R.color.colorOrange);
         holder.imageLike.setColorFilter(colorOrange);
         holder.textLike.setTextColor(colorOrange);
-        clickableLikes(holder, false);
     }
 
     private void fillDisLikes(TrackViewHolder holder) {
         int colorAccent = context.getResources().getColor(R.color.colorAccent);
         holder.imageDislike.setColorFilter(colorAccent);
         holder.textDislike.setTextColor(colorAccent);
-        clickableLikes(holder, false);
     }
 
     private void fillNothing(TrackViewHolder holder) {
         int colorLightOrange = context.getResources().getColor(R.color.colorLightOrange);
         holder.imageLike.setColorFilter(colorLightOrange);
         holder.textLike.setTextColor(colorLightOrange);
-        clickableLikes(holder, true);
         int colorBlue = context.getResources().getColor(R.color.colorBlue);
         holder.imageDislike.setColorFilter(colorBlue);
         holder.textDislike.setTextColor(colorBlue);
-        clickableLikes(holder, true);
     }
 
     private void clickableLikes(TrackViewHolder holder, boolean clickable) {

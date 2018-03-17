@@ -22,8 +22,6 @@ public class TrackInfo {
     private String genre;
     @SerializedName("coverImage")
     private String coverImage;
-    @SerializedName("finished")
-    private Boolean finished;
     @SerializedName("countLike")
     private Long countLike;
     @SerializedName("countDislike")
@@ -120,14 +118,6 @@ public class TrackInfo {
 
     public void setCoverImage(String coverImage) {
         this.coverImage = coverImage;
-    }
-
-    public Boolean getFinished() {
-        return finished;
-    }
-
-    public void setFinished(Boolean finished) {
-        this.finished = finished;
     }
 
     public Long getCountLike() {

@@ -261,6 +261,10 @@ public static String getErrorMessageFromResponse(Response response) {
                     R.string.back, (dialog, id) -> {
             }, R.string.repeat, repeatListener);
             builder.create().show();
+        } else {
+            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(context, 0, messageForUser,
+                    R.string.ok, (dialog, id) -> {});
+            builder.create().show();
         }
 //        Toast toast = Toast.makeText(context, messageForUser, Toast.LENGTH_LONG);
 //        ((TextView) toast.getView().findViewById(android.R.id.message)).setTextColor(context.getResources().getColor(R.color.colorOrange));
