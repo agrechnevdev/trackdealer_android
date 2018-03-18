@@ -24,9 +24,10 @@
     <string name="enter">Войти</string>
 
     <string name="permisstion_needed_title">Разрешение</string>
-    <string name="permisstion_needed_text">Чтобы приложение работало корректно, требуется дать разрешение. Дать разрешение?</string>
-    <string name="permisstion_needed_change_permission">Да</string>
-    <string name="permisstion_needed_dont_change_permission">Нет</string>
+    <string name="permisstion_needed_text">Требуется дать разрешение, чтобы приложение работало корректно. Дать разрешение?</string>
+    <string name="permisstion_needed_text_2"> Требуется дать разрешение, чтобы приостанавливать работу плеера при звонках или воспроизведении аудио. Дать разрешение?</string>
+    <string name="positive">Да</string>
+    <string name="negative">Нет</string>
 
     <string name="chart">Плейлист</string>
     <string name="chose_fav_song">Твой трек</string>
@@ -37,8 +38,8 @@
 
     <string name="main_chart_text">Все треки</string>
     <string name="deezer_chart_text">Любимые треки Deezer</string>
-    <string name="finished_chart_text">Лучшие треки прошлой недели</string>
-    <string name="random_chart_text">Случайный выбор треков</string>
+    <string name="finished_chart_text">Лучшие треки</string>
+    <string name="random_chart_text">Случайные треки</string>
     <string name="user_chart_text">Треки пользователя</string>
 
     <string name="period_top_date_text">Лучшие треки от</string>
@@ -52,9 +53,20 @@
     <string name="fav_song_first_chose_1">1. Выбери любимый трек</string>
     <string name="fav_song_first_chose_2">2. Получай лайки от других пользователей и ставь сам</string>
     <string name="fav_song_first_chose_3">3. Твой трек собрал больше всех лайков? Тебе доступны новые возможности приложения!</string>
-    <string name="fav_song_first_chose_4">4. Ищи новые треки с TRACKDEALER</string>
-    <string name="song_not_chosen">Чтобы продолжить выберите трек</string>
+    <string name="fav_song_first_chose_4">Кликни по каждой из кнопок, чтобы узнать больше о возможностях приложения</string>
+    <string name="fav_song_first_chose_5">4. Слушай новую музыку каждый день и делись своими треками с другими!</string>
+    <string name="song_not_chosen">Чтобы продолжить выбери трек</string>
     <string name="chose">Выбрать</string>
+
+    <string name="info_list_title">Подсказка</string>
+    <string name="info_list">Треки, получившие больше всего лайков и меньше всего дизлайков, находятся вверху списка.
+        Пользователи, чьи треки окажутся лучшими, получат доступ к допольнительным возможностям приложения, а их треки перейдут в раздел \"Лучшие треки\".
+        Обновление списка происходит раз в несколько дней.</string>
+    <string name="info_deezer_list">Любимые треки твоего Deezer-аккаунта. Чтобы посмотреть список и добавить в него свой трек, нужно \n1. Подключить Deezer-аккаунт в профиле\n2. Долгое нажатие на понравившийся трек добавит его в этот список.  </string>
+    <string name="info_user_list">Все треки пользователя. Здесь можешь посмотреть и послушать все свои треки, за всё время</string>
+    <string name="info_finished_list">Здесь показаны лучшие треки пользователей за всё время. Доступ только для пользователей со статусом TRACKDEALER</string>
+    <string name="info_random_list">Случайная выборка песен из списка, возможность найти что-то новое для себя. Доступ только для пользователей со статусом TRACKDEALER</string>
+
 
     <string name="deezer_account_login">Подключить аккаунт Deezer</string>
     <string name="deezer_account_info">Подключение к Deezer позволит добавлять треки в плейлист "Любимые треки", а c аккаунтом PREMIUM или PREMIUM+ позволит Вам прослушивать треки полностью</string>
@@ -73,7 +85,7 @@
         \n - выбрать случайный набор треков и услышать что-то новое.\n\nПолучить статус TRACKDEALER просто - твой трек должен хотя бы раз попасть в число лучших.</string>
 
     <string name="account_logout_header">Подтверждение выхода</string>
-    <string name="account_logout">Вы действительно хотите выйти из TrackDealer?\n\nПри выходе автоматически будет совершен выход из Deezer-аккаунта.</string>
+    <string name="account_logout">Действительно хочешь выйти из TrackDealer?\n\nПри выходе автоматически будет совершен выход из Deezer-аккаунта.</string>
 
     <string name="text_trackdealer"><![CDATA[<p><font color="#007cd0">TRACK</font><font color="#fd7d20">DEALER</font></p>]]></string>
 

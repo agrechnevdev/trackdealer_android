@@ -170,9 +170,9 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         return view;
     }
 
-    public void checkUserStatus(){
+    public void checkUserStatus() {
         block = !Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER");
-        if(block){
+        if (block) {
             imageViewFinished.setColorFilter(getResources().getColor(R.color.colorGrey));
             imageViewRandom.setColorFilter(getResources().getColor(R.color.colorGrey));
         } else {
@@ -362,7 +362,6 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                     message = R.string.random_but_denied;
                     break;
             }
-
             CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
                     0, message,
                     R.string.ok, (dialog, id) -> {
@@ -405,7 +404,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         loadTrackListStart(0, Prefs.genre(getContext()));
     }
 
-    public void initIconColor(){
+    public void initIconColor() {
         imageViewTracksMain.setColorFilter(getResources().getColor(R.color.colorAccent));
         imageViewDeezer.setColorFilter(getResources().getColor(R.color.colorAccent));
         imageViewFinished.setColorFilter(getResources().getColor(R.color.colorAccent));

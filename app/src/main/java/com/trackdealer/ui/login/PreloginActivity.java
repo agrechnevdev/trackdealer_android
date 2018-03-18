@@ -8,35 +8,18 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.trackdealer.BaseApp;
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
-import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
-import com.trackdealer.models.User;
-import com.trackdealer.models.UserSettings;
-import com.trackdealer.net.Restapi;
-import com.trackdealer.ui.main.MainActivity;
-import com.trackdealer.utils.ErrorHandler;
-import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
-
-import java.util.Set;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Retrofit;
-
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 /**
  * Created by grechnev-av on 11.10.2017.
@@ -77,13 +60,16 @@ public class PreloginActivity extends BaseActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(this, 0, R.string.permisstion_needed_text,
-                            R.string.permisstion_needed_change_permission, (dialog, id) ->
-                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201)
-                            ,
-                            R.string.permisstion_needed_dont_change_permission, (dialog, id) -> {
-                    });
-                    builder.create().show();
+                    new MaterialStyledDialog.Builder(this)
+                            .setTitle(getString(R.string.permisstion_needed_title))
+                            .setHeaderDrawable(R.drawable.app_logo_bold)
+                            .setDescription(getString(R.string.permisstion_needed_text))
+                            .setPositiveText(R.string.positive)
+                            .onPositive((dialog, which) -> ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201))
+                            .setNegativeText(R.string.negative)
+                            .onNegative((dialog, which) -> {
+                            })
+                            .show();
                 }
             }
         }

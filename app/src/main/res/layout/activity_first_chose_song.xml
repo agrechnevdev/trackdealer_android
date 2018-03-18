@@ -9,20 +9,14 @@
         android:id="@+id/first_chose_song_text_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp4"
         android:layout_marginLeft="@dimen/horizontal_margin"
         android:layout_marginRight="@dimen/horizontal_margin"
         android:layout_marginTop="@dimen/vertical_margin_x2"
         android:text="@string/fav_song_first_chose_1"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/text_size_medium" />
+        android:textSize="@dimen/text_size_main" />
 
-    <!--<include layout="@layout/fragment_favour"-->
-    <!--android:id="@+id/first_chose_song_fav_song"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_below="@id/first_chose_song_text_1"/>-->
     <FrameLayout
         android:id="@+id/first_chose_song_fav_song"
         android:layout_width="match_parent"
@@ -40,7 +34,7 @@
         android:text="@string/fav_song_first_chose_2"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/text_size_medium" />
+        android:textSize="@dimen/text_size_main" />
 
     <RelativeLayout
         android:id="@+id/first_chose_song_lay_user_likes"
@@ -118,7 +112,7 @@
         android:text="@string/fav_song_first_chose_3"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/text_size_medium" />
+        android:textSize="@dimen/text_size_main" />
 
     <include
         android:id="@+id/layout_chart_menu"
@@ -128,6 +122,20 @@
         android:layout_below="@id/first_chose_song_text_3"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/vertical_margin" />
+
+    <TextView
+        android:id="@+id/first_chose_song_text_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_chart_menu"
+        android:layout_marginBottom="@dimen/dp4"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:text="@string/fav_song_first_chose_5"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_main" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/first_chose_but_cont"

@@ -1,12 +1,8 @@
 package com.trackdealer.ui.login;
 
-import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.graphics.drawable.ArgbEvaluator;
-import android.view.animation.Animation;
-import android.view.animation.LinearInterpolator;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,7 +15,6 @@ import com.trackdealer.utils.Prefs;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_NOT_FIRST_START;
@@ -110,6 +105,44 @@ public class FirstChoseSongActivity extends BaseActivity {
         } else {
             CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(this,
                     0, R.string.song_not_chosen,
+                    R.string.ok, (dialog, id) -> {
+            }
+            );
+            builder.create().show();
+        }
+    }
+
+    @OnClick({R.id.fragment_chart_but_tracks_main, R.id.fragment_chart_but_deezer, R.id.fragment_chart_but_user_songs, R.id.fragment_chart_but_finished, R.id.fragment_chart_but_random})
+    public void clickMenuItem(View view) {
+
+        int message = 0;
+        int title = 0;
+        switch (view.getId()) {
+            case R.id.fragment_chart_but_tracks_main:
+                title = R.string.main_chart_text;
+                message = R.string.info_list;
+                break;
+            case R.id.fragment_chart_but_deezer:
+                title = R.string.deezer_chart_text;
+                message = R.string.info_deezer_list;
+                break;
+            case R.id.fragment_chart_but_finished:
+                title = R.string.finished_chart_text;
+                message = R.string.info_finished_list;
+                break;
+            case R.id.fragment_chart_but_random:
+                title = R.string.random_chart_text;
+                message = R.string.info_random_list;
+                break;
+            case R.id.fragment_chart_but_user_songs:
+                title = R.string.user_chart_text;
+                message = R.string.info_user_list;
+                break;
+        }
+
+        if (message != 0) {
+            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(this,
+                    title, message,
                     R.string.ok, (dialog, id) -> {
             }
             );
