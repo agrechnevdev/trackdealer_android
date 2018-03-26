@@ -57,7 +57,7 @@ public class FilterDialogFragment extends DialogFragment implements FilterDialog
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setNegativeButton(R.string.close, null);
-        builder.setTitle("Выбери то, что нравится");
+        builder.setTitle(getString(R.string.chose_what_you_like));
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.list_recycler, null);
         builder.setView(view);

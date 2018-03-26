@@ -12,10 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
 import com.trackdealer.utils.StaticUtils;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,27 +48,27 @@ public class PreloginActivity extends BaseActivity {
         imageViewBackground.setImageBitmap(StaticUtils.cutPicture(this, R.drawable.prelogin_background));
         String text = "<b><font color=#007cd0>TRACK</font></b><b><font color=#fd7d20>DEALER</font></b>";
         logoText.setText(Html.fromHtml(text));
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 202);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case 201: {
+            case 202: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 } else {
-                    new MaterialStyledDialog.Builder(this)
-                            .setTitle(getString(R.string.permisstion_needed_title))
-                            .setHeaderDrawable(R.drawable.app_logo_bold)
-                            .setDescription(getString(R.string.permisstion_needed_text))
-                            .setPositiveText(R.string.positive)
-                            .onPositive((dialog, which) -> ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201))
-                            .setNegativeText(R.string.negative)
-                            .onNegative((dialog, which) -> {
-                            })
+                    new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                            .setTopColorRes(R.color.colorLightBlue)
+                            .setButtonsColorRes(R.color.colorOrange)
+                            .setIcon(R.drawable.ic_warning_red)
+                            .setTitle(R.string.permisstion_needed_title)
+                            .setMessage(R.string.permisstion_needed_text_2)
+                            .setPositiveButton(R.string.positive, v -> ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 202))
+                            .setNegativeButton(R.string.negative, null)
                             .show();
                 }
             }

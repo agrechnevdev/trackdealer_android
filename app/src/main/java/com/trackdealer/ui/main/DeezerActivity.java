@@ -258,12 +258,6 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                     .subscribe(obj -> {
                                 SPlay.init().playingTrack = (Track) obj;
 
-//                                new Thread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        trackPlayer.playTrack(SPlay.init().playingTrack.getId());
-//                                    }
-//                                }).start();
                                 if (trackPlayer.getPlayerState() == PlayerState.RELEASED)
                                     recreatePlayer();
                                 trackPlayer.playTrack(SPlay.init().playingTrack.getId());
@@ -273,10 +267,10 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
                                 setButtonEnabled(mButtonPlayerPlaylist, true);
                             },
                             ex -> {
-                                ErrorHandler.handleError(this, "Не удалось загрузить песню.", (Exception) ex, (dialog, which) -> loadSong(trackInfo));
+                                ErrorHandler.handleError(this, getString(R.string.handle_track_play_error), (Exception) ex, (dialog, which) -> loadSong(trackInfo));
                             }));
         } else {
-            ErrorHandler.handleError(this, "Ошибка соединения.", new Exception(), (dialog, which) -> loadSong(trackInfo));
+            ErrorHandler.handleError(this, getString(R.string.handle_connect_error), new Exception(), (dialog, which) -> loadSong(trackInfo));
         }
     }
 
@@ -403,7 +397,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         @Override
         public void onBufferError(final Exception ex, final double percent) {
             Timber.d(TAG + "onBufferError");
-            runOnUiThread(() -> ErrorHandler.handleError(DeezerActivity.this, "Ошибка при загрузке буфера.", ex, null));
+            runOnUiThread(() -> ErrorHandler.handleError(DeezerActivity.this, getString(R.string.handle_buffer_error), ex, null));
 //            recreatePlayer();
 //            playNextTrack();
         }
@@ -417,7 +411,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
         @Override
         public void onPlayerError(final Exception ex, final long timePosition) {
             Timber.d(TAG + "onPlayerError");
-            runOnUiThread(() -> ErrorHandler.handleError(DeezerActivity.this, "Ошибка плеера", ex, null));
+            runOnUiThread(() -> ErrorHandler.handleError(DeezerActivity.this, getString(R.string.handle_error_player), ex, null));
         }
 
         @Override
@@ -468,7 +462,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
     public void connectToDeezer() {
         SessionStore sessionStore = new SessionStore();
         if (sessionStore.restore(DeezerHelper.init().mDeezerConnect, this)) {
-            Toast.makeText(this, "Уже залогинен в Deezer ", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.deezer_login_already), Toast.LENGTH_LONG).show();
         } else {
             DeezerHelper.init().mDeezerConnect.authorize(this, PERMISSIONS, mDeezerDialogListener);
         }
@@ -484,7 +478,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
             // store the current authentication info
             SessionStore sessionStore = new SessionStore();
             sessionStore.save(DeezerHelper.init().mDeezerConnect, getApplicationContext());
-            Toast.makeText(getApplicationContext(), "Вы залогинились в Deezer!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.deezer_login_success), Toast.LENGTH_LONG).show();
             recreatePlayer();
 
             EventBus.getDefault().post(DeezerHelper.init().mDeezerConnect);
@@ -571,7 +565,7 @@ public class DeezerActivity extends AppCompatActivity implements IConnectDeezer,
 
     @Override
     public void onRequestException(final Exception e, final Object requestId) {
-        ErrorHandler.handleError(this, "Ошибка при запросе на сервер.", e, null);
+        ErrorHandler.handleError(this, getString(R.string.handle_request_error), e, null);
     }
 
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {

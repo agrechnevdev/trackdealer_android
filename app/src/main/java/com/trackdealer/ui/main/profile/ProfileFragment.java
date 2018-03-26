@@ -14,7 +14,6 @@ import com.deezer.sdk.network.connect.DeezerConnect;
 import com.squareup.picasso.Picasso;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
-import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.helpersUI.DeezerHelper;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.interfaces.IConnected;
@@ -24,6 +23,7 @@ import com.trackdealer.ui.main.DeezerActivity;
 import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import javax.inject.Inject;
 
@@ -164,34 +164,45 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
 
     @OnClick(R.id.profile_user_but_status)
     public void clickStatusInfo() {
-        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-                R.string.user_status_info_header, R.string.user_status_info,
-                R.string.ok, (dialog, id) -> {
-        });
-        builder.create().show();
+        new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                .setTopColorRes(R.color.colorWhite)
+                .setButtonsColorRes(R.color.colorOrange)
+                .setIcon(R.drawable.ic_info_black)
+                .setTitle(R.string.user_status_info_header)
+                .setMessage(R.string.user_status_info)
+                .setPositiveButton(R.string.ok, null)
+                .show();
     }
 
     @OnClick(R.id.profile_deezer_but_logout)
     public void clickDeezerLogout() {
-        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-                R.string.exit, R.string.deezer_account_logout,
-                R.string.yes, (dialog, id) -> {
-            DeezerHelper.init().disconnectFromDeezer(getActivity());
-            initFields();
-        }, R.string.no, null);
-        builder.create().show();
+        new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                .setTopColorRes(R.color.colorWhite)
+                .setButtonsColorRes(R.color.colorOrange)
+                .setIcon(R.drawable.ic_warning_red)
+                .setTitle(R.string.exit)
+                .setMessage(R.string.deezer_account_logout)
+                .setPositiveButton(R.string.positive, v -> {
+                    DeezerHelper.init().disconnectFromDeezer(getActivity());
+                    initFields();
+                })
+                .setNegativeButton(R.string.negative, null)
+                .show();
     }
 
     @OnClick(R.id.profile_but_exit)
     public void clickLogout() {
-        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-                R.string.account_logout_header, R.string.account_logout,
-                R.string.yes,
-                (dialog, id) -> {
+        new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                .setTopColorRes(R.color.colorWhite)
+                .setButtonsColorRes(R.color.colorOrange)
+                .setIcon(R.drawable.ic_warning_red)
+                .setTitle(R.string.account_logout_header)
+                .setMessage(R.string.account_logout)
+                .setPositiveButton(R.string.positive, v -> {
                     profilePresenter.logout();
-                }, R.string.no, null);
-        builder.create().show();
-
+                })
+                .setNegativeButton(R.string.negative, null)
+                .show();
     }
 
     @Override

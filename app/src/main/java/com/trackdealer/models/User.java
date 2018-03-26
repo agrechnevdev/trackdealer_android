@@ -20,6 +20,8 @@ public class User {
     private String name;
     @SerializedName("dateRegistration")
     private String dateRegistration;
+    @SerializedName("language")
+    private String language;
     @SerializedName("status")
     private String status;
 
@@ -29,11 +31,12 @@ public class User {
         this.status = status;
     }
 
-    public User(String username, String password, String email, String name) {
+    public User(String username, String password, String email, String name, String language) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.name = name;
+        this.language = language;
     }
 
     public User(String username, String password, String email, String name, String dateRegistration, String status) {
@@ -91,6 +94,14 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public String getStatus() {

@@ -1,32 +1,22 @@
 package com.trackdealer.ui.main;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.player.event.PlayerState;
-import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog;
-import com.github.javiersantos.materialstyleddialogs.enums.Style;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.BottomNavigationHelper;
-import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.helpersUI.SPlay;
 import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.interfaces.IDispatchTouch;
@@ -41,6 +31,7 @@ import com.trackdealer.ui.main.chart.PlaylistDialog;
 import com.trackdealer.ui.main.favour.FavourFragment;
 import com.trackdealer.ui.main.profile.ProfileFragment;
 import com.trackdealer.utils.Prefs;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -116,30 +107,18 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         callStateListener = new CallStateListener();
         telephonyManager.listen(callStateListener, PhoneStateListener.LISTEN_CALL_STATE);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 202);
+        if (!Prefs.getBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START)) {
+            startActivity(new Intent(this, FirstChoseSongActivity.class));
         }
-    }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 202: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    new MaterialStyledDialog.Builder(this)
-                            .setTitle(getString(R.string.permisstion_needed_title))
-                            .setStyle(Style.HEADER_WITH_TITLE)
-                            .setDescription(getString(R.string.permisstion_needed_text_2))
-                            .setPositiveText(R.string.positive)
-                            .onPositive((dialog, which) -> ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 202))
-                            .setNegativeText(R.string.negative)
-                            .onNegative((dialog, which) -> {
-                            })
-                            .show();
-                }
-            }
+        if (!Prefs.getBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START)) {
+            new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                    .setTopColorRes(R.color.colorWhite)
+                    .setButtonsColorRes(R.color.colorOrange)
+                    .setIcon(R.drawable.app_logo_bold_small)
+                    .setMessage(R.string.info_first_start)
+                    .setPositiveButton(R.string.ok, v -> Prefs.putBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START, true))
+                    .show();
         }
     }
 
@@ -166,7 +145,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ShowPlaylist showPlaylist) {
-        playlistDialog = PlaylistDialog.newInstance("Список воспроизведения");
+        playlistDialog = PlaylistDialog.newInstance(getString(R.string.current_playlist));
         playlistDialog.show(getSupportFragmentManager(), "playlist");
     }
 
@@ -182,9 +161,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     @Override
     protected void onResume() {
         super.onResume();
-        if (!Prefs.getBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START)) {
-            startActivity(new Intent(this, FirstChoseSongActivity.class));
-        }
+
         Timber.d(TAG + " onResume() ");
     }
 

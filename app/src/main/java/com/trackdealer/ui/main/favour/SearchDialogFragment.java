@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.deezer.sdk.model.Track;
-import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
 import com.deezer.sdk.network.request.SearchResultOrder;
@@ -26,7 +25,6 @@ import com.trackdealer.helpersUI.DeezerHelper;
 import com.trackdealer.helpersUI.SearchTracksAdapter;
 import com.trackdealer.interfaces.IClickTrack;
 import com.trackdealer.models.TrackInfo;
-import com.trackdealer.ui.main.DeezerActivity;
 import com.trackdealer.utils.StaticUtils;
 
 import java.util.ArrayList;
@@ -68,7 +66,7 @@ public class SearchDialogFragment  extends DialogFragment implements IClickTrack
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setNegativeButton(R.string.close, null);
-        builder.setTitle("Твой выбор");
+        builder.setTitle(getString(R.string.your_chose));
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_fragment_search, null);
         builder.setView(view);

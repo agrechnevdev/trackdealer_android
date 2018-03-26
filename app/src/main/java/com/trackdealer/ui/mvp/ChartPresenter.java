@@ -6,6 +6,7 @@ import com.deezer.sdk.model.Track;
 import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
+import com.trackdealer.R;
 import com.trackdealer.base.BasePresenter;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
@@ -75,16 +76,16 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                                                 list = new ArrayList<>();
                                             chartView.loadTrackListSuccess(lastNum, list);
                                         } else {
-                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " loadTrackList onError() " + ex.getMessage());
-                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            chartView.loadTrackListFailed(context.getString(R.string.default_network_error));
         }
     }
 
@@ -105,7 +106,7 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                             }
                     ));
         } else {
-            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            chartView.loadTrackListFailed(context.getString(R.string.default_network_error));
         }
     }
 
@@ -134,16 +135,16 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                                         if (response.isSuccessful()) {
                                             chartView.operLikeSuccess();
                                         } else {
-                                            chartView.operLikeFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            chartView.operLikeFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " operTrackLike " + typeLike.name() + " onError() " + ex.getMessage()  );
-                                        chartView.operLikeFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        chartView.operLikeFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            chartView.operLikeFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            chartView.operLikeFailed(context.getString(R.string.default_network_error));
         }
     }
 
@@ -163,16 +164,16 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                                                 list = new ArrayList<>();
                                             chartView.loadTrackListSuccess(index, list);
                                         } else {
-                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " loadLastPeriodTrackList onError() " + ex.getMessage());
-                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            chartView.loadTrackListFailed(context.getString(R.string.default_network_error));
         }
     }
 
@@ -191,16 +192,16 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                                                 list = new ArrayList<>();
                                             chartView.loadTrackListSuccess(0, list);
                                         } else {
-                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " randomList onError() " + ex.getMessage());
-                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            chartView.loadTrackListFailed(context.getString(R.string.default_network_error));
         }
     }
 
@@ -219,16 +220,16 @@ public class ChartPresenter extends BasePresenter<ChartView> {
                                                 list = new ArrayList<>();
                                             chartView.loadUserListSuccess(0, list, username);
                                         } else {
-                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            chartView.loadTrackListFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " randomList onError() " + ex.getMessage());
-                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        chartView.loadTrackListFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            chartView.loadTrackListFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            chartView.loadTrackListFailed(context.getString(R.string.default_network_error));
         }
     }
 }

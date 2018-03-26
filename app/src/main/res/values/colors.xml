@@ -5,7 +5,7 @@
     <color name="colorAccent">#007cd0</color>
     <color name="textColorPrimary">#DE000000</color>
 
-    <color name="colorErrorInput">#f2001f</color>
+    <color name="colorErrorInput">#ff0011</color>
     <color name="colorErrorSnackbar">#fd969b</color>
 
     <color name="colorAccent700">#689F38</color>
@@ -46,5 +46,7 @@
     <color name="colorRandom7">#bd2ef1</color>
 
     <color name="deezer_color">#25252d</color>
+
+    <color name="colorWhite">#FFFFFF</color>
 
 </resources>

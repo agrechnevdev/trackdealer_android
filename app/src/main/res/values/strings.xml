@@ -35,20 +35,25 @@
 
     <string name="chosed_by">Выбрал</string>
     <string name="user_tracklist">Все треки пользователя </string>
-
     <string name="main_chart_text">Все треки</string>
     <string name="deezer_chart_text">Любимые треки Deezer</string>
     <string name="finished_chart_text">Лучшие треки</string>
     <string name="random_chart_text">Случайные треки</string>
     <string name="user_chart_text">Треки пользователя</string>
 
+    <string name="list_is_empty">Список пуст</string>
+    <string name="current_playlist">Список воспроизведения</string>
     <string name="period_top_date_text">Лучшие треки от</string>
-    <string name="your_chose">Твой выбор на этой неделе:</string>
+    <string name="your_chose">Твой выбор</string>
     <string name="change">Изменить</string>
     <string name="fav_song_empty_message">Еще не выбрал свой трек? Жми сюда!</string>
+    <string name="your_track_add_in_chart">Ваш новый трек добавлен в чарт!</string>
     <string name="chose_song">Введите название трека</string>
     <string name="chose_song_title">Подтверждение выбора</string>
-    <string name="chose_song_message">Вы точно хотите выбрать этот трек?\n\nПредыдущий выбранный трек будет удалена из чарта, и информация по нему будет утеряна</string>
+    <string name="chose_song_message">Вы точно хотите выбрать этот трек?</string>
+    <string name="track_add_in_deezer_favourite">Песня добавлена в ваши любимые треки на Deezer ❤</string>
+    <string name="track_add_in_deezer_failed">Не удалось добавить песню.</string>
+    <string name="chose_what_you_like">Выбери то, что нравится</string>
 
     <string name="fav_song_first_chose_1">1. Выбери любимый трек</string>
     <string name="fav_song_first_chose_2">2. Получай лайки от других пользователей и ставь сам</string>
@@ -59,12 +64,14 @@
     <string name="chose">Выбрать</string>
 
     <string name="info_list_title">Подсказка</string>
+    <string name="info_first_start">Поздравляю, ты успешно загрузил свой трек!\nТеперь немного о приложении.\nПриложение TRACKDEALER:\nЭто все треки одним списком.\n\nЭто лучшая музыка, выбранная тобой и другими пользователями.\n\nЭто возможность каждый день найти что-то новое для себя.\n\nСлушай и оценивай треки, делись любимой музыкой, стань главным трек-дилером!</string>
+
     <string name="info_list">Треки, получившие больше всего лайков и меньше всего дизлайков, находятся вверху списка.
-        Пользователи, чьи треки окажутся лучшими, получат доступ к допольнительным возможностям приложения, а их треки перейдут в раздел \"Лучшие треки\".
-        Обновление списка происходит раз в несколько дней.</string>
-    <string name="info_deezer_list">Любимые треки твоего Deezer-аккаунта. Чтобы посмотреть список и добавить в него свой трек, нужно \n1. Подключить Deezer-аккаунт в профиле\n2. Долгое нажатие на понравившийся трек добавит его в этот список.  </string>
-    <string name="info_user_list">Все треки пользователя. Здесь можешь посмотреть и послушать все свои треки, за всё время</string>
-    <string name="info_finished_list">Здесь показаны лучшие треки пользователей за всё время. Доступ только для пользователей со статусом TRACKDEALER</string>
+        Пользователи, чьи треки оценят лучше всех, получат доступ к новым возможностям приложения, а их треки перейдут в раздел \"Лучшие треки\".
+        Определение лучших происходит раз в несколько дней.</string>
+    <string name="info_deezer_list">Любимые треки твоего Deezer-аккаунта. Чтобы посмотреть список и добавить в него свой трек, нужно \n1. Подключить Deezer-аккаунт в профиле\n2. Длительное нажатие на понравившийся трек добавит его в этот список.</string>
+    <string name="info_user_list">Все треки пользователя. Здесь можешь посмотреть и послушать все свои треки за всё время</string>
+    <string name="info_finished_list">Здесь показаны лучшие треки пользователей за всё время, отсортированный по дате. Доступ только для пользователей со статусом TRACKDEALER</string>
     <string name="info_random_list">Случайная выборка песен из списка, возможность найти что-то новое для себя. Доступ только для пользователей со статусом TRACKDEALER</string>
 
 
@@ -74,8 +81,10 @@
     <string name="deezer_premium_account">Доступно прослушивание полных песен и добавление в плейлист "Любимые треки"</string>
     <string name="deezer_freemium_account">Можно добавлять треки в плейлист "Любимые треки", но недоступны для прослушивания полные треки (требуется статус PREMIUM или PREMIUM+)</string>
     <string name="deezer_account_logout">Действительно отключить аккаунт Deezer?</string>
+    <string name="deezer_login_success">Вы залогинились в Deezer!</string>
+    <string name="deezer_login_already">Уже залогинен в Deezer</string>
 
-    <string name="congratulations_upate_status">Поздравляем! Твой трек набрал большое количество лайков, а ты получил статус: TRACKDEALER! Для тебя теперь доступны новые возможности плейлиста.</string>
+    <string name="congratulations_upate_status">Поздравляем! Твой трек стал лучшим, а ты получил статус: TRACKDEALER! Для тебя теперь доступны новые возможности плейлиста.</string>
     <string name="congratulations_track_likes">Поздравляем! Твой трек среди лучших на этой неделе! Пора выбрать трек поновее и снова попасть в лучшие</string>
 
     <string name="username">Пользователь: </string>
@@ -122,4 +131,38 @@
     <string name="ui_user_flow">This activity plays a custom list of tracks</string>
     <string name="bass">Bass Freqs.</string>
     <string name="treble">Treble Freqs.</string>
+
+    <!-- Handle error -->
+
+    <string name="handle_no_writes_for_play">Ошибка! Пользователь не имеет прав для вопроизведения.</string>
+    <string name="handle_content_already_play">Ошибка! Контент уже проигрывался.</string>
+    <string name="handle_invalid_token">Ошибка! Недопустимый токен потока.</string>
+    <string name="handle_limit_device">Ошибка! Аккаунт Deezer используется сразу на нескольких устройствах.</string>
+    <string name="handle_too_much_players">Ошибка! Слишком много плееров создано.</string>
+    <string name="handle_error_player">Ошибка плеера.</string>
+    <string name="handle_server_connect_error">Соединение с сервером не установлено. Проверьте соединение с интернетом.</string>
+    <string name="handle_connect_error">Ошибка соединения.</string>
+    <string name="handle_load_error">Ошибка при загрузке.</string>
+    <string name="handle_enter_deezer_error">Не удалось войти в Deezer.</string>
+    <string name="handle_no_data">Данные не загружены.</string>
+    <string name="handle_required_enter_deezer">Требуется вход в Deezer аккаунт.</string>
+    <string name="handle_required_permission">Необходимо разрешение.</string>
+    <string name="handle_request_error">Ошибка запроса.</string>
+    <string name="handle_no_data_from_server">Не удалось получить ответ от сервера. Проверьте соединение с интернетом.</string>
+    <string name="handle_server_busy">Сервер перегружен.</string>
+    <string name="handle_unknown_error">Неизвестная ошибка. Проверьте соединение с интернетом.</string>
+    <string name="handle_user_not_found">Пользователь не найден.</string>
+    <string name="handle_weak_signal">Слабые условия приема сигнала.</string>
+    <string name="handle_buffer_error">Ошибка при загрузке буфера.</string>
+    <string name="handle_track_play_error">Не удалось воспроизвести песню.</string>
+    <string name="handle_fav_song_load_error">Не получить список любимых песен.</string>
+
+    <string name="handle_bad_request">Неверно введены данные!</string>
+    <string name="handle_excess_denied"> Доступ ограничен!</string>
+    <string name="handle_error">Ошибка!</string>
+
+
+    <string name="default_network_error">Возможно отсутствует подключение.</string>
+    <string name="default_error">В настоящий момент операция невозможна.</string>
+
 </resources>

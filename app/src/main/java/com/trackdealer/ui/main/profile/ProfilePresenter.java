@@ -2,6 +2,7 @@ package com.trackdealer.ui.main.profile;
 
 import android.content.Context;
 
+import com.trackdealer.R;
 import com.trackdealer.base.BasePresenter;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
@@ -54,16 +55,16 @@ public class ProfilePresenter extends BasePresenter<ProfileView> {
                                         if (response.isSuccessful()) {
                                             profileView.logoutSuccess();
                                         } else {
-                                            profileView.logoutFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            profileView.logoutFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " logout onError() " + ex.getMessage());
-                                        profileView.logoutFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        profileView.logoutFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            profileView.logoutFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            profileView.logoutFailed(context.getString(R.string.default_network_error));
         }
     }
 

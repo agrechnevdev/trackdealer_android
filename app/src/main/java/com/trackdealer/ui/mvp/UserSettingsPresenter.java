@@ -3,6 +3,7 @@ package com.trackdealer.ui.mvp;
 import android.content.Context;
 
 import com.trackdealer.BuildConfig;
+import com.trackdealer.R;
 import com.trackdealer.base.BasePresenter;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
@@ -49,7 +50,6 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsView> {
 
         if (ConnectionsManager.isOnline(context)) {
             subscription.add(
-//                    FakeRestApi.login(this, textLogin.getText().toString(), textPassword.getText().toString())
                     restapi.getUserSettings(BuildConfig.VERSION_NAME)
                             .delay(delay, TimeUnit.MILLISECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
@@ -59,16 +59,16 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsView> {
                                         if (response.isSuccessful()) {
                                             userSettingsView.getUserSettingsSuccess(response.body());
                                         } else {
-                                            userSettingsView.getUserSettingsFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            userSettingsView.getUserSettingsFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " register onError() " + ex.getMessage());
-                                        userSettingsView.getUserSettingsFailed(ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                        userSettingsView.getUserSettingsFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            userSettingsView.getUserSettingsFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            userSettingsView.getUserSettingsFailed(context.getString(R.string.default_network_error));
         }
     }
 }

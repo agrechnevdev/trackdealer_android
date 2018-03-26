@@ -48,12 +48,6 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 
 public class ErrorHandler {
 
-    public static String DEFAULT_NETWORK_ERROR_MESSAGE_SHORT = "Возможно отсутствует интернет - подключение";
-    public static String DEFAULT_ERROR_MESSAGE_SHORT = "В настоящий момент операция невозможна.";
-    public static String DEFAULT_ERROR_MESSAGE = "В настоящий момент операция невозможна.\n\nПожалуйста, повторите попытку позднее.\n\nПриносим извинения за неудобства.";
-    public static String DEFAULT_NETWORK_ERROR_MESSAGE = "В настоящий момент операция невозможна.\n\nПожалуйста, проверьте соединение с Интернетом или повторите попытку позднее.\n\nПриносим извинения за неудобства.";
-    public static String DEFAULT_SERVER_ERROR_MESSAGE = "Возникла ошибка при взаимодействии с сервером";
-
     public static final int DURATION = 5000;
 
     /**
@@ -111,22 +105,15 @@ public class ErrorHandler {
         toast.show();
     }
 
-    public static String buildErrorDescription(Throwable throwable) {
+    public static String buildErrorDescriptionShort(Context context, Throwable throwable) {
         if (throwable instanceof IOException) {
-            return DEFAULT_NETWORK_ERROR_MESSAGE;
+            return context.getString(R.string.default_error) + context.getString(R.string.default_network_error);
         }
-        return DEFAULT_ERROR_MESSAGE;
+        return context.getString(R.string.default_error);
     }
 
-    public static String buildErrorDescriptionShort(Throwable throwable) {
-        if (throwable instanceof IOException) {
-            return DEFAULT_ERROR_MESSAGE_SHORT + DEFAULT_NETWORK_ERROR_MESSAGE_SHORT;
-        }
-        return DEFAULT_ERROR_MESSAGE_SHORT;
-    }
-
-public static String getErrorMessageFromResponse(Response response) {
-        String element = "Ошибка! ";
+public static String getErrorMessageFromResponse(Context context, Response response) {
+        String element = context.getString(R.string.handle_error);
 
         int code = response.code();
         switch (code) {
@@ -139,11 +126,11 @@ public static String getErrorMessageFromResponse(Response response) {
                 }
 
             case HTTP_BAD_REQUEST:
-                element = element + "Неверно введены данные!";
+                element = element + context.getString(R.string.handle_bad_request);
                 return element;
 
             case HTTP_FORBIDDEN:
-                element = element + "Доступ ограничен!";
+                element = element + context.getString(R.string.handle_excess_denied);
                 return element;
 
             case HTTP_INTERNAL_ERROR:
@@ -152,7 +139,7 @@ public static String getErrorMessageFromResponse(Response response) {
                         String errorMesage = response.errorBody().string();
                         return errorMesage.replaceAll("[^А-Яа-яЁё ]", "");
                     } catch (IOException e) {
-                        element = element + DEFAULT_ERROR_MESSAGE_SHORT;
+                        element = element + context.getString(R.string.default_error);
                         return element;
                     }
 
@@ -163,11 +150,11 @@ public static String getErrorMessageFromResponse(Response response) {
                     if (!TextUtils.isEmpty(errorMesage))
                         return element;
                     else {
-                        element = element + DEFAULT_ERROR_MESSAGE_SHORT;
+                        element = element + context.getString(R.string.default_error);
                         return element;
                     }
                 } catch (Exception e) {
-                    element = element + DEFAULT_ERROR_MESSAGE_SHORT;
+                    element = element + context.getString(R.string.default_error);
                     return element;
                 }
         }
@@ -181,66 +168,62 @@ public static String getErrorMessageFromResponse(Response response) {
     public static void handleError(Context context, String messageForUser, final Exception exception, DialogInterface.OnClickListener repeatListener) {
         String cause = exception.getCause() != null ? exception.getCause().getMessage() : "";
         if (exception instanceof NotAllowedToPlayThatSongException) {
-            messageForUser = "Ошибка! Пользователь не имеет прав для вопроизведения.";
+            messageForUser = context.getString(R.string.handle_no_writes_for_play);
         } else if (exception instanceof StreamTokenAlreadyDecodedException) {
-            messageForUser = "Ошибка! Контент уже проигрывался.";
+            messageForUser = context.getString(R.string.handle_content_already_play);
         } else if (exception instanceof InvalidStreamTokenException) {
-            messageForUser = "Ошибка! Недопустимый токен потока.";
+            messageForUser = context.getString(R.string.handle_invalid_token);
         } else if (exception instanceof StreamLimitationException) {
-            messageForUser = "Ошибка! Аккаунт Deezer используется сразу на нескольких устройствах.";
+            messageForUser = context.getString(R.string.handle_limit_device);
         } else if (exception instanceof TooManyPlayersExceptions) {
-            messageForUser = "Ошибка! Слишком много плееров создано.";
+            messageForUser = context.getString(R.string.handle_too_much_players);
         } else if (exception instanceof DeezerPlayerException) {
-            messageForUser = "Ошибка плеера.";
+            messageForUser = context.getString(R.string.handle_error_player);
         } else if (exception instanceof UnknownHostException) {
-            messageForUser = "Соединение с сервером не установлено.";
-            messageForUser += " Проверьте соединение с интернетом. ";
+            messageForUser = context.getString(R.string.handle_server_connect_error);
         } else if (exception instanceof ConnectException) {
-            messageForUser = "Ошибка соединения.";
-            messageForUser += " Проверьте соединение с интернетом. ";
+            messageForUser = context.getString(R.string.handle_connect_error);
         } else if (exception instanceof SocketException) {
-            messageForUser = "Ошибка при загрузке.";
+            messageForUser = context.getString(R.string.handle_load_error);
         } else if (exception instanceof DeezerError) {
             switch (((DeezerError) exception).getErrorCode()) {
                 case DeezerError.ACCESS_TOKEN_RETRIEVAL_FAILURE:
                 case DeezerError.TOKEN_INVALID:
-                    messageForUser = "Не удалось войти в Deezer.";
+                    messageForUser = context.getString(R.string.handle_enter_deezer_error);
                     break;
                 case DeezerError.DATA_NOT_FOUND:
-                    messageForUser = "Данные не загружены.";
+                    messageForUser = context.getString(R.string.handle_no_data);
                     break;
                 case DeezerError.OAUTH_FAILURE:
-                    messageForUser += "Требуется вход в Deezer аккаунт.";
+                    messageForUser += context.getString(R.string.handle_required_enter_deezer);
                     break;
                 case DeezerError.MISSING_PERMISSION:
-                    messageForUser = "Необходимо разрешение.";
+                    messageForUser = context.getString(R.string.handle_required_permission);
                     break;
                 case DeezerError.PARAMETER:
                 case DeezerError.PARAMETER_MISSING:
-                    messageForUser += "Ошибка запроса.";
+                    messageForUser += context.getString(R.string.handle_request_error);
                     break;
                 case DeezerError.PERMISSION:
-                    messageForUser = "Необходимо разрешение.";
+                    messageForUser = context.getString(R.string.handle_required_permission);
                     break;
                 case DeezerError.QUERY_INVALID:
                 case DeezerError.REQUEST_FAILURE:
-                    messageForUser = "Не удалось получить ответ от сервера.";
-                    messageForUser += " Проверьте соединение с интернетом. ";
+                    messageForUser = context.getString(R.string.handle_no_data_from_server);
                     break;
                 case DeezerError.QUOTA:
                 case DeezerError.SERVICE_BUSY:
-                    messageForUser = "Сервер перегружен.";
+                    messageForUser = context.getString(R.string.handle_server_busy);
                     break;
                 case DeezerError.UNEXPECTED_RESULT:
                 case DeezerError.UNKNOWN_FAILURE:
-                    messageForUser += " Неизвестная ошибка.";
-                    messageForUser += " Проверьте соединение с интернетом. ";
+                    messageForUser += " " + context.getString(R.string.handle_unknown_error);
                     break;
                 case DeezerError.USER_ID_NOT_FOUND:
-                    messageForUser = "Пользователь не найден.";
+                    messageForUser = context.getString(R.string.handle_user_not_found);
                     break;
                 case 4007:
-                    messageForUser += "Слабые условия приема сигнала.";
+                    messageForUser += context.getString(R.string.handle_weak_signal);
                     break;
             }
             cause += ((DeezerError) exception).getMessage() != null ? " Message: " + ((DeezerError) exception).getMessage() + "\n" : "";

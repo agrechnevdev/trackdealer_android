@@ -1,6 +1,5 @@
 package com.trackdealer.net;
 
-import com.trackdealer.models.RMessage;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.models.User;
 import com.trackdealer.models.UserSettings;

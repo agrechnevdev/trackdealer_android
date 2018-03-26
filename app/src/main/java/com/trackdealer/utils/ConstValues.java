@@ -17,7 +17,11 @@ public class ConstValues {
     public static final String SHARED_KEY_FILTER = "SharedFilter";
     public static final String SHARED_KEY_NOT_FIRST_START = "SharedNotFirstStart";
 
-    public static final String SHARED_KEY_HELP_LIST = "SharedHelpList";
+    public static final String SHARED_KEY_MAIN_LIST_HELP = "SharedMainListHelp";
+    public static final String SHARED_KEY_DEEZER_LIST_HELP = "SharedDeezerListHelp";
+    public static final String SHARED_KEY_USER_LIST_HELP = "SharedUserListHelp";
+    public static final String SHARED_KEY_FINISHED_LIST_HELP = "SharedFinishedListHelp";
+    public static final String SHARED_KEY_RANDOM_LIST_HELP = "SharedRandomListHelp";
 
     public static final String SHARED_FILENAME_TRACK = "SharedTrack";
     public static final String SHARED_KEY_TRACK_LIST = "SharedTrackList";

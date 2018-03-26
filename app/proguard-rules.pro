@@ -23,3 +23,36 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn com.squareup.okhttp.**
+-keep class com.squareup.okhttp.*
+-dontwarn okio.**
+
+-dontwarn java.lang.invoke**
+
+-keepnames public class * extends io.realm.RealmObject
+-keep @io.realm.annotations.RealmModule class *
+-keep class io.realm.** { *; }
+-dontwarn javax.**
+-dontwarn io.realm.**
+
+# Retrofit
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+
+# ButterKnife 7
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+-keepclasseswithmembernames class * {
+    @butterknife.* <fields>;
+}
+-keepclasseswithmembernames class * {
+    @butterknife.* <methods>;
+}
+
+-keepclassmembers class android.support.design.internal.BottomNavigationMenuView {
+    boolean mShiftingMode;
+}
+
+-keepclassmembers enum * { *; }

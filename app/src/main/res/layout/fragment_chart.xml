@@ -54,6 +54,7 @@
                     android:layout_toRightOf="@id/fragment_chart_but_tracks_main"
                     android:clickable="false"
                     android:padding="@dimen/dp4"
+                    android:tint="@color/colorAccent"
                     app:srcCompat="@drawable/ic_deezer_fav_songs" />
 
                 <ImageView

@@ -2,11 +2,13 @@ package com.trackdealer.ui.mvp;
 
 import android.content.Context;
 
-import com.trackdealer.BuildConfig;
+import com.trackdealer.R;
 import com.trackdealer.base.BasePresenter;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
+
+import java.util.Locale;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -56,16 +58,16 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                                         if (response.isSuccessful()) {
                                             loginView.loginSuccess();
                                         } else {
-                                            loginView.loginFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            loginView.loginFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " register onError() " + ex.getMessage());
-                                        loginView.loginFailed(ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                        loginView.loginFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            loginView.loginFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            loginView.loginFailed(context.getString(R.string.default_network_error));
         }
     }
 

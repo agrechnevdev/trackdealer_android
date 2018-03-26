@@ -15,7 +15,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.deezer.sdk.model.Album;
-import com.deezer.sdk.network.connect.DeezerConnect;
 import com.deezer.sdk.network.request.DeezerRequest;
 import com.deezer.sdk.network.request.DeezerRequestFactory;
 import com.squareup.picasso.Picasso;
@@ -26,12 +25,12 @@ import com.trackdealer.helpersUI.DeezerHelper;
 import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.models.TrackInfo;
 import com.trackdealer.net.Restapi;
-import com.trackdealer.ui.main.DeezerActivity;
 import com.trackdealer.ui.mvp.FavourPresenter;
 import com.trackdealer.ui.mvp.FavourView;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import javax.inject.Inject;
 
@@ -98,13 +97,12 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     SeekBar seekBarLike;
 
 
-
     @Bind(R.id.progressbar)
     ProgressBar progressBar;
 
     SearchDialogFragment searchDialogFragment;
 
-    public static FavourFragment newInstance(boolean showLike){
+    public static FavourFragment newInstance(boolean showLike) {
         FavourFragment favourFragment = new FavourFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean("showLike", showLike);
@@ -129,7 +127,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
         butChange.setVisibility(GONE);
 
         boolean showLike = getArguments().getBoolean("showLike");
-        if(showLike)
+        if (showLike)
             relLayPercentLike.setVisibility(VISIBLE);
         else
             relLayPercentLike.setVisibility(GONE);
@@ -162,10 +160,11 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
     public void loadFavourTrackSuccess(TrackInfo trackInfo) {
         hideProgressBar();
         if (trackInfo.getFinishDate() != null) {
-            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-                    0, R.string.congratulations_track_likes,
-                    R.string.ok, (dialog, id) -> {
-            });
+            CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(
+                    getContext(),
+                    0,
+                    R.string.congratulations_track_likes,
+                    R.string.ok, null);
             builder.create().show();
         }
         setFavouriteSong(trackInfo);
@@ -203,7 +202,7 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
         }
     }
 
-    public boolean songChosen(){
+    public boolean songChosen() {
         return relLayEmpty.getVisibility() != VISIBLE;
     }
 
@@ -216,19 +215,20 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
 
     @Override
     public void onClickTrack(TrackInfo trackInfo) {
-        CustomAlertDialogBuilder builder = new CustomAlertDialogBuilder(getContext(),
-                R.string.chose_song_title, R.string.chose_song_message,
-                R.string.yes,
-                (dialog, id) -> {
+        new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                .setTopColorRes(R.color.colorWhite)
+                .setButtonsColorRes(R.color.colorOrange)
+                .setIcon(R.drawable.ic_love_music)
+                .setTitle(R.string.chose_song_title)
+                .setMessage(R.string.chose_song_message)
+                .setPositiveButton(R.string.positive, v -> {
                     searchDialogFragment.dismiss();
                     saveFavSong(trackInfo);
-                },
-                R.string.no,
-                (dialog, id) -> {
-                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.negative, v -> {
                     searchDialogFragment.dismiss();
-                });
-        builder.create().show();
+                })
+                .show();
     }
 
     public void saveFavSong(TrackInfo trackInfo) {
@@ -257,15 +257,15 @@ public class FavourFragment extends Fragment implements FavourView, ISearchDialo
                                                 if (response.isSuccessful()) {
                                                     loadFavouriteSongStart();
                                                     Prefs.putTrackInfo(getContext(), SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE, trackInfo);
-                                                    ErrorHandler.showToast(getActivity(), "Ваш новый трек добавлен в чарт!");
+                                                    ErrorHandler.showToast(getActivity(), getString(R.string.your_track_add_in_chart));
                                                 } else {
-                                                    ErrorHandler.showToast(getActivity(), ErrorHandler.getErrorMessageFromResponse(response));
+                                                    ErrorHandler.showToast(getActivity(), ErrorHandler.getErrorMessageFromResponse(getActivity(), response));
                                                 }
                                                 hideProgressBar();
                                             },
                                             ex -> {
                                                 Timber.e(ex, TAG + " changeFavTrack onError() " + ex.getMessage());
-                                                ErrorHandler.showToast(getActivity(), ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                                ErrorHandler.showToast(getActivity(), ErrorHandler.buildErrorDescriptionShort(getActivity(), ex));
                                                 hideProgressBar();
                                             }
                                     ));

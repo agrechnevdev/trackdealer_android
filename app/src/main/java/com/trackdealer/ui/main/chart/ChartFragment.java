@@ -41,6 +41,7 @@ import com.trackdealer.ui.mvp.ChartView;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 import com.trackdealer.utils.StaticUtils;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,9 +61,14 @@ import timber.log.Timber;
 
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
 import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_DEEZER_LIST_HELP;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_FILTER;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_FINISHED_LIST_HELP;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_GENRES;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_MAIN_LIST_HELP;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_RANDOM_LIST_HELP;
 import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER_LIST_HELP;
 
 /**
  * Created by grechnev-av on 31.08.2017.
@@ -300,7 +306,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
         if (SPlay.init().showList.isEmpty()) {
             relLayEmpty.setVisibility(View.VISIBLE);
-            textEmpty.setText("Список пуст");
+            textEmpty.setText(getString(R.string.list_is_empty));
         } else {
             relLayEmpty.setVisibility(View.GONE);
         }
@@ -317,7 +323,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     public void loadTrackListFailed(Exception ex, int lastNum) {
         if (lastNum == 0)
             swipeLay.setRefreshing(false);
-        ErrorHandler.handleError(getActivity(), "Не получить список любимых песен.", ex, ((dialog, which) -> loadTrackListStart(lastNum, Prefs.genre(getContext()))));
+        ErrorHandler.handleError(getActivity(), getString(R.string.handle_fav_song_load_error), ex, ((dialog, which) -> loadTrackListStart(lastNum, Prefs.genre(getContext()))));
     }
 
     @Override
@@ -338,11 +344,11 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(obj -> {
-                            Toast.makeText(getContext(), "Песня добавлена в ваши любимые треки на Deezer \u2764", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), getString(R.string.track_add_in_deezer_favourite), Toast.LENGTH_LONG).show();
                             swipeLay.setRefreshing(false);
                         },
                         ex -> {
-                            ErrorHandler.handleError(getActivity(), "Не удалось добавить песню.", (Exception) ex, (dialog, which) -> onLongClickTrack(trackInfo));
+                            ErrorHandler.handleError(getActivity(), getString(R.string.track_add_in_deezer_failed), (Exception) ex, (dialog, which) -> onLongClickTrack(trackInfo));
                             swipeLay.setRefreshing(false);
                         }
                 ));
@@ -350,6 +356,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
     @OnClick({R.id.fragment_chart_but_finished, R.id.fragment_chart_but_random})
     public void clickBlockBut(View view) {
+        checkListHelp(view);
         if (block) {
             int message = R.string.finish_but_denied;
             switch (view.getId()) {
@@ -370,11 +377,12 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         } else {
             clickBut(view);
         }
+
     }
 
     @OnClick({R.id.fragment_chart_but_tracks_main, R.id.fragment_chart_but_deezer, R.id.fragment_chart_but_user_songs})
     public void clickBut(View view) {
-
+        checkListHelp(view);
         switch (view.getId()) {
             case R.id.fragment_chart_but_tracks_main:
                 SPlay.init().playlistType = PlaylistType.MAIN;
@@ -402,6 +410,58 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         setChosenListState();
         loadHelpAnim(SPlay.init().playlistType.getTitle());
         loadTrackListStart(0, Prefs.genre(getContext()));
+    }
+
+    public void checkListHelp(View view) {
+        int icon = 0;
+        int message = 0;
+        int title = 0;
+        String sharedKey = "shared";
+        switch (view.getId()) {
+            case R.id.fragment_chart_but_tracks_main:
+                sharedKey = SHARED_KEY_MAIN_LIST_HELP;
+                icon = R.drawable.app_logo_bold_small;
+                title = R.string.main_chart_text;
+                message = R.string.info_list;
+                break;
+            case R.id.fragment_chart_but_deezer:
+                sharedKey = SHARED_KEY_DEEZER_LIST_HELP;
+                icon = R.drawable.ic_deezer_fav_songs;
+                title = R.string.deezer_chart_text;
+                message = R.string.info_deezer_list;
+                break;
+            case R.id.fragment_chart_but_finished:
+                sharedKey = SHARED_KEY_FINISHED_LIST_HELP;
+                icon = R.drawable.ic_finished_tracks;
+                title = R.string.finished_chart_text;
+                message = R.string.info_finished_list;
+                break;
+            case R.id.fragment_chart_but_random:
+                sharedKey = SHARED_KEY_RANDOM_LIST_HELP;
+                icon = R.drawable.ic_random_cube;
+                title = R.string.random_chart_text;
+                message = R.string.info_random_list;
+                break;
+
+            case R.id.fragment_chart_but_user_songs:
+                sharedKey = SHARED_KEY_USER_LIST_HELP;
+                icon = R.drawable.ic_user_playlist_big;
+                title = R.string.user_chart_text;
+                message = R.string.info_user_list;
+                break;
+        }
+
+        if (!Prefs.getBoolean(getActivity(), SHARED_FILENAME_USER_DATA, sharedKey)) {
+            String finalSharedKey = sharedKey;
+            new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                    .setTopColorRes(R.color.colorWhite)
+                    .setButtonsColorRes(R.color.colorOrange)
+                    .setIcon(icon)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(R.string.ok, v -> Prefs.putBoolean(getActivity(), SHARED_FILENAME_USER_DATA, finalSharedKey, true))
+                    .show();
+        }
     }
 
     public void initIconColor() {

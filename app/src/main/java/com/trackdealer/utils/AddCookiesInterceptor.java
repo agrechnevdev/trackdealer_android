@@ -3,7 +3,7 @@ package com.trackdealer.utils;
 import android.content.Context;
 
 import java.io.IOException;
-import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import okhttp3.Interceptor;
@@ -26,9 +26,13 @@ public class AddCookiesInterceptor implements Interceptor {
 //        String cookie = sharedPreferences.getString("Cookie", "");
 //        builder.addHeader("Cookie", cookie);
         Set<String> preferences = Prefs.getStringSet(context.getApplicationContext(), "User-Cookie", "Cookies");
+        String cookiestring = "";
         for (String cookie : preferences) {
-            builder.addHeader("Cookie", cookie);
+            String[] parser = cookie.split(";");
+            cookiestring = cookiestring + parser[0] + "; ";
         }
+        cookiestring = cookiestring + "TD_LANG=" + Locale.getDefault().getLanguage() + "; ";
+        builder.addHeader("Cookie", cookiestring);
         return chain.proceed(builder.build());
     }
 }

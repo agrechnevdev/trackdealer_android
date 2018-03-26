@@ -2,6 +2,7 @@ package com.trackdealer.ui.mvp;
 
 import android.content.Context;
 
+import com.trackdealer.R;
 import com.trackdealer.base.BasePresenter;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
@@ -54,16 +55,16 @@ public class FavourPresenter extends BasePresenter<FavourView> {
                                         if (response.isSuccessful()) {
                                             favourView.loadFavourTrackSuccess(response.body());
                                         } else {
-                                            favourView.loadFavourTrackFailed(ErrorHandler.getErrorMessageFromResponse(response));
+                                            favourView.loadFavourTrackFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " loadFavourTrack onError() " + ex.getMessage());
-                                        favourView.loadFavourTrackFailed(ErrorHandler.buildErrorDescriptionShort(ex));
+                                        favourView.loadFavourTrackFailed(ErrorHandler.buildErrorDescriptionShort(context, ex));
                                     }
                             ));
         } else {
-            favourView.loadFavourTrackFailed(ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            favourView.loadFavourTrackFailed(context.getString(R.string.default_network_error));
         }
     }
 

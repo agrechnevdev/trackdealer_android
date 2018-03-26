@@ -2,30 +2,54 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
+def appVersion = "1.0.0"
+def versionC = 1
+
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    signingConfigs {
+
+        release {
+            if (project.hasProperty("Keys.repo")) {
+                def projectPropsFile = file(project.property("Keys.repo") + "trackdealer.properties")
+                if (projectPropsFile.exists()) {
+                    Properties props = new Properties()
+                    props.load(new FileInputStream(projectPropsFile))
+                    storeFile file(file(project.property("Keys.repo") + props['RELEASE_STORE_FILE']))
+                    storePassword props['RELEASE_STORE_PASS']
+                    keyAlias props['RELEASE_ALIAS']
+                    keyPassword props['RELEASE_KEY_PASS']
+                }
+            } else {
+                println "======================================================="
+                println "[ERROR] - Please configure release-compilation environment - e.g. in project directory"
+                println "======================================================="
+            }
+        }
+    }
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.trackdealer"
         minSdkVersion 21
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0.0"
+        targetSdkVersion 26
+        versionCode versionC
+        versionName "$appVersion"
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
             minifyEnabled false
-            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
         }
         release {
-            minifyEnabled true
-            multiDexEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
+            shrinkResources true
+            minifyEnabled true
+//            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -44,10 +68,10 @@ dependencies {
     androidTestCompile 'junit:junit:4.12'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:multidex:1.0.1'
-    compile 'com.android.support:appcompat-v7:25.4.0'
+    compile 'com.android.support:appcompat-v7:26.0.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:25.4.0'
-    compile 'com.android.support:support-vector-drawable:25.4.0'
+    compile 'com.android.support:design:26.0.2'
+    compile 'com.android.support:support-vector-drawable:26.0.2'
     compile project(':deezer-sdk-0.11.2')
 
     apt 'com.google.dagger:dagger-compiler:2.2'
@@ -65,8 +89,8 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.1'
 
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.android.support:recyclerview-v7:25.4.0'
-    compile 'com.android.support:support-v4:25.3.1'
+    compile 'com.android.support:recyclerview-v7:26.0.2'
+    compile 'com.android.support:support-v4:26.0.2'
 
     compile "io.reactivex.rxjava2:rxjava:2.0.2"
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
@@ -80,5 +104,5 @@ dependencies {
 
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
     compile 'com.taishi-y:musicindicator:0.1.0'
-    compile 'com.github.javiersantos:MaterialStyledDialogs:2.1'
+    compile 'com.yarolegovich:lovely-dialog:1.1.0'
 }

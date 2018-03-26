@@ -24,6 +24,8 @@ import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -172,7 +174,8 @@ public class RegisterActivity extends BaseActivity implements UserSettingsView {
             User user = new User(textLogin.getText().toString(),
                     textPassword.getText().toString(),
                     textEmail.getText().toString(),
-                    textName.getText().toString());
+                    textName.getText().toString(),
+                    Locale.getDefault().getLanguage());
             subscription.add(
                     restapi.register(user)
                             .observeOn(AndroidSchedulers.mainThread())
@@ -182,19 +185,19 @@ public class RegisterActivity extends BaseActivity implements UserSettingsView {
                                         if (response.isSuccessful()) {
                                             registerSuccess();
                                         } else {
-                                            ErrorHandler.showToast(this, ErrorHandler.getErrorMessageFromResponse(response));
+                                            ErrorHandler.showToast(this, ErrorHandler.getErrorMessageFromResponse(this, response));
                                             hideProgressBar();
                                         }
                                     },
                                     ex -> {
                                         Timber.e(ex, TAG + " register onError() " + ex.getMessage());
-                                        ErrorHandler.showToast(this, ErrorHandler.DEFAULT_SERVER_ERROR_MESSAGE);
+                                        ErrorHandler.showToast(this, ErrorHandler.buildErrorDescriptionShort(this, ex));
                                         hideProgressBar();
                                     }
                             ));
         } else {
             hideProgressBar();
-            ErrorHandler.showToast(this, ErrorHandler.DEFAULT_NETWORK_ERROR_MESSAGE_SHORT);
+            ErrorHandler.showToast(this, getString(R.string.default_network_error));
         }
     }
 
