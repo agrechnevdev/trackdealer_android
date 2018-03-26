@@ -30,12 +30,6 @@
 
 -dontwarn java.lang.invoke**
 
--keepnames public class * extends io.realm.RealmObject
--keep @io.realm.annotations.RealmModule class *
--keep class io.realm.** { *; }
--dontwarn javax.**
--dontwarn io.realm.**
-
 # Retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
@@ -56,3 +50,5 @@
 }
 
 -keepclassmembers enum * { *; }
+
+-keep public class * extends android.app.Activity

@@ -7,7 +7,6 @@ def versionC = 1
 
 android {
     signingConfigs {
-
         release {
             if (project.hasProperty("Keys.repo")) {
                 def projectPropsFile = file(project.property("Keys.repo") + "trackdealer.properties")
@@ -24,6 +23,10 @@ android {
                 println "[ERROR] - Please configure release-compilation environment - e.g. in project directory"
                 println "======================================================="
             }
+            keyAlias 'release'
+            keyPassword 'nT7xLM1X'
+            storeFile file('D:/Projects/TrackDealer/trackdealer.jks')
+            storePassword 'w7sfm1YF'
         }
     }
     compileSdkVersion 26
@@ -40,7 +43,9 @@ android {
     }
     buildTypes {
         debug {
-            minifyEnabled false
+//            minifyEnabled false
+            shrinkResources true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                     'proguard-rules.pro'
         }
@@ -49,7 +54,7 @@ android {
                     'proguard-rules.pro'
             shrinkResources true
             minifyEnabled true
-//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -73,36 +78,28 @@ dependencies {
     compile 'com.android.support:design:26.0.2'
     compile 'com.android.support:support-vector-drawable:26.0.2'
     compile project(':deezer-sdk-0.11.2')
-
     apt 'com.google.dagger:dagger-compiler:2.2'
     compile 'com.google.dagger:dagger:2.2'
     provided 'javax.annotation:jsr250-api:1.0'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
-
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     //OkHttp
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.squareup.okio:okio:1.7.0'
-
     //Gson
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.retrofit2:converter-gson:2.0.1'
-
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.android.support:recyclerview-v7:26.0.2'
     compile 'com.android.support:support-v4:26.0.2'
-
-    compile "io.reactivex.rxjava2:rxjava:2.0.2"
+    compile 'io.reactivex.rxjava2:rxjava:2.0.2'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0'
     compile 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
-
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.jakewharton.timber:timber:3.1.0'
-
     compile 'org.greenrobot:eventbus:3.0.0'
-
-    compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
     compile 'com.taishi-y:musicindicator:0.1.0'
     compile 'com.yarolegovich:lovely-dialog:1.1.0'
 }

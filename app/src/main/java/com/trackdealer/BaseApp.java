@@ -9,10 +9,6 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
 
-import com.squareup.leakcanary.AndroidExcludedRefs;
-import com.squareup.leakcanary.DisplayLeakService;
-import com.squareup.leakcanary.ExcludedRefs;
-import com.squareup.leakcanary.LeakCanary;
 import com.trackdealer.module.AppModule;
 import com.trackdealer.module.NetModule;
 import com.trackdealer.net.DaggerNetComponent;
@@ -40,17 +36,17 @@ public class BaseApp extends Application {
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
 
-            ExcludedRefs excludedRefs = AndroidExcludedRefs.createAppDefaults()
-                    .instanceField("android.view.inputmethod.InputMethodManager", "sInstance")
-                    .instanceField("android.view.inputmethod.InputMethodManager", "mLastSrvView")
-                    .instanceField("com.android.internal.policy.PhoneWindow$DecorView", "mContext")
-                    .instanceField("android.support.v7.widget.SearchView$SearchAutoComplete", "mContext")
-                    .build();
-
-            LeakCanary.refWatcher(this)
-                    .listenerServiceClass(DisplayLeakService.class)
-                    .excludedRefs(excludedRefs)
-                    .buildAndInstall();
+//            ExcludedRefs excludedRefs = AndroidExcludedRefs.createAppDefaults()
+//                    .instanceField("android.view.inputmethod.InputMethodManager", "sInstance")
+//                    .instanceField("android.view.inputmethod.InputMethodManager", "mLastSrvView")
+//                    .instanceField("com.android.internal.policy.PhoneWindow$DecorView", "mContext")
+//                    .instanceField("android.support.v7.widget.SearchView$SearchAutoComplete", "mContext")
+//                    .build();
+//
+//            LeakCanary.refWatcher(this)
+//                    .listenerServiceClass(DisplayLeakService.class)
+//                    .excludedRefs(excludedRefs)
+//                    .buildAndInstall();
         }
 
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);

@@ -445,7 +445,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
 
             case R.id.fragment_chart_but_user_songs:
                 sharedKey = SHARED_KEY_USER_LIST_HELP;
-                icon = R.drawable.ic_user_playlist_big;
+                icon = R.drawable.ic_user_playlist;
                 title = R.string.user_chart_text;
                 message = R.string.info_user_list;
                 break;
