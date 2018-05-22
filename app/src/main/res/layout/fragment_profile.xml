@@ -49,10 +49,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:textColor="@color/colorOrange"
                         android:layout_marginLeft="@dimen/dp10"
                         android:layout_toRightOf="@id/profile_text_username_header"
                         android:text="@string/empty"
+                        android:textColor="@color/colorOrange"
                         android:textSize="@dimen/text_size_main" />
 
                 </RelativeLayout>
@@ -88,9 +88,9 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp10"
-                        android:textColor="@color/colorOrange"
                         android:layout_toLeftOf="@id/profile_user_but_status"
                         android:layout_toRightOf="@id/profile_user_text_status_info"
+                        android:textColor="@color/colorOrange"
                         android:textSize="@dimen/text_size_main" />
                 </RelativeLayout>
             </RelativeLayout>
@@ -257,6 +257,31 @@
                         android:textSize="@dimen/text_size_small_10" />
 
                 </LinearLayout>
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vertical_margin_x2"
+                android:paddingLeft="@dimen/horizontal_margin_x2"
+                android:paddingRight="@dimen/horizontal_margin_x2">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/profile_text_lay_promo_input"
+                    style="@style/TextInputLayoutAccent"
+                    android:layout_alignParentRight="true">
+
+                    <EditText
+                        android:id="@+id/profile_text_promo_input"
+                        style="@style/EditTextStyle"
+                        android:inputType="number"
+                        android:maxLength="6"
+                        android:hint="@string/promo"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/text_size_medium" />
+                </android.support.design.widget.TextInputLayout>
             </RelativeLayout>
         </LinearLayout>
 

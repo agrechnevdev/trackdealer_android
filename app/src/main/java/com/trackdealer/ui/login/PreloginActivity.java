@@ -85,9 +85,9 @@ public class PreloginActivity extends BaseActivity {
         startActivity(new Intent(this, RegisterActivity.class));
     }
 
-    @OnClick(R.id.prelogin_show_log)
-    public void clickShowLog() {
-        startActivity(new Intent(this, LogActivity.class));
-    }
+//    @OnClick(R.id.prelogin_show_log)
+//    public void clickShowLog() {
+//        startActivity(new Intent(this, LogActivity.class));
+//    }
 
 }

@@ -1,0 +1,169 @@
+<resources>
+    <string name="app_name">TrackDealer</string>
+    <!-- Messages -->
+    <string name="error_length_4">Length must be greater than 3 characters</string>
+    <string name="error_pass_not_same">Passwords do not match</string>
+    <string name="error_valid_regex">You can enter only digits and Latin letters</string>
+    <string name="error_server_internal">Internal server error</string>
+    <string name="error_request_failure">Oops, something went wrong. </string>
+
+    <!-- Text -->
+
+    <string name="singin">Login</string>
+    <string name="registration">Registration</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="text_continue">Continue</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="email_info">The email address is for feedback only (no advertising or spam emails)</string>
+    <string name="enter">Enter</string>
+
+    <string name="permisstion_needed_title">Permission</string>
+    <string name="permisstion_needed_text">Need permission for the app to work correctly. Give permission?</string>
+    <string name="permisstion_needed_text_2">Need permission to pause the player when making calls or playing audio. Give permission?</string>
+    <string name="positive">Yes</string>
+    <string name="negative">No</string>
+
+    <string name="chart">Playlist</string>
+    <string name="chose_fav_song">Your track</string>
+    <string name="profile">Profile</string>
+
+    <string name="chosed_by">Chosen by</string>
+    <string name="user_tracklist">All user tracks</string>
+    <string name="main_chart_text">All tracks</string>
+    <string name="deezer_chart_text">Deezer\'s favorite tracks</string>
+    <string name="finished_chart_text">Best tracks</string>
+    <string name="random_chart_text">Random tracks</string>
+    <string name="user_chart_text">User tracks</string>
+
+    <string name="list_is_empty">The list is empty</string>
+    <string name="current_playlist">Play list</string>
+    <string name="period_top_date_text">The best tracks from</string>
+    <string name="your_chose">Your choice</string>
+    <string name="change">Change</string>
+    <string name="fav_song_empty_message">Press to select a track -></string>
+    <string name="your_track_add_in_chart">Your new track is added to the chart!</string>
+    <string name="chose_song">Enter the name of the track</string>
+    <string name="chose_song_title">Confirm the selection</string>
+    <string name="chose_song_message">Are you sure you want to choose this track?</string>
+    <string name="track_add_in_deezer_favourite">The song is added to your favorite tracks on Deezer ❤</string>
+    <string name="track_add_in_deezer_failed">Failed to add song.</string>
+    <string name="chose_what_you_like">Choose what you like</string>
+
+    <string name="fav_song_first_chose_1">1. Choose your favorite track</string>
+    <string name="fav_song_first_chose_2">2. Get likes from other users and put yourself</string>
+    <string name="fav_song_first_chose_3">3. Your track got the most likes? You have access to new features of the app!</string>
+    <string name="fav_song_first_chose_5">4. Listen to new music every day and share your tracks with others!</string>
+    <string name="song_not_chosen">To continue choose a track</string>
+    <string name="chose">Choose</string>
+
+    <string name="info_list_title">Tip</string>
+    <string name="info_first_start">Congratulations, you have successfully chose your track!\nAbout TRACKDEALER app:\nAll the tracks in one list\n\nThis is the best music chosen by you and other users.\n\nThis is an opportunity every day to find something new for yourself.\n\nListen and evaluate tracks, share your favorite music, become the Trackdealer!</string>
+
+    <string name="info_list">The most popular tracks this week are at the top of the list. Once a week, the best are identified and their owners have access to the new features of the app.</string>
+    <string name="info_deezer_list">Favorite tracks for your Deezer account. To view the list and add your track, you need \n 1. Connect Deezer-account profile\n2. Long click on a favorite track to add to that list.</string>
+    <string name="info_user_list">All tracks of the user. Here you can watch and listen to all their tracks for all the time</string>
+    <string name="info_finished_list">The best tracks of users for all time by weeks.</string>
+    <string name="info_random_list">Random selection of tracks, the ability to find something new for yourself.</string>
+
+    <string name="deezer_account_login">To connect your Deezer account</string>
+    <string name="deezer_account_info">Connecting to Deezer allows you to add tracks to the playlist "Favorite tracks", and account with status PREMIUM or PREMIUM+ allows you to listen to full tracks</string>
+    <string name="deezer_already_login">The Deezer account is connected!</string>
+    <string name="deezer_premium_account">You can listen to full songs and add your favorite tracks to the playlist Favorite tracks</string>
+    <string name="deezer_freemium_account">You can add tracks to your favorite tracks playlist, but you can\'t listen to full tracks (requires PREMIUM or PREMIUM+status)</string>
+    <string name="deezer_account_logout">Do you really want to disable your Deezer account?</string>
+    <string name="deezer_login_success">You are logged in to Deezer!</string>
+    <string name="deezer_login_already">Already logged in to Deezer</string>
+    <string name="promo">Promo code</string>
+    <string name="promo_try_new">You got access to new opportunities!</string>
+    <string name="wrong_promo">Promo code is not valid</string>
+    <string name="access_promo">Allows access to new features</string>
+    <string name="share_promo_friends">Share with your friends</string>
+
+    <string name="congratulations_track_likes">Congratulations! Your track is among the best this week! It\'s time to choose a new track and get back to the best</string>
+
+    <string name="username">User: </string>
+    <string name="user_status">Status: </string>
+    <string name="user_status_info_header">Information</string>
+    <string name="user_status_info_all">For the status of TRACELISTENER are limited:\n - listen to the best tracks of all time
+        \n - get random tracks and hear something new</string>
+    <string name="user_status_info_listener">TRACKLISTENER - your basic status in the app</string>
+    <string name="user_status_info_master">TRACKMASTER - Enter the promo code that is available to users with basic status and get the status and access to all features of the application</string>
+    <string name="user_status_info_king">TRACKKING - You\'ll get this status when your track is the best</string>
+    <string name="user_status_info_dealer">TRACKDEALER - Your tracks are so good that users have chosen the best at least three of your songs!</string>
+
+    <string name="account_logout_header">Confirmation of the logout</string>
+    <string name="account_logout">Really want to go out TrackDealer?\n\nyou will be automatically logged out of your Deezer account.</string>
+
+    <string name="text_trackdealer"><![CDATA[<p><font color="#007cd0">TRACK</font><font color="#fd7d20">DEALER</font></p>]]></string>
+
+    <string name="ok">OK</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="exit">Logout</string>
+    <string name="cont">Continue ></string>
+
+    <string name="back">Back</string>
+    <string name="repeat">Repeat</string>
+
+    <string name="register_success">Registration is successfully completed!</string>
+
+    <string name="finish_but_denied">Best tracks are only available to users with status TRACKDEALER.\n\n Details: Profile - > Status Information.</string>
+    <string name="random_but_denied">Random track list are only available to users with status TRACKDEALER.\n\n Details: Profile - > Status Information.</string>
+
+    <string name="close">Close</string>
+
+
+    <string name="empty"></string>
+    <string name="default_duration">0:00</string>
+    <string name="logout">Logout</string>
+    <string name="visualizer_wf">Waveform</string>
+    <string name="visualizer_fft">FFT</string>
+    <string name="equalizer">Equalizer</string>
+    <string name="unloggedRadios">Radios (without connection)</string>
+    <string name="no_results">No results found</string>
+    <string name="deezer_error_during_login">Error while login in Deezer</string>
+    <string name="deezer_too_many_skips">You have skipped too many tracks in this radio. Skip will be disabled for a while</string>
+    <string name="invalid_credentials">Invalid credentials</string>
+    <string name="login_cancelled">Login to Deezer canceled</string>
+    <string name="ui_custom_track_list">This activity plays a custom list of tracks</string>
+    <string name="ui_user_flow">This activity plays a custom list of tracks</string>
+    <string name="bass">Bass Freqs.</string>
+    <string name="treble">Treble Freqs.</string>
+
+    <!-- Handle error -->
+
+    <string name="handle_no_writes_for_play">The user does not have rights to play.</string>
+    <string name="handle_content_already_play">The content has already been played.</string>
+    <string name="handle_invalid_token">Invalid thread token.</string>
+    <string name="handle_limit_device">The Deezer account is used on multiple devices at once.</string>
+    <string name="handle_too_much_players">Too many players created.</string>
+    <string name="handle_error_player">Player error.</string>
+    <string name="handle_server_connect_error">Connection to the server is not established. Check your Internet connection.</string>
+    <string name="handle_connect_error">Connection error.</string>
+    <string name="handle_load_error">Loading failed.</string>
+    <string name="handle_enter_deezer_error">Cannot log in to Deezer</string>
+    <string name="handle_no_data">No data loaded.</string>
+    <string name="handle_required_enter_deezer">Requires login to Deezer account</string>
+    <string name="handle_required_permission">Permission is required.</string>
+    <string name="handle_request_error">The error prompted.</string>
+    <string name="handle_no_data_from_server">Could not get a response from the server. Check your Internet connection.</string>
+    <string name="handle_server_busy">The server is overloaded.</string>
+    <string name="handle_unknown_error">Unknown error. Check your Internet connection.</string>
+    <string name="handle_user_not_found">The user is not found.</string>
+    <string name="handle_weak_signal">Weak signal reception conditions.</string>
+    <string name="handle_buffer_error">Error loading buffer.</string>
+    <string name="handle_track_play_error">Unable to play the song.</string>
+    <string name="handle_fav_song_load_error">Unable to get a list of favorite songs.</string>
+
+    <string name="handle_bad_request">Incorrect data entered!</string>
+    <string name="handle_excess_denied">Access is restricted!</string>
+    <string name="handle_error">Error!</string>
+
+
+    <string name="default_network_error">There may be no connectivity.</string>
+    <string name="default_error">At the moment, the operation is impossible.</string>
+
+</resources>

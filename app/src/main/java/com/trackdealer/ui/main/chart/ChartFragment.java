@@ -29,6 +29,7 @@ import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.helpersUI.DeezerHelper;
 import com.trackdealer.helpersUI.PlaylistType;
 import com.trackdealer.helpersUI.SPlay;
+import com.trackdealer.helpersUI.TStatus;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.interfaces.IDispatchTouch;
 import com.trackdealer.interfaces.ILongClickTrack;
@@ -177,7 +178,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     }
 
     public void checkUserStatus() {
-        block = !Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals("TRACKDEALER");
+        block = Prefs.getUser(getActivity(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals(TStatus.TRACKLISTENER.name());
         if (block) {
             imageViewFinished.setColorFilter(getResources().getColor(R.color.colorGrey));
             imageViewRandom.setColorFilter(getResources().getColor(R.color.colorGrey));

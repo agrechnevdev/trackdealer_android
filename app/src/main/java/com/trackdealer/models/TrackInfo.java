@@ -35,6 +35,8 @@ public class TrackInfo {
     private Boolean userLike;
     @SerializedName("userNameLoad")
     private String userNameLoad;
+    @SerializedName("userStatusLoad")
+    private String userStatusLoad;
 
     private long albumId;
 
@@ -146,6 +148,14 @@ public class TrackInfo {
 
     public String getUserNameLoad() {
         return userNameLoad;
+    }
+
+    public String getUserStatusLoad() {
+        return userStatusLoad;
+    }
+
+    public void setUserStatusLoad(String userStatusLoad) {
+        this.userStatusLoad = userStatusLoad;
     }
 
     public void setUserNameLoad(String userNameLoad) {

@@ -5,9 +5,12 @@ import android.content.Context;
 import com.trackdealer.BuildConfig;
 import com.trackdealer.R;
 import com.trackdealer.base.BasePresenter;
+import com.trackdealer.models.User;
+import com.trackdealer.models.UserSettings;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
+import com.trackdealer.utils.Prefs;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +18,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
+
+import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
+import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 /**
  * Created by anton on 05.01.2018.
@@ -57,7 +63,9 @@ public class UserSettingsPresenter extends BasePresenter<UserSettingsView> {
                             .subscribe(response -> {
                                         Timber.e(TAG + " register response code: " + response.code());
                                         if (response.isSuccessful()) {
-                                            userSettingsView.getUserSettingsSuccess(response.body());
+                                            UserSettings userSettings = response.body();
+                                            Prefs.putUser(context, SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(userSettings.getUsername(), userSettings.getName(), userSettings.getStatus()));
+                                            userSettingsView.getUserSettingsSuccess();
                                         } else {
                                             userSettingsView.getUserSettingsFailed(ErrorHandler.getErrorMessageFromResponse(context, response));
                                         }

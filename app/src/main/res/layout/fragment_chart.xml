@@ -43,7 +43,7 @@
                     android:layout_marginRight="@dimen/dp10"
                     android:clickable="false"
                     android:tint="@color/colorAccent"
-                    app:srcCompat="@drawable/app_logo_2" />
+                    app:srcCompat="@drawable/app_logo_bold" />
 
                 <ImageView
                     android:id="@+id/fragment_chart_but_deezer"

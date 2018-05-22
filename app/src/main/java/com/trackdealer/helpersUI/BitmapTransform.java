@@ -34,16 +34,16 @@ public class BitmapTransform implements Transformation {
         int targetWidth, targetHeight;
         double aspectRatio;
 
-        targetWidth = maxWidth;
-        aspectRatio = (double) source.getHeight() / (double) source.getWidth();
-        targetHeight = (int) (targetWidth * aspectRatio);
+        targetHeight = maxHeight;
+        aspectRatio = (double) maxWidth / (double) maxHeight;
+        targetWidth = (int) (targetHeight * aspectRatio);
 
         Timber.d(TAG + " sourceWidth = " + source.getWidth() + " sourceHeight = " + source.getHeight());
         Timber.d(TAG + " targetWidth = " + targetWidth + " targetHeight = " + targetHeight);
 
-        Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
+        Bitmap result = Bitmap.createScaledBitmap(source, source.getWidth()*maxHeight/source.getHeight(), source.getHeight()*maxHeight/source.getHeight(), false);
 
-        Rect rect = new Rect(0, 0, maxWidth, cropHeightBot);
+        Rect rect = new Rect(0, 0, targetWidth, targetHeight);
         Bitmap resultBmp = Bitmap.createBitmap(rect.right, rect.bottom, Bitmap.Config.ARGB_8888);
         new Canvas(resultBmp).drawBitmap(result, 0, 0, null);
         if (resultBmp != source) {

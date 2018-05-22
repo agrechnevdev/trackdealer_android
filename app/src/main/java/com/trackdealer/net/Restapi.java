@@ -62,4 +62,7 @@ public interface Restapi {
 
     @GET("/tracks/deletelike")
     Observable<Response<ResponseBody>> deleteLike(@Query("deezerId") Long deezerId, @Query("like") Boolean like);
+
+    @GET("/users/promo")
+    Observable<Response<ResponseBody>> promo(@Query("promo") String promo);
 }

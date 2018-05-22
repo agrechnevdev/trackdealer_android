@@ -14,16 +14,12 @@ import com.taishi.library.Indicator;
 import com.trackdealer.R;
 import com.trackdealer.interfaces.IChoseTrack;
 import com.trackdealer.models.TrackInfo;
-import com.trackdealer.utils.Prefs;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import timber.log.Timber;
-
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_TRACK;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_TRACK_FAVOURITE;
 
 /**
  * Created by grechnev-av on 11.10.2017.
@@ -34,11 +30,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.ViewHo
     private final String TAG = "PlayListAdapter ";
     private List<TrackInfo> trackInfos;
     private Context context;
-    private RecyclerView recyclerView;
-    private TrackInfo chosenTrackInfo;
     IChoseTrack iChoseTrack;
-
-    boolean favSongs = false;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -69,7 +61,6 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.ViewHo
         this.trackInfos = trackInfos;
         this.context = context;
         this.iChoseTrack = iChoseTrack;
-        this.chosenTrackInfo = Prefs.getTrackInfo(context, SHARED_FILENAME_TRACK, SHARED_KEY_TRACK_FAVOURITE);
 
     }
 
@@ -116,12 +107,6 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.ViewHo
                 holder.indicator.setVisibility(View.GONE);
                 holder.artistImage.setAlpha(1f);
             }
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
-        super.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override

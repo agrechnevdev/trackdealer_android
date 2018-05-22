@@ -11,12 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
-import com.trackdealer.models.User;
-import com.trackdealer.models.UserSettings;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.ui.mvp.UserSettingsPresenter;
@@ -32,9 +29,6 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit2.Retrofit;
-
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 /**
  * Created by grechnev-av on 01.09.2017.
@@ -92,8 +86,7 @@ public class StartImageActivity extends AppCompatActivity implements UserSetting
     }
 
     @Override
-    public void getUserSettingsSuccess(UserSettings userSettings) {
-        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(userSettings.getUsername(), userSettings.getName(), userSettings.getStatus()));
+    public void getUserSettingsSuccess() {
         startMainActivity();
     }
 

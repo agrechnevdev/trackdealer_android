@@ -150,6 +150,7 @@ public class ChartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if (trackInfo.getUserNameLoad() != null) {
                 trackViewHolder.textUsername.setVisibility(View.VISIBLE);
                 trackViewHolder.textUsername.setText(trackInfo.getUserNameLoad() + " >");
+                trackViewHolder.textUsername.setCompoundDrawablesWithIntrinsicBounds(TStatus.getStatusByName(trackInfo.getUserStatusLoad()).getIcon(), 0, 0,0);
                 trackViewHolder.textUsername.setOnClickListener(view -> iTrackOperation.clickUser(trackInfo.getUserNameLoad()));
             } else {
                 trackViewHolder.textUsername.setVisibility(View.GONE);

@@ -13,8 +13,6 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
-import com.trackdealer.models.User;
-import com.trackdealer.models.UserSettings;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.ui.mvp.LoginPresenter;
@@ -22,7 +20,6 @@ import com.trackdealer.ui.mvp.LoginView;
 import com.trackdealer.ui.mvp.UserSettingsPresenter;
 import com.trackdealer.ui.mvp.UserSettingsView;
 import com.trackdealer.utils.ErrorHandler;
-import com.trackdealer.utils.Prefs;
 
 import javax.inject.Inject;
 
@@ -34,9 +31,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
-
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 public class LoginActivity extends BaseActivity implements LoginView, UserSettingsView {
 
@@ -134,9 +128,8 @@ public class LoginActivity extends BaseActivity implements LoginView, UserSettin
     }
 
     @Override
-    public void getUserSettingsSuccess(UserSettings userSettings) {
+    public void getUserSettingsSuccess() {
         hideProgressBar();
-        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(userSettings.getUsername(), userSettings.getName(), userSettings.getStatus()));
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
         finish();

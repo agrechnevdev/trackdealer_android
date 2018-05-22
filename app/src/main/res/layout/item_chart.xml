@@ -134,7 +134,7 @@
                     android:layout_below="@id/item_chart_artist"
                     android:layout_marginLeft="50dp"
                     android:layout_marginTop="@dimen/dp10"
-                    android:drawableLeft="@drawable/ic_user_playlist"
+                    android:drawableLeft="@drawable/ic_svg_crystal_0"
                     android:drawablePadding="@dimen/dp4"
                     android:gravity="center_vertical"
                     android:paddingStart="@dimen/dp4"

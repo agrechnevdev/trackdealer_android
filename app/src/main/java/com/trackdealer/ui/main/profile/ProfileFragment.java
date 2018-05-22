@@ -2,27 +2,33 @@ package com.trackdealer.ui.main.profile;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.deezer.sdk.network.connect.DeezerConnect;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.squareup.picasso.Picasso;
 import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.helpersUI.DeezerHelper;
+import com.trackdealer.helpersUI.TStatus;
 import com.trackdealer.interfaces.IConnectDeezer;
 import com.trackdealer.interfaces.IConnected;
 import com.trackdealer.interfaces.ILogout;
+import com.trackdealer.models.User;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.DeezerActivity;
 import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.utils.ErrorHandler;
 import com.trackdealer.utils.Prefs;
+import com.yarolegovich.lovelydialog.LovelyCustomDialog;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import javax.inject.Inject;
@@ -30,6 +36,9 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import timber.log.Timber;
 
@@ -47,6 +56,8 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
 
     private final String TAG = "ProfileFragment ";
 
+    CompositeDisposable subscription;
+
     @Inject
     Retrofit retrofit;
     private Restapi restapi;
@@ -57,6 +68,9 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
 
     @Bind(R.id.profile_text_username)
     TextView textUsername;
+
+    @Bind(R.id.profile_lay_user)
+    RelativeLayout userInfo;
 
     @Bind(R.id.profile_user_text_status)
     TextView textStatus;
@@ -82,7 +96,11 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
     @Bind(R.id.profile_deezer_account_user_logo)
     ImageView imageDeeLogo;
 
+    @Bind(R.id.profile_text_lay_promo_input)
+    TextInputLayout textLayPromo;
 
+    @Bind(R.id.profile_text_promo_input)
+    EditText textPromo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,13 +113,17 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
 
         profilePresenter = new ProfilePresenter(restapi, getActivity().getApplicationContext());
         profilePresenter.attachView(this);
+
+        subscription = new CompositeDisposable();
+
         initFields();
         return view;
     }
 
     public void initFields() {
-        textUsername.setText(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getUsername());
-        textStatus.setText(Prefs.getUser(getContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus());
+        User user = Prefs.getUser(getActivity(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER);
+        initUserFields(user);
+
         if (!DeezerHelper.init().mDeezerConnect.isSessionValid()) {
             relLayDeezerLogin.setVisibility(View.VISIBLE);
             relLayDeezerLogout.setVisibility(View.GONE);
@@ -133,6 +155,59 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
         }
     }
 
+    public void promoIdentify(boolean used){
+        if(used) {
+            textLayPromo.setError(getString(R.string.share_promo_friends));
+            textPromo.setText("547512");
+            textLayPromo.setEnabled(false);
+        } else {
+            textLayPromo.setError(getString(R.string.access_promo));
+            subscribePromo();
+            textLayPromo.setEnabled(true);
+        }
+    }
+
+    public void initUserFields(User user){
+        TStatus tStatus = TStatus.getStatusByName(user.getStatus());
+        textUsername.setText(user.getUsername());
+        textStatus.setText(tStatus.name());
+        textStatus.setCompoundDrawablePadding(4);
+        textStatus.setCompoundDrawablesWithIntrinsicBounds(tStatus.getIcon(), 0, 0, 0);
+        promoIdentify(!tStatus.equals(TStatus.TRACKLISTENER));
+    }
+
+    public void subscribePromo(){
+
+        subscription.add(
+                RxTextView.textChanges(textPromo)
+                        .filter(c -> c.length() == 6)
+                        .observeOn(Schedulers.computation())
+                        .flatMap(c -> restapi.promo(c.toString()))
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                response -> {
+                                    Timber.e(TAG + " promo response code: " + response.code());
+                                    if (response.isSuccessful()) {
+                                        User user = Prefs.getUser(getActivity(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER);
+                                        user.setStatus(TStatus.getUpgradedStatus(user.getStatus()));
+                                        Prefs.putUser(getActivity(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, user);
+
+                                        subscription.dispose();
+                                        initUserFields(user);
+                                        ErrorHandler.showToast(getActivity(), getString(R.string.promo_try_new));
+                                    } else {
+                                        ErrorHandler.showToast(getActivity(), getString(R.string.wrong_promo));
+                                        textPromo.setText("");
+                                    }
+                                },
+                                ex -> {
+                                    Timber.e(ex, TAG + " promo onError() " + ex.getMessage());
+                                    textPromo.setText("");
+                                }
+                        ));
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -144,6 +219,7 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
     public void onDestroy() {
         super.onDestroy();
         profilePresenter.detachView();
+        subscription.dispose();
     }
 
     @Override
@@ -164,13 +240,13 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
 
     @OnClick(R.id.profile_user_but_status)
     public void clickStatusInfo() {
-        new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+        new LovelyCustomDialog(getActivity())
+                .setView(R.layout.layout_status)
                 .setTopColorRes(R.color.colorWhite)
-                .setButtonsColorRes(R.color.colorOrange)
                 .setIcon(R.drawable.ic_info_black)
                 .setTitle(R.string.user_status_info_header)
-                .setMessage(R.string.user_status_info)
-                .setPositiveButton(R.string.ok, null)
+//                .setMessage(R.string.user_status_info)
+                .setListener(R.id.layout_button_ok, true, null)
                 .show();
     }
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,35 +21,33 @@
         android:id="@+id/first_chose_song_fav_song"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/first_chose_song_text_1" />
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/first_chose_song_text_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/first_chose_song_fav_song"
+        android:layout_gravity="center_horizontal"
         android:layout_marginLeft="@dimen/horizontal_margin"
-        android:layout_marginTop="@dimen/vertical_margin"
         android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
         android:text="@string/fav_song_first_chose_2"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="@dimen/text_size_main" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/first_chose_song_lay_user_likes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/first_chose_song_text_2"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/vertical_margin"
         android:layout_marginTop="@dimen/vertical_margin">
 
         <RelativeLayout
             android:id="@+id/first_chose_song_lay_dislike"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="true">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/first_chose_song_image_dislike"
@@ -98,13 +96,13 @@
                 android:textColor="@color/colorOrange"
                 android:textSize="@dimen/text_size_main" />
         </RelativeLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/first_chose_song_text_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/first_chose_song_lay_user_likes"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/dp4"
         android:layout_marginLeft="@dimen/horizontal_margin"
         android:layout_marginRight="@dimen/horizontal_margin"
@@ -119,8 +117,7 @@
         layout="@layout/layout_chart_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/first_chose_song_text_3"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/vertical_margin" />
 
     <TextView
@@ -142,11 +139,10 @@
         style="@style/ButtonColoredAccent"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/button_main_height"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="@dimen/vertical_margin"
+        android:layout_gravity="end|bottom"
         android:layout_marginEnd="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin_x2"
         android:text="@string/cont"
         android:textSize="@dimen/text_size_main" />
 
-</RelativeLayout>
+</LinearLayout>

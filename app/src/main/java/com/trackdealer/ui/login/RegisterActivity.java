@@ -15,16 +15,16 @@ import com.trackdealer.BaseApp;
 import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
 import com.trackdealer.models.User;
-import com.trackdealer.models.UserSettings;
 import com.trackdealer.net.Restapi;
 import com.trackdealer.ui.main.MainActivity;
 import com.trackdealer.ui.mvp.UserSettingsPresenter;
 import com.trackdealer.ui.mvp.UserSettingsView;
 import com.trackdealer.utils.ConnectionsManager;
 import com.trackdealer.utils.ErrorHandler;
-import com.trackdealer.utils.Prefs;
 
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -37,9 +37,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import timber.log.Timber;
-
-import static com.trackdealer.utils.ConstValues.SHARED_FILENAME_USER_DATA;
-import static com.trackdealer.utils.ConstValues.SHARED_KEY_USER;
 
 /**
  * Created by grechnev-av on 07.11.2017.
@@ -58,7 +55,8 @@ public class RegisterActivity extends BaseActivity implements UserSettingsView {
 
     CompositeDisposable subscription;
 
-
+    @Bind(R.id.register_lay_text_login)
+    TextInputLayout textLayLogin;
     @Bind(R.id.register_text_login)
     EditText textLogin;
     @Bind(R.id.register_text_password)
@@ -103,8 +101,26 @@ public class RegisterActivity extends BaseActivity implements UserSettingsView {
     public void initSubscribtion() {
         subscription = new CompositeDisposable();
 
+        Observable<CharSequence> observableLogin = RxTextView.textChanges(textLogin).skip(1);
         Observable<CharSequence> observablePass = RxTextView.textChanges(textPassword).skip(1);
         Observable<CharSequence> observablePass2 = RxTextView.textChanges(textPassword2).skip(1);
+
+        subscription.add(
+                observableLogin
+                        .map(charSequence -> {
+                            Pattern p = Pattern.compile("^[-a-zA-Z0-9._]+");
+                            Matcher m = p.matcher(charSequence);
+                            return m.matches();
+                        }).subscribe(
+                        match -> {
+                            if (match)
+                                textLayLogin.setErrorEnabled(false);
+                            else {
+                                textLayLogin.setError(getString(R.string.error_valid_regex));
+                            }
+                        }
+                )
+        );
 
         subscription.add(Observable.combineLatest(
                 observablePass, observablePass2,
@@ -137,7 +153,7 @@ public class RegisterActivity extends BaseActivity implements UserSettingsView {
         );
 
         subscription.add(Observable.combineLatest(
-                RxTextView.textChanges(textLogin), observablePass,
+                observableLogin, observablePass,
                 observablePass2, RxTextView.textChanges(textName),
                 RxTextView.textChanges(textEmail),
                 (login, pass, pass2, name, email) -> !TextUtils.isEmpty(login) && !TextUtils.isEmpty(pass) &&
@@ -206,9 +222,8 @@ public class RegisterActivity extends BaseActivity implements UserSettingsView {
     }
 
     @Override
-    public void getUserSettingsSuccess(UserSettings userSettings) {
+    public void getUserSettingsSuccess() {
         hideProgressBar();
-        Prefs.putUser(getApplicationContext(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER, new User(textLogin.getText().toString(), userSettings.getName(), userSettings.getStatus()));
         ErrorHandler.showToast(this, getString(R.string.register_success));
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);

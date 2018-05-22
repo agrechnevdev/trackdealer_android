@@ -7,9 +7,6 @@
     <string name="error_server_internal">Внутренняя ошибка сервера</string>
     <string name="error_request_failure">Упс, что-то пошло не так</string>
 
-    <string name="challenge_accepted">Задание принят!</string>
-    <string name="challenge_added">Новое задание добавлено!</string>
-
     <!-- Text -->
 
     <string name="singin">Вход</string>
@@ -46,7 +43,7 @@
     <string name="period_top_date_text">Лучшие треки от</string>
     <string name="your_chose">Твой выбор</string>
     <string name="change">Изменить</string>
-    <string name="fav_song_empty_message">Еще не выбрал свой трек? Жми сюда!</string>
+    <string name="fav_song_empty_message">Нажми, чтобы выбрать трек -></string>
     <string name="your_track_add_in_chart">Ваш новый трек добавлен в чарт!</string>
     <string name="chose_song">Введите название трека</string>
     <string name="chose_song_title">Подтверждение выбора</string>
@@ -58,40 +55,44 @@
     <string name="fav_song_first_chose_1">1. Выбери любимый трек</string>
     <string name="fav_song_first_chose_2">2. Получай лайки от других пользователей и ставь сам</string>
     <string name="fav_song_first_chose_3">3. Твой трек собрал больше всех лайков? Тебе доступны новые возможности приложения!</string>
-    <string name="fav_song_first_chose_4">Кликни по каждой из кнопок, чтобы узнать больше о возможностях приложения</string>
     <string name="fav_song_first_chose_5">4. Слушай новую музыку каждый день и делись своими треками с другими!</string>
     <string name="song_not_chosen">Чтобы продолжить выбери трек</string>
     <string name="chose">Выбрать</string>
 
     <string name="info_list_title">Подсказка</string>
-    <string name="info_first_start">Поздравляю, ты успешно загрузил свой трек!\nТеперь немного о приложении.\nПриложение TRACKDEALER:\nЭто все треки одним списком.\n\nЭто лучшая музыка, выбранная тобой и другими пользователями.\n\nЭто возможность каждый день найти что-то новое для себя.\n\nСлушай и оценивай треки, делись любимой музыкой, стань главным трек-дилером!</string>
+    <string name="info_first_start">Поздравляю, ты успешно загрузил свой трек!\nО приложении TRACKDEALER:\nЭто все треки одним списком.\n\nЭто лучшая музыка, выбранная тобой и другими пользователями.\n\nЭто возможность каждый день найти что-то новое для себя.\n\nСлушай и оценивай треки, делись любимой музыкой, стань главным трек-дилером!</string>
 
-    <string name="info_list">Треки, получившие больше всего лайков и меньше всего дизлайков, находятся вверху списка.
-        Пользователи, чьи треки оценят лучше всех, получат доступ к новым возможностям приложения, а их треки перейдут в раздел \"Лучшие треки\".
-        Определение лучших происходит раз в несколько дней.</string>
-    <string name="info_deezer_list">Любимые треки твоего Deezer-аккаунта. Чтобы посмотреть список и добавить в него свой трек, нужно \n1. Подключить Deezer-аккаунт в профиле\n2. Длительное нажатие на понравившийся трек добавит его в этот список.</string>
+    <string name="info_list">Самые популярные треки на этой неделе находятся вверху списка. Раз в неделю определяются лучшие, а их владельцы получают доступ к новым возможностям приложения.</string>
+    <string name="info_deezer_list">Любимые треки для твоего Deezer-аккаунта. Чтобы посмотреть список и добавить в него свой трек, нужно \n1. Подключить Deezer-аккаунт в профиле\n2. Долгое нажатие на понравившийся трек добавит в этот список.</string>
     <string name="info_user_list">Все треки пользователя. Здесь можешь посмотреть и послушать все свои треки за всё время</string>
-    <string name="info_finished_list">Здесь показаны лучшие треки пользователей за всё время, отсортированный по дате. Доступ только для пользователей со статусом TRACKDEALER</string>
-    <string name="info_random_list">Случайная выборка песен из списка, возможность найти что-то новое для себя. Доступ только для пользователей со статусом TRACKDEALER</string>
-
+    <string name="info_finished_list">Лучшие треки пользователей за всё время по неделям.</string>
+    <string name="info_random_list">Случайный выбор треков, возможность найти что-то новое для себя.</string>
 
     <string name="deezer_account_login">Подключить аккаунт Deezer</string>
     <string name="deezer_account_info">Подключение к Deezer позволит добавлять треки в плейлист "Любимые треки", а c аккаунтом PREMIUM или PREMIUM+ позволит Вам прослушивать треки полностью</string>
     <string name="deezer_already_login">Аккаунт Deezer подключен!</string>
-    <string name="deezer_premium_account">Доступно прослушивание полных песен и добавление в плейлист "Любимые треки"</string>
+    <string name="deezer_premium_account">Доступно прослушивание полных треков и добавление в плейлист "Любимые треки"</string>
     <string name="deezer_freemium_account">Можно добавлять треки в плейлист "Любимые треки", но недоступны для прослушивания полные треки (требуется статус PREMIUM или PREMIUM+)</string>
     <string name="deezer_account_logout">Действительно отключить аккаунт Deezer?</string>
     <string name="deezer_login_success">Вы залогинились в Deezer!</string>
     <string name="deezer_login_already">Уже залогинен в Deezer</string>
+    <string name="promo">Промокод</string>
+    <string name="promo_try_new">Ты получил доступ к новым возможностям!</string>
+    <string name="wrong_promo">Неверный промокод</string>
+    <string name="access_promo">Позволит получить доступ к новым возможностям</string>
+    <string name="share_promo_friends">Поделись с друзьями</string>
 
-    <string name="congratulations_upate_status">Поздравляем! Твой трек стал лучшим, а ты получил статус: TRACKDEALER! Для тебя теперь доступны новые возможности плейлиста.</string>
     <string name="congratulations_track_likes">Поздравляем! Твой трек среди лучших на этой неделе! Пора выбрать трек поновее и снова попасть в лучшие</string>
 
     <string name="username">Пользователь: </string>
     <string name="user_status">Статус: </string>
     <string name="user_status_info_header">Информация</string>
-    <string name="user_status_info">Статус TRACKLISTENER:\nбазовый статус для всех пользователей.\n\nСтатус TRACKDEALER:\nпозволит открыть дополнительные возможности:\n - слушать лучшие треки за всё время.
-        \n - выбрать случайный набор треков и услышать что-то новое.\n\nПолучить статус TRACKDEALER просто - твой трек должен хотя бы раз попасть в число лучших.</string>
+    <string name="user_status_info_all">Для статуса TRACKLISTENER ограничены возможности:\n - слушать лучшие треки за всё время.
+        \n - получить случайный набор треков и услышать что-то новое.</string>
+    <string name="user_status_info_listener">TRACKLISTENER - твой базовый статус в приложении.</string>
+    <string name="user_status_info_master">TRACKMASTER - Ввeди промокод, который есть у пользователей с небазовым статусом и получишь стутус и доступ ко всем возможностям приложения.</string>
+    <string name="user_status_info_king">TRACKKING - Получишь статус, когда твой трек станет лучшим.</string>
+    <string name="user_status_info_dealer">TRACKDEALER - Твои треки настолько хороши, что пользователи выбрали лучшими как минимум три твоих песни!</string>
 
     <string name="account_logout_header">Подтверждение выхода</string>
     <string name="account_logout">Действительно хочешь выйти из TrackDealer?\n\nПри выходе автоматически будет совершен выход из Deezer-аккаунта.</string>
@@ -155,7 +156,7 @@
     <string name="handle_weak_signal">Слабые условия приема сигнала.</string>
     <string name="handle_buffer_error">Ошибка при загрузке буфера.</string>
     <string name="handle_track_play_error">Не удалось воспроизвести песню.</string>
-    <string name="handle_fav_song_load_error">Не получить список любимых песен.</string>
+    <string name="handle_fav_song_load_error">Не удалось получить список любимых песен.</string>
 
     <string name="handle_bad_request">Неверно введены данные!</string>
     <string name="handle_excess_denied"> Доступ ограничен!</string>

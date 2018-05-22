@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/layout_status_listener"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:text="@string/user_status_info_listener"
+        android:drawableLeft="@drawable/ic_svg_crystal_0"
+        android:drawablePadding="@dimen/dp4"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_main" />
+
+    <TextView
+        android:id="@+id/layout_status_master"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:text="@string/user_status_info_master"
+        android:textColor="@color/colorPrimaryDark"
+        android:drawableLeft="@drawable/ic_svg_crystal_1"
+        android:drawablePadding="@dimen/dp4"
+        android:textSize="@dimen/text_size_small_14" />
+
+    <TextView
+        android:id="@+id/layout_status_king"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:text="@string/user_status_info_king"
+        android:textColor="@color/colorPrimaryDark"
+        android:drawableLeft="@drawable/ic_svg_crystal_2"
+        android:drawablePadding="@dimen/dp4"
+        android:textSize="@dimen/text_size_small_14" />
+
+    <TextView
+        android:id="@+id/layout_status_trackdealer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:text="@string/user_status_info_dealer"
+        android:textColor="@color/colorPrimaryDark"
+        android:drawableLeft="@drawable/ic_svg_crystal_3"
+        android:drawablePadding="@dimen/dp4"
+        android:textSize="@dimen/text_size_small_14" />
+
+    <TextView
+        android:id="@+id/layout_status_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/horizontal_margin"
+        android:layout_marginRight="@dimen/horizontal_margin"
+        android:layout_marginTop="@dimen/vertical_margin"
+        android:text="@string/user_status_info_all"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/text_size_small_14" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/layout_button_ok"
+        style="@style/ButtonColoredAccentBorderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:textSize="@dimen/text_size_main"
+        android:text="@string/ok" />
+
+</LinearLayout>

@@ -30,6 +30,8 @@ import com.trackdealer.ui.main.chart.ChartFragment;
 import com.trackdealer.ui.main.chart.PlaylistDialog;
 import com.trackdealer.ui.main.favour.FavourFragment;
 import com.trackdealer.ui.main.profile.ProfileFragment;
+import com.trackdealer.ui.mvp.UserSettingsPresenter;
+import com.trackdealer.ui.mvp.UserSettingsView;
 import com.trackdealer.utils.Prefs;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
@@ -51,7 +53,7 @@ import static com.trackdealer.utils.ConstValues.SHARED_KEY_NOT_FIRST_START;
  * Created by grechnev-av on 31.08.2017.
  */
 
-public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ITrackListState, ILogout {
+public class MainActivity extends DeezerActivity implements BottomNavigationView.OnNavigationItemSelectedListener, ITrackListState, ILogout, UserSettingsView {
 
     private final String TAG = "MainActivity ";
 
@@ -74,6 +76,9 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     HeadSetReceiver headSetReceiver;
     TelephonyManager telephonyManager;
     CallStateListener callStateListener;
+
+
+    UserSettingsPresenter userSettingsPresenter;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -120,6 +125,9 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
                     .setPositiveButton(R.string.ok, v -> Prefs.putBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START, true))
                     .show();
         }
+
+        userSettingsPresenter = new UserSettingsPresenter(restapi, this);
+        userSettingsPresenter.attachView(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -161,7 +169,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
     @Override
     protected void onResume() {
         super.onResume();
-
+        userSettingsPresenter.getUserSeettings(0);
         Timber.d(TAG + " onResume() ");
     }
 
@@ -172,6 +180,16 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
 
 
     @Override
+    public void getUserSettingsSuccess() {
+        // do nothing
+    }
+
+    @Override
+    public void getUserSettingsFailed(String error) {
+        // do nothing
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         Timber.d(TAG + " onDestroy() ");
@@ -180,6 +198,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
         telephonyManager = null;
         compositeDisposable.dispose();
         unregisterReceiver(headSetReceiver);
+        userSettingsPresenter.detachView();
     }
 
     @Override

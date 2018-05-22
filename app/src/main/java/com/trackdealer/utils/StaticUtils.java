@@ -117,7 +117,7 @@ public class StaticUtils {
         int resourceStatus = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         int statusBarHeight = context.getResources().getDimensionPixelSize(resourceStatus);
 
-        BitmapTransform bitmapTransform = new BitmapTransform(screenWidth, screenHeight, 0, screenHeight - statusBarHeight);
+        BitmapTransform bitmapTransform = new BitmapTransform(screenWidth, screenHeight - statusBarHeight, 0, 0);
         Bitmap background = BitmapFactory.decodeResource(context.getResources(), draw);
         return bitmapTransform.transform(background);
     }
