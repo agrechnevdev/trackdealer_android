@@ -89,8 +89,8 @@
     <string name="user_status_info_header">Information</string>
     <string name="user_status_info_all">For the status of TRACELISTENER are limited:\n - listen to the best tracks of all time
         \n - get random tracks and hear something new</string>
-    <string name="user_status_info_listener">TRACKLISTENER - your basic status in the app</string>
-    <string name="user_status_info_master">TRACKMASTER - Enter the promo code that is available to users with basic status and get the status and access to all features of the application</string>
+    <string name="user_status_info_listener">TRACKLISTENER - your basic status</string>
+    <string name="user_status_info_master">TRACKVIP - enter the promo code received from friends and open access to new features.</string>
     <string name="user_status_info_king">TRACKKING - You\'ll get this status when your track is the best</string>
     <string name="user_status_info_dealer">TRACKDEALER - Your tracks are so good that users have chosen the best at least three of your songs!</string>
 

@@ -6,8 +6,8 @@ package com.trackdealer.utils;
 
 public class ConstValues {
 
-//    public static final String mainUrl = "https://trackdealerapp.herokuapp.com";
-    public static final String mainUrl = "http://192.168.199.3:8081";
+    public static final String mainUrl = "https://trackdealerapp.herokuapp.com";
+//    public static final String mainUrl = "http://192.168.199.3:8081";
 
     public static final String SHARED_FILENAME_USER_DATA = "SharedUserData";
     public static final String SHARED_KEY_USER = "SharedUser";

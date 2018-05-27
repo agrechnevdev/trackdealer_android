@@ -170,7 +170,7 @@ public class ProfileFragment extends Fragment implements IConnected, ProfileView
     public void initUserFields(User user){
         TStatus tStatus = TStatus.getStatusByName(user.getStatus());
         textUsername.setText(user.getUsername());
-        textStatus.setText(tStatus.name());
+        textStatus.setText(tStatus.getName());
         textStatus.setCompoundDrawablePadding(4);
         textStatus.setCompoundDrawablesWithIntrinsicBounds(tStatus.getIcon(), 0, 0, 0);
         promoIdentify(!tStatus.equals(TStatus.TRACKLISTENER));

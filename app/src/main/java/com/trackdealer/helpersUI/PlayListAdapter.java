@@ -82,7 +82,8 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.ViewHo
 
         if (trackInfo.getUserNameLoad() != null) {
             holder.textUsername.setVisibility(View.VISIBLE);
-            holder.textUsername.setText(context.getResources().getString(R.string.chosed_by) + " " + trackInfo.getUserNameLoad());
+            holder.textUsername.setCompoundDrawablesWithIntrinsicBounds(TStatus.getStatusByName(trackInfo.getUserStatusLoad()).getIcon(), 0, 0,0);
+            holder.textUsername.setText(trackInfo.getUserNameLoad());
         } else {
             holder.textUsername.setVisibility(View.GONE);
         }

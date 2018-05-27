@@ -1,12 +1,7 @@
 package com.trackdealer.ui.login;
 
-import android.Manifest;
 import android.animation.ValueAnimator;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,7 +10,6 @@ import com.trackdealer.R;
 import com.trackdealer.base.BaseActivity;
 import com.trackdealer.helpersUI.CustomAlertDialogBuilder;
 import com.trackdealer.ui.main.favour.FavourFragment;
-import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -50,31 +44,31 @@ public class FirstChoseSongActivity extends BaseActivity {
 
         favourFragment = FavourFragment.newInstance(false);
         getSupportFragmentManager().beginTransaction().replace(R.id.first_chose_song_fav_song, favourFragment).commit();
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201);
-        }
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201);
+//        }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 201: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else {
-                    new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
-                            .setTopColorRes(R.color.colorWhite)
-                            .setButtonsColorRes(R.color.colorOrange)
-                            .setIcon(R.drawable.ic_warning_red)
-                            .setTitle(R.string.permisstion_needed_title)
-                            .setMessage(R.string.permisstion_needed_text)
-                            .setPositiveButton(R.string.positive, v -> ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201))
-                            .setNegativeButton(R.string.negative, null)
-                            .show();
-                }
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        switch (requestCode) {
+//            case 201: {
+//                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//
+//                } else {
+//                    new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+//                            .setTopColorRes(R.color.colorWhite)
+//                            .setButtonsColorRes(R.color.colorOrange)
+//                            .setIcon(R.drawable.ic_warning_red)
+//                            .setTitle(R.string.permisstion_needed_title)
+//                            .setMessage(R.string.permisstion_needed_text)
+//                            .setPositiveButton(R.string.positive, v -> ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 201))
+//                            .setNegativeButton(R.string.negative, null)
+//                            .show();
+//                }
+//            }
+//        }
+//    }
 
     @Override
     protected void onResume() {

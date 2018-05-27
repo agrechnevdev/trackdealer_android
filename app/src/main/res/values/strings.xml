@@ -89,10 +89,10 @@
     <string name="user_status_info_header">Информация</string>
     <string name="user_status_info_all">Для статуса TRACKLISTENER ограничены возможности:\n - слушать лучшие треки за всё время.
         \n - получить случайный набор треков и услышать что-то новое.</string>
-    <string name="user_status_info_listener">TRACKLISTENER - твой базовый статус в приложении.</string>
-    <string name="user_status_info_master">TRACKMASTER - Ввeди промокод, который есть у пользователей с небазовым статусом и получишь стутус и доступ ко всем возможностям приложения.</string>
-    <string name="user_status_info_king">TRACKKING - Получишь статус, когда твой трек станет лучшим.</string>
-    <string name="user_status_info_dealer">TRACKDEALER - Твои треки настолько хороши, что пользователи выбрали лучшими как минимум три твоих песни!</string>
+    <string name="user_status_info_listener">TRACKLISTENER - твой базовый статус.</string>
+    <string name="user_status_info_master">TRACKVIP - ввeди промокод, полученный у друзей, и открой доступ ко новым возможностям.</string>
+    <string name="user_status_info_king">TRACKKING - получишь статус, когда твой трек станет лучшим.</string>
+    <string name="user_status_info_dealer">TRACKDEALER - твои треки настолько хороши, что пользователи выбрали лучшими как минимум три твоих песни!</string>
 
     <string name="account_logout_header">Подтверждение выхода</string>
     <string name="account_logout">Действительно хочешь выйти из TrackDealer?\n\nПри выходе автоматически будет совершен выход из Deezer-аккаунта.</string>

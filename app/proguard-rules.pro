@@ -52,3 +52,11 @@
 -keepclassmembers enum * { *; }
 
 -keep public class * extends android.app.Activity
+
+-keepattributes *Annotation*
+-keepclassmembers class * {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+-keep class com.deezer.** { *; }

@@ -4,14 +4,15 @@ import com.trackdealer.R;
 
 public enum TStatus {
 
-    TRACKLISTENER(0, R.drawable.ic_svg_crystal_0),
-    TRACKMASTER(1, R.drawable.ic_svg_crystal_2),
-    TRACKKING(2, R.drawable.ic_svg_crystal_3),
-    TRACKDEALER(3, R.drawable.app_logo_bold);
+    TRACKLISTENER(0, R.drawable.ic_hearphone, "TRACKLISTENER"),
+    TRACKVIP(1, R.drawable.ic_vip, "TRACKVIP"),
+    TRACKKING(2, R.drawable.ic_crown_1, "TRACKKING"),
+    TRACKKING_2(3, R.drawable.ic_crown_1, "TRACKKING"),
+    TRACKDEALER(4, R.drawable.app_logo_bold_small, "TRACKDEALER");
 
     public static TStatus getStatusByName(String name) {
         for (TStatus tStatus : values()) {
-            if (tStatus.name().equals(name))
+            if (tStatus.getName().equals(name))
                 return tStatus;
         }
         return TRACKLISTENER;
@@ -29,15 +30,18 @@ public enum TStatus {
         TStatus tStatus = getStatusByName(oldStatus);
         int level = tStatus.getLevel() + 1;
         TStatus newStatus = getStatusByLevel(level);
-        return newStatus.name();
+        return newStatus.getName();
     }
 
     private int level;
     private int icon;
+    private String name;
 
-    TStatus(int level, int icon) {
+    TStatus(int level, int icon, String name) {
         this.level = level;
         this.icon = icon;
+        this.name = name;
+
     }
 
     public int getLevel() {
@@ -46,5 +50,9 @@ public enum TStatus {
 
     public int getIcon() {
         return icon;
+    }
+
+    public String getName() {
+        return name;
     }
 }

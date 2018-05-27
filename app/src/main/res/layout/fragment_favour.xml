@@ -117,7 +117,7 @@
                 android:layout_marginBottom="@dimen/dp4"
                 android:layout_marginLeft="@dimen/dp10"
                 android:clickable="true"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:maxLines="2"
                 android:drawableRight="@drawable/ic_love_music"
                 android:drawablePadding="@dimen/dp10"

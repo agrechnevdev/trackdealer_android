@@ -120,7 +120,7 @@ public class MainActivity extends DeezerActivity implements BottomNavigationView
             new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
                     .setTopColorRes(R.color.colorWhite)
                     .setButtonsColorRes(R.color.colorOrange)
-                    .setIcon(R.drawable.app_logo_bold_small)
+                    .setIcon(R.drawable.app_logo_bold_middle)
                     .setMessage(R.string.info_first_start)
                     .setPositiveButton(R.string.ok, v -> Prefs.putBoolean(this, SHARED_FILENAME_USER_DATA, SHARED_KEY_NOT_FIRST_START, true))
                     .show();

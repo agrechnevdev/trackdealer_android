@@ -178,7 +178,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
     }
 
     public void checkUserStatus() {
-        block = Prefs.getUser(getActivity(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals(TStatus.TRACKLISTENER.name());
+        block = Prefs.getUser(getActivity(), SHARED_FILENAME_USER_DATA, SHARED_KEY_USER).getStatus().equals(TStatus.TRACKLISTENER.getName());
         if (block) {
             imageViewFinished.setColorFilter(getResources().getColor(R.color.colorGrey));
             imageViewRandom.setColorFilter(getResources().getColor(R.color.colorGrey));
@@ -421,7 +421,7 @@ public class ChartFragment extends Fragment implements ChartView, SwipeRefreshLa
         switch (view.getId()) {
             case R.id.fragment_chart_but_tracks_main:
                 sharedKey = SHARED_KEY_MAIN_LIST_HELP;
-                icon = R.drawable.app_logo_bold_small;
+                icon = R.drawable.app_logo_bold_middle;
                 title = R.string.main_chart_text;
                 message = R.string.info_list;
                 break;
